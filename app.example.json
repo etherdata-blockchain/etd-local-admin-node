@@ -1,0 +1,21 @@
+[
+  {
+    "name": "ETDStatus Node",
+    "script": "dist/app.js",
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "merge_logs": false,
+    "watch": true,
+    "max_restarts": 100,
+    "min_uptime": 5000,
+    "exec_interpreter": "node",
+    "exec_mode": "fork_mode",
+    "env": {
+      "NODE_ENV": "production",
+      "geth_websocket": "ws://0.0.0.0:8546",
+      "node_name": "ETD2",
+      "websocket": "ws://0.0.0.0:3000",
+      "rpc": "http://0.0.0.0:8545",
+      "password": "password"
+    }
+  }
+]
