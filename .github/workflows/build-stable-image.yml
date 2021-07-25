@@ -24,7 +24,7 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=sirily11/etdstats-node
+          DOCKER_IMAGE=sirily11/etd-admin-node
           VERSION=edge
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
