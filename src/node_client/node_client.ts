@@ -48,7 +48,7 @@ export class NodeClient {
     await this.startWeb3Connection();
     await this.mongodbClient.connect();
     // If it is in development environment, then allow all user to access.
-    let origin = process.env.NODE_ENV !== "development" ? "admin-ui" : "*";
+    let origin = process.env.NODE_ENV !== "development" ? "admin" : "*";
     Logger.warning("Cors origin is set to " + origin);
     // Enable cors for development
     let server = new Server({ cors: { origin: origin } });
