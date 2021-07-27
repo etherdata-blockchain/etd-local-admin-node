@@ -38,12 +38,13 @@ export class Web3Helper {
     // calculate basic fee
     transactions.forEach((t) => (fee += t.gas * parseFloat(t.gasPrice)));
 
-    block.uncles.map(async (u) => {
-      let ub = await Web3Helper.getBlockById(u);
-      if (ub) {
-        unclesReward += (ub.number + 8 - block.number) * basicReward;
+    for (let uncle of block.uncles) {
+      let ub = await Web3Helper.getBlockById(uncle);
+      // reward for uncle block's mining
+      if (ub && ub.miner.toLowerCase() === block.miner.toLowerCase()) {
+        unclesReward += ((ub.number + 8 - block.number) * basicReward) / 8;
       }
-    });
+    }
 
     return fee + basicReward + unclesReward + unclesFixedReward;
   }

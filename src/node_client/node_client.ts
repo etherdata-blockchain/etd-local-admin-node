@@ -64,6 +64,10 @@ export class NodeClient {
 
   private startSystemInfoServer(server: Server) {
     let systemInfo = server.of("systemInfo");
+    systemInfo.on("connection", (client) => {
+      Logger.warning(`${client.id} has connected`);
+    });
+
     let col = this.mongodbClient
       .db("etd")
       .collection<SystemInfo>("system_info");
@@ -87,6 +91,9 @@ export class NodeClient {
 
   private async startBlockchainInfoServer(server: Server) {
     let blockchainInfo = server.of("blockchain");
+    blockchainInfo.on("connection", (client) => {
+      Logger.warning(`${client.id} has connected`);
+    });
     await this.startWeb3WebSocketConnection(blockchainInfo);
   }
 
