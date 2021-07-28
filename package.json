@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/app.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "docker": "docker buildx build  -t sirily11/etd-admin-server-node --platform linux/arm64,linux/amd64 --push . "
   },
   "dependencies": {
     "@types/bunyan": "^1.8.7",

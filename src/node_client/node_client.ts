@@ -134,7 +134,6 @@ export class NodeClient {
       })
     );
 
-    let coinbase = await this.web3.eth.getCoinbase();
     let rewardCol = this.mongodbClient.db("etd").collection("reward");
     let blockCol = this.mongodbClient.db("etd").collection("blocks");
     let transactionCol = this.mongodbClient
@@ -147,6 +146,7 @@ export class NodeClient {
         if (err) {
           Logger.error(err);
         } else {
+          let coinbase = await this.web3.eth.getCoinbase();
           if (blockHeader.miner.toLowerCase() === coinbase.toLowerCase()) {
             let block = await this.prepareBlock(blockHeader.number);
             let reward = await Web3Helper.calculateReward(block);
@@ -183,6 +183,7 @@ export class NodeClient {
       "pendingTransactions",
       async (error, transaction) => {
         let data = await this.prepareTransaction(transaction);
+        let coinbase = await this.web3.eth.getCoinbase();
         if (
           data.from.toLowerCase() === coinbase.toLowerCase() ||
           data.to.toLowerCase() === coinbase.toLowerCase()
