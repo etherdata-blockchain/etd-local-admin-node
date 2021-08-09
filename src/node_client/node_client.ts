@@ -1,19 +1,19 @@
-import { io } from "socket.io-client";
 import { URL } from "url";
 import Web3 from "web3";
 import { TransactionSummary, Web3DataInfo } from "./web3DataInfo";
 import { Admin } from "web3-eth-admin";
-import { Socket } from "socket.io-client";
+import { Socket }                                           from "socket.io-client";
 import { BlockTransactionString, BlockHeader, Transaction } from "web3-eth";
-import Logger from "../logger";
-import moment from "moment";
-import { Namespace, Server } from "socket.io";
-import { Block } from "web3-eth";
-import { SystemInfo } from "../systemInfo/systemInfo";
-import osu from "os-utils";
-import os from "os";
-import { MongoClient } from "mongodb";
-import { Web3Helper } from "../utils/Web3Utils";
+import Logger                                               from "../logger";
+import moment                                               from "moment";
+import { Namespace, Server }                                from "socket.io";
+import { Block }                                            from "web3-eth";
+import { SystemInfo }                                       from "../systemInfo/systemInfo";
+import osu                                                  from "os-utils";
+import os                                                   from "os";
+import { io }                                               from "socket.io-client"
+import { Web3Helper }                                       from "../utils/Web3Utils";
+import {Config}                                             from "../config";
 
 interface NamedParam {}
 
@@ -26,16 +26,16 @@ export class NodeClient {
   web3WebSocket: Web3 | undefined;
   webSocketSendPeriod: number;
   systemInfoPeriod: number;
-  mongodbClient: MongoClient;
+  remoteAdminClient?: Socket
+  config: Config
 
   constructor({}: NamedParam) {
     this.reconnectCount = 0;
     this.reconnectSleepTime = 10000;
     this.webSocketSendPeriod = 5000;
     this.systemInfoPeriod = 5000;
-    this.mongodbClient = new MongoClient(
-      `mongodb://${process.env.etd_node_name}:${process.env.etd_node_id}@${process.env.db}/`
-    );
+    this.config = Config.fromEnvironment()
+
     Logger.info("Start server");
   }
 
@@ -45,8 +45,7 @@ export class NodeClient {
    */
   async startServer() {
     // Check worker's connection
-    await this.startWeb3Connection();
-    await this.mongodbClient.connect();
+    await this.startWeb3Connection( );
     // If it is in development environment, then allow all user to access.
     let origin = process.env.NODE_ENV !== "development" ? "admin" : "*";
     Logger.warning("Cors origin is set to " + origin);
@@ -56,6 +55,7 @@ export class NodeClient {
 
     this.startSystemInfoServer(server);
     await this.startBlockchainInfoServer(server);
+    await this.startRemoteAdminConnection()
 
     server.on("connection", (socket) => {
       Logger.info(`Client: ${socket.id} connect`);
@@ -68,19 +68,12 @@ export class NodeClient {
       Logger.warning(`${client.id} has connected`);
     });
 
-    let col = this.mongodbClient
-      .db("etd")
-      .collection<SystemInfo>("system_info");
     setInterval(async () => {
       Logger.info("Update system info");
       let data = await this.prepareSystemInfo();
       for (let d of data) {
         try {
-          await col.updateOne(
-            { title: d.title },
-            { $set: d },
-            { upsert: true }
-          );
+         // Update data
         } catch (err) {
           Logger.error(err);
         }
@@ -97,6 +90,21 @@ export class NodeClient {
     await this.startWeb3WebSocketConnection(blockchainInfo);
   }
 
+  private async startRemoteAdminConnection(){
+    // Connect to remote
+    this.remoteAdminClient = io(this.config.remoteAdminWebsocket, {auth: {token: this.config.remoteAdminPassword}})
+    this.remoteAdminClient.on("connect", async ()=>{
+      Logger.info("Connected to remote server")
+      let latestBlock = await this.web3.eth.getBlockNumber()
+    })
+
+    this.remoteAdminClient.on("connect_error", async()=>{
+      await this.wait(10000)
+      this.remoteAdminClient.connect()
+      Logger.error("Cannot connect to the server. Will reconnect")
+    })
+  }
+
   /**
    * Check connection between node and geth
    * @private
@@ -104,8 +112,8 @@ export class NodeClient {
   private async startWeb3Connection(): Promise<void> {
     let isConnected = false;
     while (!isConnected) {
-      let web3 = new Web3(process.env.rpc);
-      let admin = new Admin(process.env.rpc);
+      let web3 = new Web3(this.config.rpc);
+      let admin = new Admin(this.config.rpc);
 
       try {
         isConnected = await web3.eth.net.isListening();
@@ -129,16 +137,10 @@ export class NodeClient {
   private async startWeb3WebSocketConnection(socket: Namespace) {
     this.web3WebSocket = new Web3();
     this.web3WebSocket?.setProvider(
-      new Web3.providers.WebsocketProvider(process.env.wsRpc, {
+      new Web3.providers.WebsocketProvider(this.config.wsRpc, {
         reconnect: { auto: true, delay: this.reconnectSleepTime },
       })
     );
-
-    let rewardCol = this.mongodbClient.db("etd").collection("reward");
-    let blockCol = this.mongodbClient.db("etd").collection("blocks");
-    let transactionCol = this.mongodbClient
-      .db("etd")
-      .collection<TransactionSummary>("transactions");
 
     this.web3WebSocket?.eth.subscribe(
       "newBlockHeaders",
@@ -146,35 +148,25 @@ export class NodeClient {
         if (err) {
           Logger.error(err);
         } else {
+          let data = await this.prepareNodeInfo(blockHeader, blockHeader.number)
+          this.remoteAdminClient.emit("node-info", data)
+
           let coinbase = await this.web3.eth.getCoinbase();
-          if (blockHeader.miner.toLowerCase() === coinbase.toLowerCase()) {
-            let block = await this.prepareBlock(blockHeader.number);
-            let reward = await Web3Helper.calculateReward(block);
-            let rewardData = {
-              number: block.number,
-              time: block.timestamp,
-              reward: reward,
-            };
-
-            await blockCol.updateOne(
-              { number: block.number },
-              { $set: block },
-              { upsert: true }
-            );
-
-            await rewardCol.updateOne(
-              { number: block.number },
-              {
-                $set: rewardData,
-              },
-              { upsert: true }
-            );
-
-            socket.emit("block-update", block);
-            socket.emit("reward-update", rewardData);
-
-            Logger.info("Mined block");
-          }
+          // if (blockHeader.miner.toLowerCase() === coinbase.toLowerCase()) {
+          //   let block = await this.prepareNodeInfo(blockHeader, blockHeader.number);
+          //   let reward = await Web3Helper.calculateReward(block);
+          //   let rewardData = {
+          //     number: block.number,
+          //     time: block.timestamp,
+          //     reward: reward,
+          //   };
+          //
+          //
+          //   socket.emit("block-update", block);
+          //   socket.emit("reward-update", rewardData);
+          //
+          //   Logger.info("Mined block");
+          // }
         }
       }
     );
@@ -188,11 +180,6 @@ export class NodeClient {
           data.from.toLowerCase() === coinbase.toLowerCase() ||
           data.to.toLowerCase() === coinbase.toLowerCase()
         ) {
-          await transactionCol.updateOne(
-            { hash: data.hash },
-            { $set: data },
-            { upsert: true }
-          );
 
           socket.emit("transaction-update", data);
         }
@@ -227,14 +214,81 @@ export class NodeClient {
     return undefined;
   }
 
-  private async prepareBlock(blockNumber: number): Promise<Block | undefined> {
-    try {
-      let block = await this.web3.eth.getBlock(blockNumber);
-      return block;
-    } catch (err) {
-      Logger.error(err);
-      return undefined;
+
+  /**
+   * Prepare Node Info
+   * @private
+   */
+  private async prepareNodeInfo(
+      latestBlock: BlockHeader,
+      blockNumber: number
+  ): Promise<Web3DataInfo | undefined> {
+    if (this.web3 && this.web3Admin) {
+      let coinbase: string | undefined = undefined;
+      let balance: string | undefined = undefined;
+
+      try {
+        let sampleSize = 50;
+        let [
+          prevBlock,
+          prevSampleBlock,
+          version,
+          peerCount,
+          isMining,
+          isSyncing,
+          hashRate,
+        ] = await Promise.all([
+          this.web3.eth.getBlock(blockNumber - 1),
+          this.web3.eth.getBlock(blockNumber - sampleSize),
+          this.web3.eth.getNodeInfo(),
+          this.web3.eth.net.getPeerCount(),
+          this.web3.eth.isMining(),
+          this.web3.eth.isSyncing(),
+          this.web3.eth.getHashrate(),
+        ]);
+
+        let blockTime =
+            (latestBlock.timestamp as number) - (prevBlock.timestamp as number);
+        let avgBlockTime =
+            ((latestBlock.timestamp as number) -
+                (prevSampleBlock.timestamp as number)) /
+            sampleSize;
+
+        try {
+          coinbase = await this.web3.eth.getCoinbase();
+          balance = await this.web3.eth.getBalance(coinbase);
+        } catch (err) {}
+
+        return {
+          timestamp: latestBlock.timestamp,
+          //@ts-ignore
+          difficulty: latestBlock.difficulty.toString(),
+          gasLimit: latestBlock.gasLimit,
+          gasUsed: latestBlock.gasUsed,
+          hash: latestBlock.hash,
+          miner: latestBlock.hash,
+          nonce: latestBlock.nonce,
+          balance: balance,
+          blockNumber,
+          systemInfo: {
+            name: this.config.nodeName,
+            peerCount: peerCount,
+            isMining: isMining,
+            isSyncing: isSyncing as boolean,
+            coinbase: coinbase,
+            nodeVersion: version,
+            hashRate: hashRate,
+            nodeId: this.config.nodeId,
+          },
+          blockTime: blockTime,
+          avgBlockTime: avgBlockTime,
+          peers: [],
+        };
+      } catch (err) {
+        Logger.error("Cannot connect to the RPC Endpoint");
+      }
     }
+    return undefined;
   }
 
   private async prepareSystemInfo(): Promise<SystemInfo[]> {
