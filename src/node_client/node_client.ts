@@ -98,6 +98,11 @@ export class NodeClient {
       let latestBlock = await this.web3.eth.getBlockNumber()
     })
 
+    this.remoteAdminClient.on("disconnect", ()=>{
+      Logger.info("Disconnected from remote server")
+    })
+
+
     this.remoteAdminClient.on("connect_error", async()=>{
       await this.wait(10000)
       this.remoteAdminClient.connect()
