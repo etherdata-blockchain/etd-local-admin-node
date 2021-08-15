@@ -290,7 +290,7 @@ export class NodeClient {
           peers: [],
         };
       } catch (err) {
-        Logger.error("Cannot connect to the RPC Endpoint");
+        Logger.error("Cannot connect to the RPC Endpoint: " + err);
       }
     }
     return undefined;
