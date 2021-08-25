@@ -14,6 +14,7 @@ import os                                                   from "os";
 import { io }                                               from "socket.io-client"
 import { Web3Helper }                                       from "../utils/Web3Utils";
 import {Config}                                from "../config";
+//@ts-ignore
 import Client, {HTTPTransport, RequestManager} from "@open-rpc/client-js";
 
 interface NamedParam {}
