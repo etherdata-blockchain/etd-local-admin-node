@@ -13,7 +13,8 @@ import osu                                                  from "os-utils";
 import os                                                   from "os";
 import { io }                                               from "socket.io-client"
 import { Web3Helper }                                       from "../utils/Web3Utils";
-import {Config}                                             from "../config";
+import {Config}                                from "../config";
+import Client, {HTTPTransport, RequestManager} from "@open-rpc/client-js";
 
 interface NamedParam {}
 
@@ -69,7 +70,7 @@ export class NodeClient {
     });
 
     setInterval(async () => {
-      Logger.info("Update system info");
+      // Logger.info("Update system info");
       let data = await this.prepareSystemInfo();
       for (let d of data) {
         try {
@@ -100,6 +101,25 @@ export class NodeClient {
 
     this.remoteAdminClient.on("disconnect", ()=>{
       Logger.info("Disconnected from remote server")
+    })
+
+    // Respond to rpc command, and then send back the rpc-result
+    this.remoteAdminClient.on("rpc-command", async (param)=>{
+      Logger.info("rpc-command "+ param)
+      const transport = new HTTPTransport(`${this.config.rpc}`);
+      const client = new Client(new RequestManager([transport]));
+      try{
+        let result = await client.request({
+          method: param.methodName,
+          params: param.params,
+        });
+        Logger.info("Getting rpc-result: " + result)
+        this.remoteAdminClient.emit("rpc-result", result)
+      } catch(err){
+        Logger.error(err)
+        this.remoteAdminClient.emit("rpc-error", err.toString())
+      }
+
     })
 
 
