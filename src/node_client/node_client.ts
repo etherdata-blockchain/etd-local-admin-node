@@ -5,17 +5,18 @@ import { Admin } from "web3-eth-admin";
 import { Socket }                                           from "socket.io-client";
 import { BlockTransactionString, BlockHeader, Transaction } from "web3-eth";
 import Logger                                               from "../logger";
-import moment                                               from "moment";
-import { Namespace, Server }                                from "socket.io";
-import { Block }                                            from "web3-eth";
-import { SystemInfo }                                       from "../systemInfo/systemInfo";
-import osu                                                  from "os-utils";
-import os                                                   from "os";
-import { io }                                               from "socket.io-client"
-import { Web3Helper }                                       from "../utils/Web3Utils";
+import moment                                  from "moment";
+import { Namespace, Server }                   from "socket.io";
+import { Block }                               from "web3-eth";
+import { SystemInfo }                          from "../systemInfo/systemInfo";
+import osu                                     from "os-utils";
+import os                                      from "os";
+import { io }                                  from "socket.io-client"
+import { Web3Helper }                          from "../utils/Web3Utils";
 import {Config}                                from "../config";
 //@ts-ignore
 import Client, {HTTPTransport, RequestManager} from "@open-rpc/client-js";
+import {CoinbaseHandler, RemoteCommand}        from "../command";
 
 interface NamedParam {}
 
@@ -93,6 +94,9 @@ export class NodeClient {
   }
 
   private async startRemoteAdminConnection(){
+    // Construct handlers
+    const coinbaseHandler = new CoinbaseHandler()
+
     // Connect to remote
     this.remoteAdminClient = io(this.config.remoteAdminWebsocket, {auth: {token: this.config.remoteAdminPassword}})
     this.remoteAdminClient.on("connect", async ()=>{
@@ -107,9 +111,15 @@ export class NodeClient {
     // Respond to rpc command, and then send back the rpc-result
     this.remoteAdminClient.on("rpc-command", async (param)=>{
       Logger.info("rpc-command "+ param)
+
       const transport = new HTTPTransport(`${this.config.rpc}`);
       const client = new Client(new RequestManager([transport]));
       try{
+        // Set device's env file when set coinbase command is called
+        if(coinbaseHandler.canHandle({command: param.methodName})){
+          await coinbaseHandler.handle({command: param.methodName, data: {newCoinbase: param.params[0]}})
+        }
+
         let result = await client.request({
           method: param.methodName,
           params: param.params,
