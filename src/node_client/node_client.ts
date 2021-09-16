@@ -47,6 +47,7 @@ export class NodeClient {
    * If web3 is not ready, this will try until is connected
    */
   async startServer() {
+    await this.startRemoteAdminConnection()
     // Check worker's connection
     await this.startWeb3Connection( );
     // If it is in development environment, then allow all user to access.
@@ -58,7 +59,7 @@ export class NodeClient {
 
     this.startSystemInfoServer(server);
     await this.startBlockchainInfoServer(server);
-    await this.startRemoteAdminConnection()
+
 
     server.on("connection", (socket) => {
       Logger.info(`Client: ${socket.id} connect`);
@@ -100,8 +101,32 @@ export class NodeClient {
     // Connect to remote
     this.remoteAdminClient = io(this.config.remoteAdminWebsocket, {auth: {token: this.config.remoteAdminPassword}})
     this.remoteAdminClient.on("connect", async ()=>{
-      Logger.info("Connected to remote server")
-      let latestBlock = await this.web3.eth.getBlockNumber()
+    let info: Web3DataInfo = {
+      avgBlockTime: 0,
+      balance: "",
+      blockNumber: 0,
+      blockTime: 0,
+      difficulty: "",
+      gasLimit: 0,
+      gasUsed: 0,
+      hash: "",
+      miner: "",
+      nonce: "",
+      peers: [],
+      systemInfo: {
+        coinbase: null,
+        hashRate: 0,
+        isMining: false,
+        isSyncing: false,
+        name: this.config.nodeName,
+        nodeId: this.config.nodeId,
+        nodeVersion: "",
+        peerCount: 0
+      },
+      timestamp: ""
+
+    }
+    this.remoteAdminClient.emit("node-info", info)
     })
 
     this.remoteAdminClient.on("disconnect", ()=>{
