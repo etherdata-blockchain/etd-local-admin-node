@@ -1,4 +1,4 @@
-# ETDStats Node
+# ETDAdmin Node
 
 ## Run
 
