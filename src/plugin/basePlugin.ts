@@ -1,5 +1,6 @@
-import {Config} from "../config";
+import {Config}            from "../config";
 import {RemoteAdminClient} from "../node_client/admin-client";
+import Logger              from "../logger";
 
 export interface PeriodicTask {
     name: string
@@ -21,7 +22,9 @@ export abstract class BasePlugin {
     config: Config = Config.fromEnvironment()
     remoteAdminClient = new RemoteAdminClient()
 
-    abstract startPlugin(): Promise<void>
+    async startPlugin(): Promise<void>{
+        Logger.info("Starting plugin: " + this.pluginName)
+    }
 
     addPlugins(plugins: BasePlugin[]) {
         for (let plugin of plugins) {

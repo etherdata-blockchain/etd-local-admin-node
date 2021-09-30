@@ -12,7 +12,7 @@ export class Config
 {
     rpc: string
     wsRpc: string;
-    remoteAdminWebsocket: string
+    remoteAdminURL: string
     remoteAdminPassword: string
     nodeName: string;
     nodeId: string
@@ -20,7 +20,7 @@ export class Config
     constructor({rpc, wsRpc, remoteAdminPassword, remoteAdminURL, nodeId, nodeName}: NamedParam) {
 
         this.remoteAdminPassword = remoteAdminPassword
-        this.remoteAdminWebsocket = remoteAdminURL
+        this.remoteAdminURL = remoteAdminURL
         this.rpc = rpc
         this.wsRpc = wsRpc
         this.nodeId = nodeId
