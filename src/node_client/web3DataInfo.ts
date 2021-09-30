@@ -1,3 +1,5 @@
+import {BlockTransactionString} from "web3-eth";
+
 interface PeerInfo {
   caps: string[];
   id: string;
@@ -9,16 +11,8 @@ interface PeerInfo {
   protocols: any;
 }
 
-export interface Web3DataInfo {
-  timestamp: number | string;
-  difficulty: string;
-  gasLimit: number;
-  gasUsed: number;
-  hash: string;
-  miner: string;
-  nonce: string;
-  blockNumber: number;
-  balance: string;
+export interface Web3DataInfo extends BlockTransactionString {
+  balance: string,
   systemInfo: {
     name: string;
     nodeId?: string;

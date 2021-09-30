@@ -2,7 +2,7 @@ interface NamedParam
 {
     rpc: string
     wsRpc: string;
-    remoteAdminWebsocket: string
+    remoteAdminURL: string
     remoteAdminPassword: string
     nodeName: string;
     nodeId: string
@@ -17,11 +17,10 @@ export class Config
     nodeName: string;
     nodeId: string
 
-    constructor({rpc, wsRpc, remoteAdminPassword, remoteAdminWebsocket, nodeId, nodeName}: NamedParam)
-    {
+    constructor({rpc, wsRpc, remoteAdminPassword, remoteAdminURL, nodeId, nodeName}: NamedParam) {
 
         this.remoteAdminPassword = remoteAdminPassword
-        this.remoteAdminWebsocket = remoteAdminWebsocket
+        this.remoteAdminWebsocket = remoteAdminURL
         this.rpc = rpc
         this.wsRpc = wsRpc
         this.nodeId = nodeId
@@ -36,7 +35,7 @@ export class Config
         return new Config({
             wsRpc: process.env.wsRpc!,
             rpc: process.env.rpc!,
-            remoteAdminWebsocket: process.env.remoteAdminWebsocket!,
+            remoteAdminURL: process.env.remoteAdminURL!,
             remoteAdminPassword: process.env.remoteAdminPassword!,
             nodeName: process.env.etd_node_name!,
             nodeId: process.env.etd_node_id!
