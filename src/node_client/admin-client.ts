@@ -1,7 +1,7 @@
-import axios from "axios";
-import jwt from "jsonwebtoken"
+import axios    from "axios";
+import jwt      from "jsonwebtoken"
 import {Config} from "../config";
-import Logger from "../logger";
+import Logger   from "../logger";
 
 type Channel = "node-info" | "request-job" | "submit-result"
 
@@ -10,11 +10,11 @@ export class RemoteAdminClient {
 
     private getURL(channel: Channel) {
         if (channel === "node-info") {
-            return "/api/v1/send_status"
+            return "/api/v1/device/status/send-status"
         } else if (channel === "request-job") {
-            return "/api/v1/jobs"
+            return "/api/v1/job/get-job"
         } else if (channel === "submit-result") {
-            return "/api/v1/result"
+            return "/api/v1/result/submit-result"
         }
     }
 
@@ -29,24 +29,22 @@ export class RemoteAdminClient {
     }
 
     private getAuthenticationToken(authData: string) {
-        const jwtToken = jwt.sign(authData, this.config.remoteAdminPassword)
+        const jwtToken = jwt.sign({user: authData}, this.config.remoteAdminPassword)
         return `Bearer ${jwtToken}`;
     }
 
     async emit(channel: Channel, data: any, authData: string) {
-        try{
-            const url = this.getURL(channel)
-            const method = this.getMethod(channel)
-            const token = this.getAuthenticationToken(authData)
-            if (method === "POST") {
-                await axios.post(url, data, {headers: {"Authorization": token}})
-            } else if (method === "GET") {
-                await axios.get(url, {headers: {"Authorization": token}})
-            }
-        } catch (e) {
-            Logger.error(`Cannot send data to ${channel} due to ${e}`)
-        }
-
-
+       try{
+           const url = new URL(this.getURL(channel), this.config.remoteAdminURL)
+           const method = this.getMethod(channel)
+           const token = this.getAuthenticationToken(authData)
+           if (method === "POST") {
+               await axios.post(url.toString(), data, {headers: {"Authorization": token}})
+           } else if (method === "GET") {
+               await axios.get(url.toString(), {headers: {"Authorization": token}})
+           }
+       } catch (e){
+           Logger.error(`${e}: ${e.data}`)
+       }
     }
 }
