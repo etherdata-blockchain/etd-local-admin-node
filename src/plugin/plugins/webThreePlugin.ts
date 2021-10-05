@@ -42,7 +42,11 @@ export class WebThreePlugin extends BasePlugin {
     let info = await this.prepareNodeInfo(latestBlockNumber);
     await this.remoteAdminClient.emit(
       "node-info",
-      { data: info, nodeName: this.config.nodeName },
+      {
+        data: info,
+        nodeName: this.config.nodeName,
+        adminVersion: global.version,
+      },
       this.config.nodeId
     );
   }
@@ -121,21 +125,22 @@ export class WebThreePlugin extends BasePlugin {
    * @private
    */
   private async startWeb3Connection(): Promise<void> {
-    await this.tryConnect(async () => {
-      let web3 = new Web3(this.config.rpc);
-      let admin = new Admin(this.config.rpc);
-      let isConnected = await web3.eth.net.isListening()
-      this.web3 = web3
-      this.web3Admin = admin
+    await this.tryConnect(
+      async () => {
+        let web3 = new Web3(this.config.rpc);
+        let admin = new Admin(this.config.rpc);
+        let isConnected = await web3.eth.net.isListening();
+        this.web3 = web3;
+        this.web3Admin = admin;
 
-      return isConnected
-
-    }, async () => {
-      Logger.error("Cannot connect to geth network. Sleep 3 seconds!")
-      await this.wait(3000)
-    })
+        return isConnected;
+      },
+      async () => {
+        Logger.error("Cannot connect to geth network. Sleep 3 seconds!");
+        await this.wait(3000);
+      }
+    );
 
     Logger.info("Latest Block: " + (await this.web3.eth.getBlockNumber()));
   }
-
 }
