@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.2.0...v1.3.0) (2021-10-05)
+
+
+### Features
+
+* Send admin version to db ([1259b92](https://github.com/crypyto-panel/etd-local-admin-node/commit/1259b924243351ddaf358c02ee66445e6276dc89))
+
 ## [1.2.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.1.0...v1.2.0) (2021-10-05)
 
 
