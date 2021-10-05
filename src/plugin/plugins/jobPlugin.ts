@@ -1,31 +1,146 @@
-import {BasePlugin, RegisteredPlugin} from "../basePlugin";
+import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Logger from "../../logger";
+import any = jasmine.any;
+import axios from "axios";
+import { CoinbaseHandler, CommandHandler } from "../../command";
+
+interface Web3Value {
+  method: string;
+  params: string[];
+}
 
 interface Task {
-    type: string;
-    value: any;
+  type: string;
+  value: Web3Value;
 }
 
 export interface PendingJob {
-    targetDeviceId: string;
-    /**
-     * From client id.
-     */
-    from: string;
-    time: Date;
-    task: Task;
+  _id: any;
+  targetDeviceId: string;
+  /**
+   * From client id.
+   */
+  from: string;
+  time: Date;
+  task: Task;
 }
 
-export class JobPlugin extends BasePlugin{
-    protected pluginName: RegisteredPlugin = "jobPlugin";
+interface JobResult {
+  jobId: string;
+  time: Date;
+  deviceID: string;
+  /**
+   * From which client. This will be the unique id
+   */
+  from: string;
+  command: any;
+  result: any;
+  success: boolean;
+}
 
-    constructor() {
-        super();
-        this.periodicTasks = []
+export class JobPlugin extends BasePlugin {
+  protected pluginName: RegisteredPlugin = "jobPlugin";
+
+  constructor() {
+    super();
+    this.periodicTasks = [
+      {
+        name: "Get pending job",
+        interval: 3,
+        job: this.requestJob.bind(this),
+      },
+    ];
+  }
+
+  override async startPlugin(): Promise<void> {
+    await super.startPlugin();
+    await this.startJobSystemConnection();
+  }
+
+  private async startJobSystemConnection() {
+    await this.tryConnect(
+      async () => {
+        await this.remoteAdminClient.emit("health", "", "");
+        return true;
+      },
+      async () => {
+        Logger.error(`Cannot connect to remote admin server`);
+      }
+    );
+    Logger.info("Connected to Admin server");
+  }
+
+  async requestJob() {
+    let result = await this.remoteAdminClient.emit(
+      "request-job",
+      { nodeName: this.config.nodeName },
+      this.config.nodeId
+    );
+
+    const job: PendingJob | undefined = result?.job;
+    let jobResult: [string | undefined, string | undefined] = [
+      undefined,
+      undefined,
+    ];
+
+    if (job && job.task) {
+      Logger.info("Getting job: " + job.task.type);
+      switch (job.task.type) {
+        case "web3":
+          jobResult = await this.handleWeb3Job(job.task.value);
+          break;
+
+        default:
+          Logger.error(`${job.task.type} is not supported`);
+      }
+
+      let data: JobResult = {
+        jobId: job._id,
+        command: job.task.value,
+        deviceID: this.config.nodeId,
+        from: job.from,
+        result: jobResult[0] ?? jobResult[1],
+        success: jobResult[1] === undefined,
+        time: new Date(),
+      };
+
+      await this.remoteAdminClient.emit(
+        "submit-result",
+        data,
+        this.config.nodeId
+      );
+    }
+  }
+
+  /**
+   * Will return a array includes result or error
+   * @param method
+   * @param params
+   * @private
+   */
+  private async handleWeb3Job({
+    method,
+    params,
+  }: Web3Value): Promise<[string | undefined, string | undefined]> {
+    let result = await axios.post(this.config.rpc, {
+      method,
+      params,
+      jsonrpc: "2.0",
+      id: 1,
+    });
+
+    if (!result.data.error) {
+      const coinbaseHandler = new CoinbaseHandler();
+      if (coinbaseHandler.canHandle({ command: method })) {
+        await coinbaseHandler.handle({
+          command: method,
+          data: { newCoinbase: params[0] },
+        });
+      }
+
+      return [result.data.result, undefined];
     }
 
-    async startPlugin(): Promise<void> {
-        Logger.info("Starting Job Plugin")
-    }
-
+    return [undefined, result.data.error.message];
+  }
 }

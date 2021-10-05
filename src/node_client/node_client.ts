@@ -7,6 +7,7 @@ import os from "os";
 import Client, {HTTPTransport, RequestManager} from "@open-rpc/client-js";
 import {PluginApp} from "../plugin/basePlugin";
 import {WebThreePlugin} from "../plugin/plugins/webThreePlugin";
+import {JobPlugin} from "../plugin/plugins/jobPlugin";
 
 interface NamedParam {
 }
@@ -15,7 +16,8 @@ export class NodeClient extends PluginApp {
     constructor({}: NamedParam) {
         super()
         this.plugins = [
-            new WebThreePlugin()
+            new WebThreePlugin(),
+            new JobPlugin()
         ]
         Logger.info("Start server");
     }
