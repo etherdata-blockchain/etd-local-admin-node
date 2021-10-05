@@ -31,7 +31,6 @@ export class WebThreePlugin extends BasePlugin {
         await this.remoteAdminClient.emit("node-info", info, this.config.nodeId)
     }
 
-
     /**
      * Prepare Node Info
      * @private
@@ -102,40 +101,27 @@ export class WebThreePlugin extends BasePlugin {
         return undefined;
     }
 
-
     /**
      * Check connection between node and geth
      * @private
      */
     private async startWeb3Connection(): Promise<void> {
-        let isConnected = false;
-        while (!isConnected) {
+        await this.tryConnect(async () => {
             let web3 = new Web3(this.config.rpc);
             let admin = new Admin(this.config.rpc);
+            let isConnected = await web3.eth.net.isListening()
+            this.web3 = web3
+            this.web3Admin = admin
 
-            try {
-                isConnected = await web3.eth.net.isListening();
-                this.web3 = web3;
-                this.web3Admin = admin;
-                this.reconnectCount = 0;
-            } catch (err) {
-                isConnected = false;
-                Logger.info(`Connection count: ${this.reconnectCount} Failed`);
-                Logger.error(`Geth is not running, sleep ${this.reconnectSleepTime}`);
-                await this.wait(this.reconnectSleepTime);
-                this.reconnectCount += 1;
-            }
-        }
+            return isConnected
+
+        }, async () => {
+            Logger.error("Cannot connect to geth network. Sleep 3 seconds!")
+            await this.wait(3000)
+        })
+
         Logger.info("Latest Block: " + (await this.web3.eth.getBlockNumber()));
     }
 
-
-    private wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
-    }
 
 }

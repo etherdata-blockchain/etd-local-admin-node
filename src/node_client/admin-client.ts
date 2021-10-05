@@ -1,6 +1,7 @@
 import axios from "axios";
 import jwt from "jsonwebtoken"
 import {Config} from "../config";
+import Logger from "../logger";
 
 type Channel = "node-info" | "request-job" | "submit-result"
 
@@ -33,14 +34,19 @@ export class RemoteAdminClient {
     }
 
     async emit(channel: Channel, data: any, authData: string) {
-        const url = this.getURL(channel)
-        const method = this.getMethod(channel)
-        const token = this.getAuthenticationToken(authData)
-        if (method === "POST") {
-            await axios.post(url, data, {headers: {"Authorization": token}})
-        } else if (method === "GET") {
-            await axios.get(url, {headers: {"Authorization": token}})
+        try{
+            const url = this.getURL(channel)
+            const method = this.getMethod(channel)
+            const token = this.getAuthenticationToken(authData)
+            if (method === "POST") {
+                await axios.post(url, data, {headers: {"Authorization": token}})
+            } else if (method === "GET") {
+                await axios.get(url, {headers: {"Authorization": token}})
+            }
+        } catch (e) {
+            Logger.error(`Cannot send data to ${channel} due to ${e}`)
         }
+
 
     }
 }

@@ -11,7 +11,7 @@ export interface PeriodicTask {
     timer?: NodeJS.Timer
 }
 
-export type RegisteredPlugin = "webThree"
+export type RegisteredPlugin = "webThree" | "jobPlugin"
 
 
 export abstract class BasePlugin {
@@ -22,6 +22,19 @@ export abstract class BasePlugin {
     remoteAdminClient = new RemoteAdminClient()
 
     abstract startPlugin(): Promise<void>
+
+    protected async tryConnect(job: () => Promise<boolean>,
+                               onError: (e: any) => Promise<void>) {
+        let isConnected = false
+        while (!isConnected) {
+            try {
+                isConnected = await job()
+            } catch (e) {
+                await onError(e)
+                isConnected = false
+            }
+        }
+    }
 
     addPlugins(plugins: BasePlugin[]) {
         for (let plugin of plugins) {
@@ -41,6 +54,14 @@ export abstract class BasePlugin {
             throw Error("Cannot find plugin with this name")
         }
 
+    }
+
+    protected wait(time: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, time);
+        });
     }
 }
 
@@ -64,4 +85,6 @@ export abstract class PluginApp {
             }
         }
     }
+
+
 }
