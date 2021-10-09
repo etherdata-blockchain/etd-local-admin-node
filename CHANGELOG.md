@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.3.0...v1.4.0) (2021-10-09)
+
+
+### Features
+
+* shrink docker image size ([bcc29bf](https://github.com/crypyto-panel/etd-local-admin-node/commit/bcc29bf81f7460136909f8602d190d4e3995980c))
+
 ## [1.3.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.2.0...v1.3.0) (2021-10-05)
 
 
