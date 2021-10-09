@@ -1,6 +1,7 @@
 FROM node:16-alpine as builder
 WORKDIR /app/
 COPY . .
+RUN apk add --no-cache python3 py3-pip
 RUN yarn install --production=true
 RUN yarn build
 
