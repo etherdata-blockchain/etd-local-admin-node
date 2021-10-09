@@ -1,6 +1,17 @@
-FROM node:16
-WORKDIR /app/etdstats_node
+FROM node:16-alpine as builder
+WORKDIR /app/
 COPY . .
-RUN yarn
+RUN yarn install --production=true
 RUN yarn build
+
+FROM node:16-alpine
+
+WORKDIR /app/
+
+# copy from build image
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+
 CMD ["node", "dist/app.js"]

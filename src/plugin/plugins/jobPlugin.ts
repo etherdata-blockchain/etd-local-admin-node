@@ -1,6 +1,5 @@
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Logger from "../../logger";
-import any = jasmine.any;
 import axios from "axios";
 import { CoinbaseHandler, CommandHandler } from "../../command";
 
