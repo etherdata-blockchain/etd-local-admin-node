@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.4.0...v1.4.1) (2021-10-09)
+
+
+### Bug Fixes
+
+* build error ([c74dc24](https://github.com/crypyto-panel/etd-local-admin-node/commit/c74dc2446278652664b748f7824f2ed1772c22e1))
+
 ## [1.4.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.3.0...v1.4.0) (2021-10-09)
 
 
