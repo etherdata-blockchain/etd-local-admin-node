@@ -3,8 +3,6 @@ import moment from "moment";
 import { SystemInfo } from "../systemInfo/systemInfo";
 import osu from "os-utils";
 import os from "os";
-//@ts-ignore
-import Client, { HTTPTransport, RequestManager } from "@open-rpc/client-js";
 import { PluginApp } from "../plugin/basePlugin";
 import { WebThreePlugin } from "../plugin/plugins/webThreePlugin";
 import { JobPlugin } from "../plugin/plugins/jobPlugin";
