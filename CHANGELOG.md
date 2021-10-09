@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.4.1...v1.4.2) (2021-10-09)
+
+
+### Bug Fixes
+
+* Dockerfile ([f79e11a](https://github.com/crypyto-panel/etd-local-admin-node/commit/f79e11a966c94358299ca0ada8d86a04e33374c9))
+* Dockerfile ([a801aa4](https://github.com/crypyto-panel/etd-local-admin-node/commit/a801aa4b5521ac8b28d2c3f1afc7925f51257f3a))
+
 ### [1.4.1](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.4.0...v1.4.1) (2021-10-09)
 
 
