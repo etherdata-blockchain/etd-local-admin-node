@@ -51,9 +51,10 @@ export class RemoteAdminClient {
       const method = this.getMethod(channel);
       const token = this.getAuthenticationToken(authData);
       if (method === "POST") {
-        await axios.post(url.toString(), data, {
+        let response = await axios.post(url.toString(), data, {
           headers: { Authorization: token },
         });
+        return response.data;
       } else if (method === "GET") {
         let response = await axios.get(url.toString(), {
           headers: { Authorization: token },

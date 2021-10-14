@@ -25,6 +25,7 @@ export interface PendingJob {
 }
 
 interface JobResult {
+  key: string | undefined;
   jobId: string;
   time: Date;
   deviceID: string;
@@ -39,6 +40,7 @@ interface JobResult {
 
 export class JobPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "jobPlugin";
+  prevKey: string | undefined;
 
   constructor() {
     super();
@@ -72,9 +74,11 @@ export class JobPlugin extends BasePlugin {
   async requestJob() {
     let result = await this.remoteAdminClient.emit(
       "request-job",
-      { nodeName: this.config.nodeName },
+      { nodeName: this.config.nodeName, key: this.prevKey },
       this.config.nodeId
     );
+
+    this.prevKey = result.key;
 
     const job: PendingJob | undefined = result?.job;
     let jobResult: [string | undefined, string | undefined] = [
@@ -101,6 +105,7 @@ export class JobPlugin extends BasePlugin {
         result: jobResult[0] ?? jobResult[1],
         success: jobResult[1] === undefined,
         time: new Date(),
+        key: this.prevKey,
       };
 
       await this.remoteAdminClient.emit(

@@ -11,6 +11,7 @@ export class WebThreePlugin extends BasePlugin {
   reconnectCount: number;
   // In MS
   reconnectSleepTime: number;
+  prevKey: string | undefined;
 
   constructor() {
     super();
@@ -29,7 +30,7 @@ export class WebThreePlugin extends BasePlugin {
       await this.startWeb3Connection();
       await this.remoteAdminClient.emit(
         "node-info",
-        { nodeName: this.config.nodeName },
+        { nodeName: this.config.nodeName, key: this.prevKey },
         this.config.nodeId
       );
     } catch (e) {
@@ -40,15 +41,20 @@ export class WebThreePlugin extends BasePlugin {
   async sendNodeInfo(): Promise<void> {
     let latestBlockNumber = await this.web3.eth.getBlockNumber();
     let info = await this.prepareNodeInfo(latestBlockNumber);
-    await this.remoteAdminClient.emit(
+    const data = await this.remoteAdminClient.emit(
       "node-info",
       {
+        key: this.prevKey,
         data: info,
         nodeName: this.config.nodeName,
         adminVersion: global.version,
       },
       this.config.nodeId
     );
+
+    if (data) {
+      this.prevKey = data.key;
+    }
   }
 
   /**
