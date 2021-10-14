@@ -26,6 +26,10 @@ export abstract class BasePlugin {
     Logger.info("Starting plugin: " + this.pluginName);
   }
 
+  getPluginName() {
+    return this.pluginName;
+  }
+
   protected async tryConnect(
     job: () => Promise<boolean>,
     onError: (e: any) => Promise<void>
@@ -84,11 +88,18 @@ export abstract class PluginApp {
       for (const task of plugin.periodicTasks) {
         task.timer = setInterval(async () => {
           if (!plugin.isRunning) {
-            plugin.isRunning = true;
-            await task.job();
-            plugin.isRunning = false;
+            try {
+              plugin.isRunning = true;
+              await task.job();
+            } catch (e) {
+              Logger.error(e);
+            } finally {
+              plugin.isRunning = false;
+            }
           } else {
-            Logger.warning("Previous job is running, skipping!");
+            Logger.warning(
+              `${plugin.getPluginName()}: Previous job is running, skipping!`
+            );
           }
         }, task.interval * 1000);
       }
