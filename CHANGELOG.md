@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.4.2...v1.5.0) (2021-10-14)
+
+
+### Features
+
+* Add prev key ([00c7849](https://github.com/crypyto-panel/etd-local-admin-node/commit/00c784993b1daa2bde3aedfda631426bb7632593))
+
+
+### Bug Fixes
+
+* Fix cannot send data with get request ([12512d6](https://github.com/crypyto-panel/etd-local-admin-node/commit/12512d6ac53cbedfac37199828665e86e99f082d))
+
 ### [1.4.2](https://github.com/crypyto-panel/etd-local-admin-node/compare/v1.4.1...v1.4.2) (2021-10-09)
 
 
