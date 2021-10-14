@@ -78,7 +78,9 @@ export class JobPlugin extends BasePlugin {
       this.config.nodeId
     );
 
-    this.prevKey = result.key;
+    if (result) {
+      this.prevKey = result.key;
+    }
 
     const job: PendingJob | undefined = result?.job;
     let jobResult: [string | undefined, string | undefined] = [

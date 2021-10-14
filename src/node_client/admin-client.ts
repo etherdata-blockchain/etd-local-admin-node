@@ -58,6 +58,7 @@ export class RemoteAdminClient {
       } else if (method === "GET") {
         let response = await axios.get(url.toString(), {
           headers: { Authorization: token },
+          data: data,
         });
         return response.data;
       }
