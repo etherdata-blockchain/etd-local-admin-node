@@ -18,7 +18,7 @@ export class WebThreePlugin extends BasePlugin {
     this.periodicTasks = [
       {
         name: "latest-node-info",
-        interval: 10,
+        interval: 15,
         job: this.sendNodeInfo.bind(this),
       },
     ];

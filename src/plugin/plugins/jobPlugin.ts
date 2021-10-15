@@ -47,7 +47,7 @@ export class JobPlugin extends BasePlugin {
     this.periodicTasks = [
       {
         name: "Get pending job",
-        interval: 3,
+        interval: 20,
         job: this.requestJob.bind(this),
       },
     ];
