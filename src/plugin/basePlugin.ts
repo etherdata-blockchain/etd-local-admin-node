@@ -12,7 +12,7 @@ export interface PeriodicTask {
   timer?: NodeJS.Timer;
 }
 
-export type RegisteredPlugin = "webThree" | "jobPlugin";
+export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
 
 export abstract class BasePlugin {
   protected abstract pluginName: RegisteredPlugin;

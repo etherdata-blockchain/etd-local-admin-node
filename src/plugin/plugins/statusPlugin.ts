@@ -3,15 +3,15 @@ import Web3 from "web3";
 import { Admin } from "web3-eth-admin";
 import Logger from "../../logger";
 import { Web3DataInfo } from "../../node_client/web3DataInfo";
+import Docker, { ContainerInfo, ImageInfo } from "dockerode";
 
-export class WebThreePlugin extends BasePlugin {
-  protected pluginName: RegisteredPlugin = "webThree";
+export class StatusPlugin extends BasePlugin {
+  protected pluginName: RegisteredPlugin = "statusPlugin";
   web3: Web3 | undefined;
   web3Admin: Admin | undefined;
-  reconnectCount: number;
   // In MS
-  reconnectSleepTime: number;
   prevKey: string | undefined;
+  private dockerClient: Docker;
 
   constructor() {
     super();
@@ -27,7 +27,8 @@ export class WebThreePlugin extends BasePlugin {
   override async startPlugin(): Promise<void> {
     await super.startPlugin();
     try {
-      await this.startWeb3Connection();
+      // this.startWeb3Connection();
+      await this.startDockerConnection();
       await this.remoteAdminClient.emit(
         "node-info",
         { nodeName: this.config.nodeName, key: this.prevKey },
@@ -39,15 +40,18 @@ export class WebThreePlugin extends BasePlugin {
   }
 
   async sendNodeInfo(): Promise<void> {
-    let latestBlockNumber = await this.web3.eth.getBlockNumber();
-    let info = await this.prepareNodeInfo(latestBlockNumber);
+    let latestBlockNumber = await this.web3?.eth.getBlockNumber();
+    let webThreeInfo = await this.prepareWebThreeInfo(latestBlockNumber);
+    let dockerInfo = await this.prepareDockerInfo();
+
     const data = await this.remoteAdminClient.emit(
       "node-info",
       {
         key: this.prevKey,
-        data: info,
+        data: webThreeInfo,
         nodeName: this.config.nodeName,
         adminVersion: global.version,
+        docker: { ...dockerInfo },
       },
       this.config.nodeId
     );
@@ -61,7 +65,7 @@ export class WebThreePlugin extends BasePlugin {
    * Prepare Node Info
    * @private
    */
-  private async prepareNodeInfo(
+  private async prepareWebThreeInfo(
     blockNumber: number
   ): Promise<Web3DataInfo | undefined> {
     if (this.web3 && this.web3Admin) {
@@ -124,6 +128,23 @@ export class WebThreePlugin extends BasePlugin {
       }
     }
     return undefined;
+  }
+
+  private async startDockerConnection(): Promise<void> {
+    this.dockerClient = new Docker({ socketPath: "/var/run/docker.sock" });
+  }
+
+  private async prepareDockerInfo(): Promise<{
+    images: ImageInfo[];
+    containers: ContainerInfo[];
+  }> {
+    const images = await this.dockerClient.listImages();
+    const containers = await this.dockerClient.listContainers();
+
+    return {
+      images,
+      containers,
+    };
   }
 
   /**

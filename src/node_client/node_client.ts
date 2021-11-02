@@ -4,7 +4,7 @@ import { SystemInfo } from "../systemInfo/systemInfo";
 import osu from "os-utils";
 import os from "os";
 import { PluginApp } from "../plugin/basePlugin";
-import { WebThreePlugin } from "../plugin/plugins/webThreePlugin";
+import { StatusPlugin } from "../plugin/plugins/statusPlugin";
 import { JobPlugin } from "../plugin/plugins/jobPlugin";
 
 interface NamedParam {}
@@ -12,7 +12,7 @@ interface NamedParam {}
 export class NodeClient extends PluginApp {
   constructor({}: NamedParam) {
     super();
-    this.plugins = [new WebThreePlugin(), new JobPlugin()];
+    this.plugins = [new StatusPlugin(), new JobPlugin()];
     Logger.info("Start server");
   }
 
