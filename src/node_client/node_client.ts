@@ -12,7 +12,7 @@ interface NamedParam {}
 export class NodeClient extends PluginApp {
   constructor({}: NamedParam) {
     super();
-    this.plugins = [new StatusPlugin(), new JobPlugin()];
+    this.plugins = [new JobPlugin()];
     Logger.info("Start server");
   }
 

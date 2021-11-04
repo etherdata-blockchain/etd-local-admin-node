@@ -87,6 +87,9 @@ export abstract class PluginApp {
     for (const plugin of this.plugins) {
       for (const task of plugin.periodicTasks) {
         task.timer = setInterval(async () => {
+          if (plugin.getPluginName() === "jobPlugin") {
+            console.log("");
+          }
           if (!plugin.isRunning) {
             try {
               plugin.isRunning = true;

@@ -2,15 +2,21 @@ import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Logger from "../../logger";
 import axios from "axios";
 import { CoinbaseHandler, CommandHandler } from "../../command";
+import Docker from "dockerode";
 
 interface Web3Value {
   method: string;
   params: string[];
 }
 
+interface DockerValue {
+  method: "logs" | "start" | "stop" | "remove" | "restart" | "exec";
+  value: any;
+}
+
 interface Task {
   type: string;
-  value: Web3Value;
+  value: Web3Value | DockerValue;
 }
 
 export interface PendingJob {
@@ -41,13 +47,14 @@ interface JobResult {
 export class JobPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "jobPlugin";
   prevKey: string | undefined;
+  private dockerClient: Docker | undefined;
 
   constructor() {
     super();
     this.periodicTasks = [
       {
         name: "Get pending job",
-        interval: 20,
+        interval: 10,
         job: this.requestJob.bind(this),
       },
     ];
@@ -56,6 +63,11 @@ export class JobPlugin extends BasePlugin {
   override async startPlugin(): Promise<void> {
     await super.startPlugin();
     await this.startJobSystemConnection();
+    await this.startDockerConnection();
+  }
+
+  private async startDockerConnection(): Promise<void> {
+    this.dockerClient = new Docker({ socketPath: "/var/run/docker.sock" });
   }
 
   private async startJobSystemConnection() {
@@ -92,8 +104,11 @@ export class JobPlugin extends BasePlugin {
       Logger.info("Getting job: " + job.task.type);
       switch (job.task.type) {
         case "web3":
-          jobResult = await this.handleWeb3Job(job.task.value);
+          jobResult = await this.handleWeb3Job(job.task.value as Web3Value);
           break;
+
+        case "docker":
+          jobResult = await this.handleDocker(job.task.value as DockerValue);
 
         default:
           Logger.error(`${job.task.type} is not supported`);
@@ -115,6 +130,24 @@ export class JobPlugin extends BasePlugin {
         data,
         this.config.nodeId
       );
+    }
+  }
+
+  private async handleDocker({
+    method,
+    value,
+  }: DockerValue): Promise<[string | undefined, string | undefined]> {
+    switch (method) {
+      case "logs":
+        const container = this.dockerClient.getContainer(value);
+        const logs = (await container.logs({
+          tail: 100,
+          stderr: true,
+          stdout: true,
+        })) as unknown as Buffer;
+        return [logs.toString(), undefined];
+      default:
+        return [undefined, "Command is not supported"];
     }
   }
 
