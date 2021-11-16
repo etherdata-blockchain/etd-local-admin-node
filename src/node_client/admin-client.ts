@@ -46,6 +46,7 @@ export class RemoteAdminClient {
     authData: string,
     throwError?: boolean
   ) {
+    Logger.info("Emmiting");
     try {
       const url = new URL(this.getURL(channel), this.config.remoteAdminURL);
       const method = this.getMethod(channel);

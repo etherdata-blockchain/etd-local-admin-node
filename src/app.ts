@@ -1,11 +1,13 @@
 import { NodeClient } from "./node_client/node_client";
 import Logger from "./logger";
+import { config } from "dotenv";
+//@ts-ignore
+import pjson from "../package.json";
 
 (async () => {
-  require("dotenv").config();
-  let pjson = require("../package.json");
+  config();
   global.version = pjson.version;
   Logger.info(`Current version: ${pjson.version}`);
-  let node = new NodeClient({});
+  const node = new NodeClient({});
   await node.startApp();
 })();

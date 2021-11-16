@@ -169,8 +169,10 @@ export class StatusPlugin extends BasePlugin {
 
         return true;
       },
-      async () => {
-        Logger.error("Cannot connect to geth network. Sleep 3 seconds!");
+      async (err) => {
+        Logger.error(
+          "Cannot connect to geth network. Sleep 3 seconds! " + err.toString()
+        );
         await this.wait(3000);
       }
     );
