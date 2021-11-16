@@ -3,6 +3,7 @@ import Logger from "../../logger";
 import axios from "axios";
 import { CoinbaseHandler, CommandHandler } from "../../command";
 import Docker from "dockerode";
+import * as fs from "fs";
 
 interface Web3Value {
   method: string;
@@ -35,6 +36,7 @@ interface JobResult {
   jobId: string;
   time: Date;
   deviceID: string;
+  commandType: string;
   /**
    * From which client. This will be the unique id
    */
@@ -47,7 +49,7 @@ interface JobResult {
 export class JobPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "jobPlugin";
   prevKey: string | undefined;
-  private dockerClient: Docker | undefined;
+  private dockerClient?: Docker | undefined;
 
   constructor() {
     super();
@@ -67,7 +69,12 @@ export class JobPlugin extends BasePlugin {
   }
 
   private async startDockerConnection(): Promise<void> {
-    this.dockerClient = new Docker({ socketPath: "/var/run/docker.sock" });
+    const dockerPath = "/var/run/docker.sock";
+    if (fs.existsSync(dockerPath)) {
+      this.dockerClient = new Docker({ socketPath: dockerPath });
+    } else {
+      Logger.error("Docker is not found on your system");
+    }
   }
 
   private async startJobSystemConnection() {
@@ -109,13 +116,14 @@ export class JobPlugin extends BasePlugin {
 
         case "docker":
           jobResult = await this.handleDocker(job.task.value as DockerValue);
-
+          break;
         default:
           Logger.error(`${job.task.type} is not supported`);
       }
 
       let data: JobResult = {
         jobId: job._id,
+        commandType: job.task.type,
         command: job.task.value,
         deviceID: this.config.nodeId,
         from: job.from,
@@ -139,13 +147,13 @@ export class JobPlugin extends BasePlugin {
   }: DockerValue): Promise<[string | undefined, string | undefined]> {
     switch (method) {
       case "logs":
-        const container = this.dockerClient.getContainer(value);
-        const logs = (await container.logs({
+        const container = this.dockerClient?.getContainer(value);
+        const logs = (await container?.logs({
           tail: 100,
           stderr: true,
           stdout: true,
         })) as unknown as Buffer;
-        return [logs.toString(), undefined];
+        return [logs?.toString(), undefined];
       default:
         return [undefined, "Command is not supported"];
     }
