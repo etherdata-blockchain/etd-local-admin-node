@@ -14,3 +14,5 @@ node_modules
 app.json
 dist
 .env
+coverage
+yarn.lock

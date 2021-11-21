@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build Docker Image and test
 
 on:
   push:
@@ -6,9 +6,29 @@ on:
       - "main"
     tags:
       - "**"
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn test --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   deploy:
+    needs:
+      - test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -4,6 +4,7 @@ import { Admin } from "web3-eth-admin";
 import Logger from "../../logger";
 import { Web3DataInfo } from "../../node_client/web3DataInfo";
 import Docker, { ContainerInfo, ImageInfo } from "dockerode";
+import * as fs from "fs";
 
 export class StatusPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "statusPlugin";
@@ -11,7 +12,7 @@ export class StatusPlugin extends BasePlugin {
   web3Admin: Admin | undefined;
   // In MS
   prevKey: string | undefined;
-  private dockerClient: Docker;
+  private dockerClient?: Docker;
 
   constructor() {
     super();
@@ -27,7 +28,7 @@ export class StatusPlugin extends BasePlugin {
   override async startPlugin(): Promise<void> {
     await super.startPlugin();
     try {
-      // this.startWeb3Connection();
+      await this.startWeb3Connection();
       await this.startDockerConnection();
       await this.remoteAdminClient.emit(
         "node-info",
@@ -131,19 +132,25 @@ export class StatusPlugin extends BasePlugin {
   }
 
   private async startDockerConnection(): Promise<void> {
-    this.dockerClient = new Docker({ socketPath: "/var/run/docker.sock" });
+    const dockerPath = "/var/run/docker.sock";
+
+    if (fs.existsSync(dockerPath)) {
+      this.dockerClient = new Docker({ socketPath: dockerPath });
+    } else {
+      Logger.error("Docker is not found on this system");
+    }
   }
 
   private async prepareDockerInfo(): Promise<{
     images: ImageInfo[];
     containers: ContainerInfo[];
   }> {
-    const images = await this.dockerClient.listImages();
-    const containers = await this.dockerClient.listContainers();
+    const images = await this.dockerClient?.listImages();
+    const containers = await this.dockerClient?.listContainers();
 
     return {
-      images,
-      containers,
+      images: images ?? [],
+      containers: containers ?? [],
     };
   }
 
@@ -156,14 +163,16 @@ export class StatusPlugin extends BasePlugin {
       async () => {
         let web3 = new Web3(this.config.rpc);
         let admin = new Admin(this.config.rpc);
-        let isConnected = await web3.eth.net.isListening();
+
         this.web3 = web3;
         this.web3Admin = admin;
 
-        return isConnected;
+        return true;
       },
-      async () => {
-        Logger.error("Cannot connect to geth network. Sleep 3 seconds!");
+      async (err) => {
+        Logger.error(
+          "Cannot connect to geth network. Sleep 3 seconds! " + err.toString()
+        );
         await this.wait(3000);
       }
     );
