@@ -12,7 +12,7 @@ export interface PeriodicTask {
   timer?: NodeJS.Timer;
 }
 
-export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
+export type RegisteredPlugin = "statusPlugin" | "jobPlugin" | "etdConfigPlugin";
 
 export abstract class BasePlugin {
   protected abstract pluginName: RegisteredPlugin;
