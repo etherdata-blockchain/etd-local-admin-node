@@ -1,5 +1,5 @@
-import { RemoteAdminClient } from "../../internal/services/job/admin-client";
 import axios from "axios";
+import { RemoteAdminClient } from "../../internal/services/job/admin-client";
 
 jest.mock("axios");
 

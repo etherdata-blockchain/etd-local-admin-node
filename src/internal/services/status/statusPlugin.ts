@@ -7,14 +7,14 @@ import { Web3DataInfo } from "../../interfaces/web3DataInfo";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 
 export class StatusPlugin extends BasePlugin {
-  protected pluginName: RegisteredPlugin = "statusPlugin";
-
   web3: Web3 | undefined;
 
   web3Admin: Admin | undefined;
 
   // In MS
   prevKey: string | undefined;
+
+  protected pluginName: RegisteredPlugin = "statusPlugin";
 
   private dockerClient?: Docker;
 

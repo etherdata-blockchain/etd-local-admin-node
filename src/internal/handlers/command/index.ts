@@ -1,5 +1,4 @@
-import  { CoinbaseHandler } from "./handlers/coinbaseHandler"
-import { CommandHandler, RemoteCommand } from "./commandHandler"
+import { CoinbaseHandler } from "./handlers/coinbaseHandler";
+import { CommandHandler, RemoteCommand } from "./commandHandler";
 
-
-export { CoinbaseHandler, CommandHandler, RemoteCommand }
+export { CoinbaseHandler, CommandHandler, RemoteCommand };

@@ -1,8 +1,8 @@
-import Logger from "../logger";
 import moment from "moment";
-import { SystemInfo } from "../internal/interfaces/systemInfo";
 import osu from "os-utils";
 import os from "os";
+import { SystemInfo } from "../internal/interfaces/systemInfo";
+import Logger from "../logger";
 import { PluginApp } from "../internal/services/basePlugin";
 import { StatusPlugin } from "../internal/services/status/statusPlugin";
 import { JobPlugin } from "../internal/services/job/jobPlugin";
@@ -17,9 +17,9 @@ export class NodeClient extends PluginApp {
   }
 
   private async prepareSystemInfo(): Promise<SystemInfo[]> {
-    let memoryFree = os.freemem();
-    let sysUpTime = osu.sysUptime();
-    let cpuUsage: number = await new Promise((resolve, reject) => {
+    const memoryFree = os.freemem();
+    const sysUpTime = osu.sysUptime();
+    const cpuUsage: number = await new Promise((resolve, reject) => {
       osu.cpuUsage((u) => {
         resolve(u);
       });

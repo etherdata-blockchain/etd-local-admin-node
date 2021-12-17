@@ -6,18 +6,15 @@ export interface PeriodicTask {
   name: string;
   // In seconds
   interval: number;
-
-  job(): Promise<void>;
-
   // eslint-disable-next-line no-undef
   timer?: NodeJS.Timer;
+
+  job(): Promise<void>;
 }
 
 export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
 
 export abstract class BasePlugin {
-  protected abstract pluginName: RegisteredPlugin;
-
   // eslint-disable-next-line no-use-before-define
   otherPlugin: { [key: string]: BasePlugin } = {};
 
@@ -29,28 +26,14 @@ export abstract class BasePlugin {
 
   isRunning: boolean = false;
 
+  protected abstract pluginName: RegisteredPlugin;
+
   async startPlugin(): Promise<void> {
     Logger.info(`Starting services: ${this.pluginName}`);
   }
 
   getPluginName() {
     return this.pluginName;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  protected async tryConnect(
-    job: () => Promise<boolean>,
-    onError: (e: any) => Promise<void>
-  ) {
-    let isConnected = false;
-    while (!isConnected) {
-      try {
-        isConnected = await job();
-      } catch (e) {
-        await onError(e);
-        isConnected = false;
-      }
-    }
   }
 
   addPlugins(plugins: BasePlugin[]) {
@@ -68,6 +51,22 @@ export abstract class BasePlugin {
       return plugin;
     }
     throw Error("Cannot find services with this name");
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected async tryConnect(
+    job: () => Promise<boolean>,
+    onError: (e: any) => Promise<void>
+  ) {
+    let isConnected = false;
+    while (!isConnected) {
+      try {
+        isConnected = await job();
+      } catch (e) {
+        await onError(e);
+        isConnected = false;
+      }
+    }
   }
 
   protected wait(time: number): Promise<void> {

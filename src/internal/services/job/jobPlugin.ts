@@ -1,9 +1,9 @@
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
-import Logger from "../../../logger";
 import axios from "axios";
-import { CoinbaseHandler, CommandHandler } from "../../handlers/command";
 import Docker from "dockerode";
 import * as fs from "fs";
+import { BasePlugin, RegisteredPlugin } from "../basePlugin";
+import Logger from "../../../logger";
+import { CoinbaseHandler } from "../../handlers/command";
 
 interface Web3Value {
   method: string;
@@ -47,8 +47,10 @@ interface JobResult {
 }
 
 export class JobPlugin extends BasePlugin {
-  protected pluginName: RegisteredPlugin = "jobPlugin";
   prevKey: string | undefined;
+
+  protected pluginName: RegisteredPlugin = "jobPlugin";
+
   private dockerClient?: Docker | undefined;
 
   constructor() {
@@ -66,6 +68,57 @@ export class JobPlugin extends BasePlugin {
     await super.startPlugin();
     await this.startJobSystemConnection();
     await this.startDockerConnection();
+  }
+
+  async requestJob() {
+    const result = await this.remoteAdminClient.emit(
+      "request-job",
+      { nodeName: this.config.nodeName, key: this.prevKey },
+      this.config.nodeId
+    );
+
+    if (result) {
+      this.prevKey = result.key;
+    }
+
+    const job: PendingJob | undefined = result?.job;
+    let jobResult: [string | undefined, string | undefined] = [
+      undefined,
+      undefined,
+    ];
+
+    if (job && job.task) {
+      Logger.info(`Getting job: ${job.task.type}`);
+      switch (job.task.type) {
+        case "web3":
+          jobResult = await this.handleWeb3Job(job.task.value as Web3Value);
+          break;
+
+        case "docker":
+          jobResult = await this.handleDocker(job.task.value as DockerValue);
+          break;
+        default:
+          Logger.error(`${job.task.type} is not supported`);
+      }
+
+      const data: JobResult = {
+        jobId: job._id,
+        commandType: job.task.type,
+        command: job.task.value,
+        deviceID: this.config.nodeId,
+        from: job.from,
+        result: jobResult[0] ?? jobResult[1],
+        success: jobResult[1] === undefined,
+        time: new Date(),
+        key: this.prevKey,
+      };
+
+      await this.remoteAdminClient.emit(
+        "submit-result",
+        data,
+        this.config.nodeId
+      );
+    }
   }
 
   private async startDockerConnection(): Promise<void> {
@@ -88,57 +141,6 @@ export class JobPlugin extends BasePlugin {
       }
     );
     Logger.info("Connected to Admin server");
-  }
-
-  async requestJob() {
-    let result = await this.remoteAdminClient.emit(
-      "request-job",
-      { nodeName: this.config.nodeName, key: this.prevKey },
-      this.config.nodeId
-    );
-
-    if (result) {
-      this.prevKey = result.key;
-    }
-
-    const job: PendingJob | undefined = result?.job;
-    let jobResult: [string | undefined, string | undefined] = [
-      undefined,
-      undefined,
-    ];
-
-    if (job && job.task) {
-      Logger.info("Getting job: " + job.task.type);
-      switch (job.task.type) {
-        case "web3":
-          jobResult = await this.handleWeb3Job(job.task.value as Web3Value);
-          break;
-
-        case "docker":
-          jobResult = await this.handleDocker(job.task.value as DockerValue);
-          break;
-        default:
-          Logger.error(`${job.task.type} is not supported`);
-      }
-
-      let data: JobResult = {
-        jobId: job._id,
-        commandType: job.task.type,
-        command: job.task.value,
-        deviceID: this.config.nodeId,
-        from: job.from,
-        result: jobResult[0] ?? jobResult[1],
-        success: jobResult[1] === undefined,
-        time: new Date(),
-        key: this.prevKey,
-      };
-
-      await this.remoteAdminClient.emit(
-        "submit-result",
-        data,
-        this.config.nodeId
-      );
-    }
   }
 
   private async handleDocker({
@@ -169,7 +171,7 @@ export class JobPlugin extends BasePlugin {
     method,
     params,
   }: Web3Value): Promise<[string | undefined, string | undefined]> {
-    let result = await axios.post(this.config.rpc, {
+    const result = await axios.post(this.config.rpc, {
       method,
       params,
       jsonrpc: "2.0",
