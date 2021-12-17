@@ -1,6 +1,6 @@
-import { Config } from "../config";
-import { RemoteAdminClient } from "../node_client/admin-client";
-import Logger from "../logger";
+import { Config } from "../../config";
+import { RemoteAdminClient } from "./job/admin-client";
+import Logger from "../../logger";
 
 export interface PeriodicTask {
   name: string;
@@ -9,6 +9,7 @@ export interface PeriodicTask {
 
   job(): Promise<void>;
 
+  // eslint-disable-next-line no-undef
   timer?: NodeJS.Timer;
 }
 
@@ -16,20 +17,27 @@ export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
 
 export abstract class BasePlugin {
   protected abstract pluginName: RegisteredPlugin;
+
+  // eslint-disable-next-line no-use-before-define
   otherPlugin: { [key: string]: BasePlugin } = {};
+
   periodicTasks: PeriodicTask[];
+
   config: Config = Config.fromEnvironment();
+
   remoteAdminClient = new RemoteAdminClient();
+
   isRunning: boolean = false;
 
   async startPlugin(): Promise<void> {
-    Logger.info("Starting plugin: " + this.pluginName);
+    Logger.info(`Starting services: ${this.pluginName}`);
   }
 
   getPluginName() {
     return this.pluginName;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   protected async tryConnect(
     job: () => Promise<boolean>,
     onError: (e: any) => Promise<void>
@@ -46,7 +54,7 @@ export abstract class BasePlugin {
   }
 
   addPlugins(plugins: BasePlugin[]) {
-    for (let plugin of plugins) {
+    for (const plugin of plugins) {
       if (plugin.pluginName !== this.pluginName) {
         this.otherPlugin[plugin.pluginName] = plugin;
       }
@@ -54,13 +62,12 @@ export abstract class BasePlugin {
   }
 
   findPlugin<T extends BasePlugin>(pluginName: string): T {
-    let plugin = this.otherPlugin[pluginName];
+    const plugin = this.otherPlugin[pluginName];
     if (plugin) {
-      //@ts-ignore
+      // @ts-ignore
       return plugin;
-    } else {
-      throw Error("Cannot find plugin with this name");
     }
+    throw Error("Cannot find services with this name");
   }
 
   protected wait(time: number): Promise<void> {

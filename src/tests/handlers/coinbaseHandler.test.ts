@@ -1,4 +1,4 @@
-import {CoinbaseHandler} from "../../command";
+import {CoinbaseHandler} from "../../internal/handlers/command";
 import fs           from "fs";
 
 jest.mock("fs")

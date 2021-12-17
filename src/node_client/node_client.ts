@@ -1,11 +1,11 @@
 import Logger from "../logger";
 import moment from "moment";
-import { SystemInfo } from "../systemInfo/systemInfo";
+import { SystemInfo } from "../internal/interfaces/systemInfo";
 import osu from "os-utils";
 import os from "os";
-import { PluginApp } from "../plugin/basePlugin";
-import { StatusPlugin } from "../plugin/plugins/statusPlugin";
-import { JobPlugin } from "../plugin/plugins/jobPlugin";
+import { PluginApp } from "../internal/services/basePlugin";
+import { StatusPlugin } from "../internal/services/status/statusPlugin";
+import { JobPlugin } from "../internal/services/job/jobPlugin";
 
 interface NamedParam {}
 

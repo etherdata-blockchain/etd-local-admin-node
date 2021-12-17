@@ -1,17 +1,21 @@
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Web3 from "web3";
 import { Admin } from "web3-eth-admin";
-import Logger from "../../logger";
-import { Web3DataInfo } from "../../node_client/web3DataInfo";
 import Docker, { ContainerInfo, ImageInfo } from "dockerode";
 import * as fs from "fs";
+import Logger from "../../../logger";
+import { Web3DataInfo } from "../../interfaces/web3DataInfo";
+import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 
 export class StatusPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "statusPlugin";
+
   web3: Web3 | undefined;
+
   web3Admin: Admin | undefined;
+
   // In MS
   prevKey: string | undefined;
+
   private dockerClient?: Docker;
 
   constructor() {
@@ -41,9 +45,9 @@ export class StatusPlugin extends BasePlugin {
   }
 
   async sendNodeInfo(): Promise<void> {
-    let latestBlockNumber = await this.web3?.eth.getBlockNumber();
-    let webThreeInfo = await this.prepareWebThreeInfo(latestBlockNumber);
-    let dockerInfo = await this.prepareDockerInfo();
+    const latestBlockNumber = await this.web3?.eth.getBlockNumber();
+    const webThreeInfo = await this.prepareWebThreeInfo(latestBlockNumber);
+    const dockerInfo = await this.prepareDockerInfo();
 
     const data = await this.remoteAdminClient.emit(
       "node-info",
@@ -70,12 +74,12 @@ export class StatusPlugin extends BasePlugin {
     blockNumber: number
   ): Promise<Web3DataInfo | undefined> {
     if (this.web3 && this.web3Admin) {
-      let coinbase: string | undefined = undefined;
-      let balance: string | undefined = undefined;
+      let coinbase: string | undefined;
+      let balance: string | undefined;
 
       try {
-        let sampleSize = 50;
-        let [
+        const sampleSize = 50;
+        const [
           currentBlock,
           prevBlock,
           prevSampleBlock,
@@ -95,9 +99,9 @@ export class StatusPlugin extends BasePlugin {
           this.web3.eth.getHashrate(),
         ]);
 
-        let blockTime =
+        const blockTime =
           (currentBlock.timestamp as number) - (prevBlock.timestamp as number);
-        let avgBlockTime =
+        const avgBlockTime =
           ((currentBlock.timestamp as number) -
             (prevSampleBlock.timestamp as number)) /
           sampleSize;
@@ -109,23 +113,23 @@ export class StatusPlugin extends BasePlugin {
 
         return {
           ...currentBlock,
-          balance: balance,
+          balance,
           systemInfo: {
             name: this.config.nodeName,
-            peerCount: peerCount,
-            isMining: isMining,
+            peerCount,
+            isMining,
             isSyncing: isSyncing as boolean,
-            coinbase: coinbase,
+            coinbase,
             nodeVersion: version,
-            hashRate: hashRate,
+            hashRate,
             nodeId: this.config.nodeId,
           },
-          blockTime: blockTime,
-          avgBlockTime: avgBlockTime,
+          blockTime,
+          avgBlockTime,
           peers: [],
         };
       } catch (err) {
-        Logger.error("Cannot connect to the RPC Endpoint: " + err);
+        Logger.error(`Cannot connect to the RPC Endpoint: ${err}`);
       }
     }
     return undefined;
@@ -161,8 +165,8 @@ export class StatusPlugin extends BasePlugin {
   private async startWeb3Connection(): Promise<void> {
     await this.tryConnect(
       async () => {
-        let web3 = new Web3(this.config.rpc);
-        let admin = new Admin(this.config.rpc);
+        const web3 = new Web3(this.config.rpc);
+        const admin = new Admin(this.config.rpc);
 
         this.web3 = web3;
         this.web3Admin = admin;
@@ -171,12 +175,12 @@ export class StatusPlugin extends BasePlugin {
       },
       async (err) => {
         Logger.error(
-          "Cannot connect to geth network. Sleep 3 seconds! " + err.toString()
+          `Cannot connect to geth network. Sleep 3 seconds! ${err.toString()}`
         );
         await this.wait(3000);
       }
     );
 
-    Logger.info("Latest Block: " + (await this.web3.eth.getBlockNumber()));
+    Logger.info(`Latest Block: ${await this.web3.eth.getBlockNumber()}`);
   }
 }

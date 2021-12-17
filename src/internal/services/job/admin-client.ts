@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import { Config } from "../config";
-import Logger from "../logger";
+import { Config } from "../../../config";
+import Logger from "../../../logger";
 
 type Channel = "node-info" | "request-job" | "submit-result" | "health";
 

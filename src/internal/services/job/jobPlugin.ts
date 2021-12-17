@@ -1,7 +1,7 @@
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
-import Logger from "../../logger";
+import Logger from "../../../logger";
 import axios from "axios";
-import { CoinbaseHandler, CommandHandler } from "../../command";
+import { CoinbaseHandler, CommandHandler } from "../../handlers/command";
 import Docker from "dockerode";
 import * as fs from "fs";
 

@@ -1,5 +1,5 @@
-import { StatusPlugin } from "../../plugin/plugins/statusPlugin";
-import { RemoteAdminClient } from "../../node_client/admin-client";
+import { StatusPlugin } from "../../internal/services/status/statusPlugin";
+import { RemoteAdminClient } from "../../internal/services/job/admin-client";
 import * as fs from "fs";
 
 jest.mock("../../node_client/admin-client", () => {
