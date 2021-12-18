@@ -20,5 +20,11 @@ module.exports = {
     "comma-dangle": "off",
     "import/prefer-default-export": "off",
     "operator-linebreak": "off",
+    "object-curly-newline": "off",
+    "class-methods-use-this": "off",
+    "no-undef": "off",
+    "implicit-arrow-linebreak": "off",
+    "no-restricted-syntax": "off",
+    "function-paren-newline": "off",
   },
 };

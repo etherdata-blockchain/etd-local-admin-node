@@ -3,7 +3,7 @@ import Docker from "dockerode";
 import * as fs from "fs";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Logger from "../../../logger";
-import { CoinbaseHandler } from "../../handlers/command";
+import { CoinbaseHandler } from "../../utils/command";
 
 interface Web3Value {
   method: string;

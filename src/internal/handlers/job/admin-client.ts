@@ -8,6 +8,7 @@ type Channel = "node-info" | "request-job" | "submit-result" | "health";
 export class RemoteAdminClient {
   config = Config.fromEnvironment();
 
+  // eslint-disable-next-line consistent-return
   async emit(
     channel: Channel,
     data: any,

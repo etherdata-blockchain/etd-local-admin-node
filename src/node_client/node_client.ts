@@ -3,9 +3,9 @@ import osu from "os-utils";
 import os from "os";
 import { SystemInfo } from "../internal/interfaces/systemInfo";
 import Logger from "../logger";
-import { PluginApp } from "../internal/services/basePlugin";
-import { StatusPlugin } from "../internal/services/status/statusPlugin";
-import { JobPlugin } from "../internal/services/job/jobPlugin";
+import { PluginApp } from "../internal/handlers/basePlugin";
+import { StatusPlugin } from "../internal/handlers/status/statusPlugin";
+import { JobPlugin } from "../internal/handlers/job/jobPlugin";
 
 interface NamedParam {}
 

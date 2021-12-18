@@ -1,7 +1,7 @@
 {
-  "name": "etd_admin_node",
+  "name": "node-iac",
   "version": "1.6.0",
-  "main": "index.js",
+  "main": "src/app.ts'",
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/app.ts",
@@ -40,5 +40,7 @@
     "standard-version": "^9.3.1",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.1.0"
-  }
+  },
+  "repository": "https://github.com/etherdata-blockchain/etd-local-admin-node.git",
+  "author": "sirily11 <sirily1997@gmail.com>"
 }

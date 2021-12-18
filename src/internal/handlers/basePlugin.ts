@@ -50,7 +50,7 @@ export abstract class BasePlugin {
       // @ts-ignore
       return plugin;
     }
-    throw Error("Cannot find services with this name");
+    throw Error("Cannot find handlers with this name");
   }
 
   // eslint-disable-next-line class-methods-use-this
