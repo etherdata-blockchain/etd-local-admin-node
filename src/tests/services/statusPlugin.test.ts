@@ -32,45 +32,52 @@ jest.mock(
     }
 );
 
-test("Docker is not found and etd client is not on system and initialize Plugin", async () => {
-  const statusPlugin = new StatusPlugin();
-  // @ts-ignore
-  fs.existsSync.mockReturnValue(false);
-  // @ts-ignore
-  const mockRemoteAdminClient: RemoteAdminClient =
+describe("Given a status plugin", () => {
+  beforeEach(() => {
     // @ts-ignore
-    RemoteAdminClient.mock.instances[0];
+    RemoteAdminClient.mockClear();
+  });
 
-  await statusPlugin.startPlugin();
-  expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(1);
-});
+  test("Docker is not found and etd client is not on system and initialize Plugin", async () => {
+    const statusPlugin = new StatusPlugin();
+    // @ts-ignore
+    fs.existsSync.mockReturnValue(false);
+    // @ts-ignore
+    const mockRemoteAdminClient: RemoteAdminClient =
+      // @ts-ignore
+      RemoteAdminClient.mock.instances[0];
 
-test("Docker is found and can be initialized", async () => {
-  const statusPlugin = new StatusPlugin();
-  // @ts-ignore
-  fs.existsSync.mockReturnValue(true);
-  // @ts-ignore
-  const mockRemoteAdminClient = RemoteAdminClient.mock.instances[0];
+    await statusPlugin.startPlugin();
+    expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(1);
+  });
 
-  await statusPlugin.startPlugin();
-  expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(1);
-});
+  test("Docker is found and can be initialized", async () => {
+    const statusPlugin = new StatusPlugin();
+    // @ts-ignore
+    fs.existsSync.mockReturnValue(true);
+    // @ts-ignore
+    const mockRemoteAdminClient = RemoteAdminClient.mock.instances[0];
 
-test("Send status with docker and web3's info", async () => {
-  const statusPlugin = new StatusPlugin();
-  // @ts-ignore
-  fs.existsSync.mockReturnValue(true);
-  // @ts-ignore
-  const mockRemoteAdminClient = RemoteAdminClient.mock.instances[0];
+    await statusPlugin.startPlugin();
+    expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(1);
+  });
 
-  await statusPlugin.startPlugin();
-  await statusPlugin.sendNodeInfo();
+  test("Send status with docker and web3's info", async () => {
+    const statusPlugin = new StatusPlugin();
+    // @ts-ignore
+    fs.existsSync.mockReturnValue(true);
+    // @ts-ignore
+    const mockRemoteAdminClient = RemoteAdminClient.mock.instances[0];
 
-  expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(2);
-  expect(mockRemoteAdminClient.emit.mock.calls[1][1].data).toBeDefined();
-  expect(mockRemoteAdminClient.emit.mock.calls[1][1].key).toBeUndefined();
+    await statusPlugin.startPlugin();
+    await statusPlugin.sendNodeInfo();
 
-  // Expect key returned from send info and use that key
-  await statusPlugin.sendNodeInfo();
-  expect(mockRemoteAdminClient.emit.mock.calls[2][1].key).toBe("abcde");
+    expect(mockRemoteAdminClient.emit).toHaveBeenCalledTimes(2);
+    expect(mockRemoteAdminClient.emit.mock.calls[1][1].data).toBeDefined();
+    expect(mockRemoteAdminClient.emit.mock.calls[1][1].key).toBeUndefined();
+
+    // Expect key returned from send info and use that key
+    await statusPlugin.sendNodeInfo();
+    expect(mockRemoteAdminClient.emit.mock.calls[2][1].key).toBe("abcde");
+  });
 });

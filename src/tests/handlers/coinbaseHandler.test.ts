@@ -2,9 +2,11 @@ import fs from "fs";
 import { CoinbaseHandler } from "../../internal/utils/command";
 
 jest.mock("fs");
+jest.mock("chalk");
 
 test("Test env", async () => {
   // @ts-ignore
+  // eslint-disable-next-line no-buffer-constructor
   fs.readFileSync.mockReturnValue(new Buffer("etd_coinbase=a"));
   const coinbaseHandler = new CoinbaseHandler();
   const newEnv = await coinbaseHandler.handle({

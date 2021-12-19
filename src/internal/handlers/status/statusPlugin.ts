@@ -13,6 +13,7 @@ export class StatusPlugin extends BasePlugin {
   constructor() {
     super();
     this.web3StatusService = new Web3StatusService();
+    this.dockerStatusService = new DockerStatusService();
     this.periodicTasks = [
       {
         name: "latest-node-info",
