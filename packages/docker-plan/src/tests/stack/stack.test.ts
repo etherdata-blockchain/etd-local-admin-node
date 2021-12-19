@@ -1,3 +1,5 @@
+import yaml from "yaml";
+import fs from "fs";
 import { Stack } from "../../internal/stack/stack";
 import { MockImageStacks } from "../data/mock_image_stack";
 import { MockContainers } from "../data/mock_container_stack";
@@ -6,6 +8,9 @@ import {
   MockStack,
   MockUpdateStack,
 } from "../data/mock_stack";
+import { Configurations } from "../../internal/const/configurations";
+
+jest.mock("fs");
 
 describe("Given a stack object", () => {
   test("When no stack defined before", () => {
@@ -61,5 +66,24 @@ describe("Given a stack object", () => {
 
     expect(stack.stacks!.images[0]).toStrictEqual(MockImageStacks[3]);
     expect(stack.stacks!.containers[0]).toStrictEqual(MockContainers[3]);
+  });
+
+  test("when reading yaml file", () => {
+    const stack = new Stack();
+    jest.spyOn(fs, "existsSync").mockReturnValue(true);
+    jest.spyOn(fs, "readFileSync").mockReturnValue(yaml.stringify(MockStack));
+    stack.readPreviousStack();
+    expect(stack.stacks).toStrictEqual(MockStack);
+  });
+
+  test("when saving data to the disk", () => {
+    const stack = new Stack();
+    stack.stacks = MockStack;
+    const spy = jest.spyOn(fs, "writeFileSync");
+    stack.writeStack();
+    expect(spy).toBeCalledWith(
+      Configurations.defaultStackPosition,
+      yaml.stringify(MockStack)
+    );
   });
 });

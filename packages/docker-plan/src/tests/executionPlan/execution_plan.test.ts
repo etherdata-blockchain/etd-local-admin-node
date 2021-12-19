@@ -2,6 +2,7 @@ import { Stack } from "../../internal/stack/stack";
 import { MockCompletelyUpdateStack, MockStack } from "../data/mock_stack";
 import { ExecutionPlan } from "../../internal/executionPlan/execution_plan";
 import DockerService from "../../internal/services/docker";
+import { MockContainersNoId } from "../data/mock_container_stack";
 
 jest.mock("../../internal/services/docker", () =>
   jest.fn().mockImplementation(() => ({
@@ -69,5 +70,33 @@ describe("Given an execution plan object", () => {
     expect(successDockerService.removeContainers.mock.calls.length).toBe(1);
     // @ts-ignore
     expect(successDockerService.removeImages.mock.calls.length).toBe(1);
+  });
+
+  test("When calling create execution plan without stacks", () => {
+    const stack = new Stack();
+    const executionPlan = new ExecutionPlan(successDockerService);
+    expect(() => executionPlan.create(stack)).toThrow();
+  });
+
+  test("When calling create execution plan with containers without container ids", () => {
+    const stack = new Stack();
+    stack.updateStack({
+      images: [],
+      update_time: new Date().toISOString(),
+      containers: [MockContainersNoId[0]],
+    });
+
+    stack.updateStack({
+      images: [],
+      update_time: new Date().toISOString(),
+      containers: [MockContainersNoId[2]],
+    });
+    const executionPlan = new ExecutionPlan(successDockerService);
+    expect(() => executionPlan.create(stack)).toThrow();
+  });
+
+  test("When calling apply execution plan without creating first", () => {
+    const executionPlan = new ExecutionPlan(successDockerService);
+    expect(executionPlan.apply()).rejects.toThrow();
   });
 });

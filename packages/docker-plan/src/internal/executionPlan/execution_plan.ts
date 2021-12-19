@@ -24,7 +24,7 @@ export class ExecutionPlan {
     this.dockerService = dockerService;
   }
 
-  create(stack: Stack): void {
+  create(stack: Stack) {
     if (stack.stacks === undefined) {
       throw Error(
         "You need to create/load a stack before creating an execution plan"

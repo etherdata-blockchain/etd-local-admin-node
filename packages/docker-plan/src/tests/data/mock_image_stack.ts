@@ -22,3 +22,5 @@ export const MockImageStacks: ImageStack[] = [
     tag: "1.1",
   },
 ];
+
+export const MockImageId = "mock_image_id";

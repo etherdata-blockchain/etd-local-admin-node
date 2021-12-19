@@ -27,10 +27,7 @@ describe("Given a docker service while docker works as expected", () => {
   beforeEach(() => {
     // @ts-ignore
     // eslint-disable-next-line no-unused-expressions
-    Docker.mockClear;
-    // @ts-ignore
-    // eslint-disable-next-line no-unused-expressions
-    docker.getImage.mockClear;
+    Docker.mockClear();
   });
 
   beforeAll(() => {

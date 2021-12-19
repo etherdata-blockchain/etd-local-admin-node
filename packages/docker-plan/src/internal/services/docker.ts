@@ -1,7 +1,6 @@
 import Docker, { Image } from "dockerode";
 import { ImageStack } from "../stack/image";
 import { ContainerStack } from "../stack/container";
-import { Configurations } from "../const/configurations";
 
 export default class DockerService {
   docker: Docker;
@@ -13,9 +12,9 @@ export default class DockerService {
   /**
    * Pull images
    * @param newImages a list of images
-   * @param depth Maximum rollback depth. If depth exceeds, then the rollback operation will abort
+   * @param rollback is rollback
    */
-  async pullImages(newImages: ImageStack[], depth = 0) {
+  async pullImages(newImages: ImageStack[], rollback: boolean = false) {
     // eslint-disable-next-line no-console
     console.log("Start images pulling process");
     for (const nim of newImages) {
@@ -27,8 +26,11 @@ export default class DockerService {
         console.log(
           `Cannot pull image ${nim.image} because ${e}. Rolling back.`
         );
-        if (depth < Configurations.maximumRollbackDepth) {
-          await this.removeImages(newImages, depth + 1);
+        if (!rollback) {
+          await this.removeImages(
+            newImages.filter((i) => i.imageId !== undefined),
+            true
+          );
         }
 
         throw e;
@@ -39,12 +41,10 @@ export default class DockerService {
   /**
    * Remove list of images
    * @param removedImages a list of images
-   * @param depth Maximum rollback depth. If depth exceeds, then the rollback operation will abort
+   * @param rollback is rollback?
    */
-  async removeImages(removedImages: ImageStack[], depth = 0) {
-    if (depth > Configurations.maximumRollbackDepth) {
-      throw new Error("Exceeds the maximum rollback depth. Abort!");
-    }
+  // eslint-disable-next-line no-unused-vars
+  async removeImages(removedImages: ImageStack[], rollback: boolean = false) {
     // eslint-disable-next-line no-console
     console.log("Start images removal process");
 
@@ -60,7 +60,16 @@ export default class DockerService {
     }
   }
 
-  async removeContainers(removeContainers: ContainerStack[], depth = 0) {
+  /**
+   * Remove list of containers
+   * @param removeContainers
+   * @param rollback is rollback?
+   */
+  async removeContainers(
+    removeContainers: ContainerStack[],
+    // eslint-disable-next-line no-unused-vars
+    rollback: boolean = false
+  ) {
     // eslint-disable-next-line no-console
     console.log("Starting container removal process");
     for (const rmc of removeContainers) {
@@ -72,9 +81,6 @@ export default class DockerService {
         console.log(
           `Cannot remove container ${rmc.containerName} because ${e}`
         );
-        if (depth < Configurations.maximumRollbackDepth) {
-          await this.createContainers(removeContainers, depth + 1);
-        }
         throw e;
       }
     }
@@ -83,9 +89,12 @@ export default class DockerService {
   /**
    * Create list of containers
    * @param newContainers a list of images
-   * @param depth Maximum rollback depth. If depth exceeds, then the rollback operation will abort
+   * @param rollback is rollback?
    */
-  async createContainers(newContainers: ContainerStack[], depth = 0) {
+  async createContainers(
+    newContainers: ContainerStack[],
+    rollback: boolean = false
+  ) {
     // eslint-disable-next-line no-console
     console.log("Starting container creation process");
 
@@ -102,8 +111,11 @@ export default class DockerService {
         console.log(
           `Cannot remove container ${newContainer.containerName} because ${e}. Rolling back.`
         );
-        if (depth < Configurations.maximumRollbackDepth) {
-          await this.removeContainers(newContainers, depth + 1);
+        if (!rollback) {
+          await this.removeContainers(
+            newContainers.filter((c) => c.containerId !== undefined),
+            true
+          );
         }
         throw e;
       }
