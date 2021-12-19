@@ -22,12 +22,15 @@ import { ContainerStack } from "./internal/stack/container";
   const container2: ContainerStack = {
     containerName: "test2",
     image,
+    config: {
+      Env: ["hello=world"],
+    },
   };
 
   const stacks: StackInterface = {
     update_time: new Date().toISOString(),
-    images: [],
-    containers: [],
+    images: [image],
+    containers: [container, container2],
   };
   await plan.create(stacks);
   await plan.apply();

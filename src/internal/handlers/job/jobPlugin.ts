@@ -1,23 +1,11 @@
-import axios from "axios";
-import Docker from "dockerode";
-import * as fs from "fs";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import Logger from "../../../logger";
-import { CoinbaseHandler } from "../../utils/command";
-
-interface Web3Value {
-  method: string;
-  params: string[];
-}
-
-interface DockerValue {
-  method: "logs" | "start" | "stop" | "remove" | "restart" | "exec";
-  value: any;
-}
+import { DockerJobService } from "../../services/job/docker_job_service";
+import { Web3JobService } from "../../services/job/web3_job_service";
 
 interface Task {
   type: string;
-  value: Web3Value | DockerValue;
+  value: any;
 }
 
 export interface PendingJob {
@@ -51,10 +39,16 @@ export class JobPlugin extends BasePlugin {
 
   protected pluginName: RegisteredPlugin = "jobPlugin";
 
-  private dockerClient?: Docker | undefined;
+  dockerJobService: DockerJobService;
+
+  web3JobService: Web3JobService;
 
   constructor() {
     super();
+
+    this.dockerJobService = new DockerJobService();
+    this.web3JobService = new Web3JobService();
+
     this.periodicTasks = [
       {
         name: "Get pending job",
@@ -64,10 +58,10 @@ export class JobPlugin extends BasePlugin {
     ];
   }
 
-  override async startPlugin(): Promise<void> {
+  async startPlugin(): Promise<void> {
     await super.startPlugin();
     await this.startJobSystemConnection();
-    await this.startDockerConnection();
+    await this.dockerJobService.startDockerConnection();
   }
 
   async requestJob() {
@@ -91,17 +85,18 @@ export class JobPlugin extends BasePlugin {
       Logger.info(`Getting job: ${job.task.type}`);
       switch (job.task.type) {
         case "web3":
-          jobResult = await this.handleWeb3Job(job.task.value as Web3Value);
+          jobResult = await this.web3JobService.handleWeb3Job(job.task.value);
           break;
 
         case "docker":
-          jobResult = await this.handleDocker(job.task.value as DockerValue);
+          jobResult = await this.dockerJobService.handleDocker(job.task.value);
           break;
         default:
           Logger.error(`${job.task.type} is not supported`);
       }
 
       const data: JobResult = {
+        // eslint-disable-next-line no-underscore-dangle
         jobId: job._id,
         commandType: job.task.type,
         command: job.task.value,
@@ -121,15 +116,6 @@ export class JobPlugin extends BasePlugin {
     }
   }
 
-  private async startDockerConnection(): Promise<void> {
-    const dockerPath = "/var/run/docker.sock";
-    if (fs.existsSync(dockerPath)) {
-      this.dockerClient = new Docker({ socketPath: dockerPath });
-    } else {
-      Logger.error("Docker is not found on your system");
-    }
-  }
-
   private async startJobSystemConnection() {
     await this.tryConnect(
       async () => {
@@ -141,55 +127,5 @@ export class JobPlugin extends BasePlugin {
       }
     );
     Logger.info("Connected to Admin server");
-  }
-
-  private async handleDocker({
-    method,
-    value,
-  }: DockerValue): Promise<[string | undefined, string | undefined]> {
-    switch (method) {
-      case "logs":
-        const container = this.dockerClient?.getContainer(value);
-        const logs = (await container?.logs({
-          tail: 100,
-          stderr: true,
-          stdout: true,
-        })) as unknown as Buffer;
-        return [logs?.toString(), undefined];
-      default:
-        return [undefined, "Command is not supported"];
-    }
-  }
-
-  /**
-   * Will return a array includes result or error
-   * @param method
-   * @param params
-   * @private
-   */
-  private async handleWeb3Job({
-    method,
-    params,
-  }: Web3Value): Promise<[string | undefined, string | undefined]> {
-    const result = await axios.post(this.config.rpc, {
-      method,
-      params,
-      jsonrpc: "2.0",
-      id: 1,
-    });
-
-    if (!result.data.error) {
-      const coinbaseHandler = new CoinbaseHandler();
-      if (coinbaseHandler.canHandle({ command: method })) {
-        await coinbaseHandler.handle({
-          command: method,
-          data: { newCoinbase: params[0] },
-        });
-      }
-
-      return [result.data.result, undefined];
-    }
-
-    return [undefined, result.data.error.message];
   }
 }

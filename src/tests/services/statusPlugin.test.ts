@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { StatusPlugin } from "../../internal/handlers/status/statusPlugin";
 import { RemoteAdminClient } from "../../internal/handlers/job/admin-client";
 
-jest.mock("../../node_client/admin-client", () => ({
+jest.mock("../../internal/handlers/job/admin-client", () => ({
   RemoteAdminClient: jest.fn().mockImplementation(function () {
     this.emit = jest.fn(() => ({ key: "abcde" }));
   }),
@@ -62,8 +62,6 @@ test("Send status with docker and web3's info", async () => {
   fs.existsSync.mockReturnValue(true);
   // @ts-ignore
   const mockRemoteAdminClient = RemoteAdminClient.mock.instances[0];
-  // @ts-ignore
-  const mockResults = RemoteAdminClient.mock;
 
   await statusPlugin.startPlugin();
   await statusPlugin.sendNodeInfo();

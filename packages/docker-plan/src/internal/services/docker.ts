@@ -16,7 +16,7 @@ export default class DockerService {
    */
   async pullImages(newImages: ImageStack[], rollback: boolean = false) {
     // eslint-disable-next-line no-console
-    console.log("Start images pulling process");
+    console.log(`Start images pulling process (Total: ${newImages.length})`);
     for (const nim of newImages) {
       try {
         const image: Image = await this.docker.pull(`${nim.image}:${nim.tag}`);
@@ -46,7 +46,9 @@ export default class DockerService {
   // eslint-disable-next-line no-unused-vars
   async removeImages(removedImages: ImageStack[], rollback: boolean = false) {
     // eslint-disable-next-line no-console
-    console.log("Start images removal process");
+    console.log(
+      `Start images removal process (Total: ${removedImages.length})`
+    );
 
     for (const rmi of removedImages) {
       try {
@@ -71,7 +73,9 @@ export default class DockerService {
     rollback: boolean = false
   ) {
     // eslint-disable-next-line no-console
-    console.log("Starting container removal process");
+    console.log(
+      `Starting container removal process (Total: ${removeContainers.length})`
+    );
     for (const rmc of removeContainers) {
       try {
         const container = this.docker.getContainer(rmc.containerId!);
@@ -96,7 +100,9 @@ export default class DockerService {
     rollback: boolean = false
   ) {
     // eslint-disable-next-line no-console
-    console.log("Starting container creation process");
+    console.log(
+      `Starting container creation process (Total: ${newContainers.length})`
+    );
 
     for (const newContainer of newContainers) {
       try {
