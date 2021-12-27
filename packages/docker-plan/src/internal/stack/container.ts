@@ -1,6 +1,6 @@
 import { ImageStack } from "./image";
 
-interface DockerContainerConfig {
+export interface DockerContainerConfig {
   Hostname?: string | undefined;
   Domainname?: string | undefined;
   User?: string | undefined;
@@ -30,6 +30,9 @@ interface DockerContainerConfig {
   abortSignal?: AbortSignal;
 }
 
+/**
+ * Stack to describe the structure of the container
+ */
 export interface ContainerStack {
   containerId?: string;
   containerName: string;
