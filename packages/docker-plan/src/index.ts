@@ -32,4 +32,10 @@ export class DockerPlan {
   }
 }
 
-export { Image, ImageStack, Container, ContainerStack, DockerContainerConfig };
+export type {
+  Image,
+  ImageStack,
+  Container,
+  ContainerStack,
+  DockerContainerConfig,
+};
