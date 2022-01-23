@@ -95,3 +95,24 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.pusher.name != 'github action') && (github.ref == 'refs/heads/main') }}
+    needs: [ deploy ]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn install
+        name: Installing dependencies
+      - name: Setup git identity
+        run: |
+          git config --global user.email "github-action.github.com"
+          git config --global user.name "github action"
+      - name: Pre-release
+        run: yarn release --ci
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
