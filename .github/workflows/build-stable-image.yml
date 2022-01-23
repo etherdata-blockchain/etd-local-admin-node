@@ -113,7 +113,7 @@ jobs:
         run: |
           git config --global user.email "github-action.github.com"
           git config --global user.name "github action"
-      - name: Pre-release
+      - name: Release
         run: yarn release --ci
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
