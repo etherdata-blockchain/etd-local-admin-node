@@ -1,3 +1,5 @@
+import axios from "axios";
+
 interface NamedParam {
   rpc: string;
   remoteAdminURL: string;
@@ -5,6 +7,12 @@ interface NamedParam {
   nodeName: string;
   nodeId: string;
 }
+
+export const DefaultTimeSettings = {
+  axiosTimeout: 10,
+  statusInterval: 15,
+  jobInterval: 15,
+};
 
 export class Config {
   rpc: string;
@@ -42,5 +50,9 @@ export class Config {
       nodeName: process.env.etd_node_name!,
       nodeId: process.env.etd_node_id!,
     });
+  }
+
+  static getAxios() {
+    return axios.create({ timeout: DefaultTimeSettings.axiosTimeout });
   }
 }

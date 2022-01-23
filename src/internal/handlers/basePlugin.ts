@@ -1,4 +1,5 @@
 import Logger from "@etherdata-blockchain/logger";
+import cron from "node-cron";
 import { Config } from "../../config";
 import { RemoteAdminClient } from "./job/admin-client";
 
@@ -6,13 +7,15 @@ export interface PeriodicTask {
   name: string;
   // In seconds
   interval: number;
-  // eslint-disable-next-line no-undef
-  timer?: NodeJS.Timer;
-
   job(): Promise<void>;
 }
 
-export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
+// eslint-disable-next-line no-shadow
+export enum RegisteredPlugin {
+  jobPlugin = "job-plugin",
+  statusPlugin = "status-plugin",
+  testPlugin = "test-plugin",
+}
 
 export abstract class BasePlugin {
   // eslint-disable-next-line no-use-before-define
@@ -92,22 +95,9 @@ export abstract class PluginApp {
 
     for (const plugin of this.plugins) {
       for (const task of plugin.periodicTasks) {
-        task.timer = setInterval(async () => {
-          if (!plugin.isRunning) {
-            try {
-              plugin.isRunning = true;
-              await task.job();
-            } catch (e) {
-              Logger.error(e);
-            } finally {
-              plugin.isRunning = false;
-            }
-          } else {
-            Logger.warning(
-              `${plugin.getPluginName()}: Previous job is running, skipping!`
-            );
-          }
-        }, task.interval * 1000);
+        cron.schedule(`'*/${task.interval} * * * * *'`, async () => {
+          await task.job();
+        });
       }
     }
   }

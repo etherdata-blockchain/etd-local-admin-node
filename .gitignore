@@ -16,3 +16,4 @@ dist
 .env
 coverage
 yarn.lock
+yarn-error.log

@@ -3,9 +3,10 @@ import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
 import { Channel } from "../job/admin-client";
+import { DefaultTimeSettings } from "../../../config";
 
 export class StatusPlugin extends BasePlugin {
-  protected pluginName: RegisteredPlugin = "statusPlugin";
+  protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
 
   web3StatusService: Web3StatusService;
 
@@ -18,7 +19,7 @@ export class StatusPlugin extends BasePlugin {
     this.periodicTasks = [
       {
         name: "latest-node-info",
-        interval: 15,
+        interval: DefaultTimeSettings.statusInterval,
         job: this.sendNodeInfo.bind(this),
       },
     ];

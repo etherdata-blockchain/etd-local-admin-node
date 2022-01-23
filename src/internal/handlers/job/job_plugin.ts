@@ -1,45 +1,15 @@
 import Logger from "@etherdata-blockchain/logger";
-import { enums } from "@etherdata-blockchain/common";
+import { enums, interfaces } from "@etherdata-blockchain/common";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import { DockerJobService } from "../../services/job/docker_job_service";
 import { Web3JobService } from "../../services/job/web3_job_service";
 import { Channel } from "./admin-client";
-
-interface Task {
-  type: string;
-  value: any;
-}
-
-export interface PendingJob {
-  _id: any;
-  targetDeviceId: string;
-  /**
-   * From client id.
-   */
-  from: string;
-  time: Date;
-  task: Task;
-}
-
-interface JobResult {
-  key: string | undefined;
-  jobId: string;
-  time: Date;
-  deviceID: string;
-  commandType: string;
-  /**
-   * From which client. This will be the unique id
-   */
-  from: string;
-  command: any;
-  result: any;
-  success: boolean;
-}
+import { DefaultTimeSettings } from "../../../config";
 
 export class JobPlugin extends BasePlugin {
   prevKey: string | undefined;
 
-  protected pluginName: RegisteredPlugin = "jobPlugin";
+  protected pluginName: RegisteredPlugin = RegisteredPlugin.jobPlugin;
 
   dockerJobService: DockerJobService;
 
@@ -54,7 +24,7 @@ export class JobPlugin extends BasePlugin {
     this.periodicTasks = [
       {
         name: "Get pending job",
-        interval: 10,
+        interval: DefaultTimeSettings.jobInterval,
         job: this.requestJob.bind(this),
       },
     ];
@@ -77,7 +47,8 @@ export class JobPlugin extends BasePlugin {
       this.prevKey = result.key;
     }
 
-    const job: PendingJob | undefined = result?.job;
+    const job: interfaces.db.PendingJobDBInterface<any> | undefined =
+      result?.job;
     let jobResult: [string | undefined, string | undefined] = [
       undefined,
       undefined,
@@ -99,9 +70,9 @@ export class JobPlugin extends BasePlugin {
           Logger.error(`${job.task.type} is not supported`);
       }
 
-      const data: JobResult = {
+      const data: interfaces.db.JobResultDBInterface = {
         // eslint-disable-next-line no-underscore-dangle
-        jobId: job._id,
+        jobId: (job as any)._id,
         commandType: job.task.type,
         command: job.task.value,
         deviceID: this.config.nodeId,
@@ -109,6 +80,7 @@ export class JobPlugin extends BasePlugin {
         result: jobResult[0] ?? jobResult[1],
         success: jobResult[1] === undefined,
         time: new Date(),
+        // @ts-ignore
         key: this.prevKey,
       };
 

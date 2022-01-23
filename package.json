@@ -7,7 +7,7 @@
     "start": "ts-node src/app.ts",
     "lint": "eslint src/*.ts",
     "build": "tsc",
-    "docker": "docker buildx build  -t sirily11/etd-admin-server-node --platform linux/arm64,linux/amd64 --push . ",
+    "docker": "docker buildx build  -t sirily11/etd-admin-node --platform linux/arm64,linux/amd64 --push . ",
     "test": "jest",
     "release": "release-it"
   },
@@ -28,7 +28,6 @@
     "moment": "^2.29.1",
     "node-cron": "^3.0.0",
     "typescript": "^4.4.3",
-    "web3": "^1.4.0",
     "web3-eth-admin": "^1.0.0-beta.55"
   },
   "devDependencies": {
