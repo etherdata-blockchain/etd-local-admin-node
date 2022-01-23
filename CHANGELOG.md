@@ -1,3 +1,10 @@
+# 1.7.0 (2022-01-23)
+
+
+### Features
+
+* add new release system and restructure code ([#8](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/8)) ([30a0995](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/30a099572ecaee5c5e2db4858b8ce7b9f6200dae))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
