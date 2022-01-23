@@ -1,4 +1,4 @@
-import Logger from "../logger";
+import Logger from "@etherdata-blockchain/logger";
 import { PluginApp } from "../internal/handlers/basePlugin";
 import { StatusPlugin } from "../internal/handlers/status/statusPlugin";
 import { JobPlugin } from "../internal/handlers/job/jobPlugin";

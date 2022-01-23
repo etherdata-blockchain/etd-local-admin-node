@@ -1,5 +1,8 @@
 import axios from "axios";
-import { RemoteAdminClient } from "../../internal/handlers/job/admin-client";
+import {
+  Channel,
+  RemoteAdminClient,
+} from "../../internal/handlers/job/admin-client";
 
 jest.mock("axios");
 jest.mock("chalk");
@@ -14,24 +17,24 @@ beforeEach(() => {
 
 test("Send a node info", async () => {
   const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit("node-info", {}, "somedata");
+  await remoteClient.emit(Channel.nodeInfo, {}, "somedata");
   expect(axios.post).toBeCalled();
 });
 
 test("Request a job", async () => {
   const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit("request-job", {}, "somedata");
+  await remoteClient.emit(Channel.requestJob, {}, "somedata");
   expect(axios.get).toBeCalled();
 });
 
 test("Submit results", async () => {
   const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit("submit-result", {}, "somedata");
+  await remoteClient.emit(Channel.submitResult, {}, "somedata");
   expect(axios.post).toBeCalled();
 });
 
 test("health", async () => {
   const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit("health", {}, "somedata");
+  await remoteClient.emit(Channel.health, {}, "somedata");
   expect(axios.get).toBeCalled();
 });

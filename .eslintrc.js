@@ -27,5 +27,6 @@ module.exports = {
     "no-restricted-syntax": "off",
     "function-paren-newline": "off",
     "no-case-declarations": "off",
+    "no-unused-vars": "off",
   },
 };

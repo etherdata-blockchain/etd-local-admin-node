@@ -1,7 +1,9 @@
+import Logger from "@etherdata-blockchain/logger";
+import { enums } from "@etherdata-blockchain/common";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
-import Logger from "../../../logger";
 import { DockerJobService } from "../../services/job/docker_job_service";
 import { Web3JobService } from "../../services/job/web3_job_service";
+import { Channel } from "./admin-client";
 
 interface Task {
   type: string;
@@ -66,7 +68,7 @@ export class JobPlugin extends BasePlugin {
 
   async requestJob() {
     const result = await this.remoteAdminClient.emit(
-      "request-job",
+      Channel.requestJob,
       { nodeName: this.config.nodeName, key: this.prevKey },
       this.config.nodeId
     );
@@ -84,12 +86,14 @@ export class JobPlugin extends BasePlugin {
     if (job && job.task) {
       Logger.info(`Getting job: ${job.task.type}`);
       switch (job.task.type) {
-        case "web3":
-          jobResult = await this.web3JobService.handleWeb3Job(job.task.value);
+        case enums.JobTaskType.Web3:
+          jobResult = await this.web3JobService.handle(job.task.value);
           break;
 
-        case "docker":
-          jobResult = await this.dockerJobService.handleDocker(job.task.value);
+        case enums.JobTaskType.Docker:
+          jobResult = await this.dockerJobService.handle(job.task.value);
+          break;
+        case enums.JobTaskType.UpdateTemplate:
           break;
         default:
           Logger.error(`${job.task.type} is not supported`);
@@ -109,7 +113,7 @@ export class JobPlugin extends BasePlugin {
       };
 
       await this.remoteAdminClient.emit(
-        "submit-result",
+        Channel.submitResult,
         data,
         this.config.nodeId
       );
@@ -119,7 +123,7 @@ export class JobPlugin extends BasePlugin {
   private async startJobSystemConnection() {
     await this.tryConnect(
       async () => {
-        await this.remoteAdminClient.emit("health", "", "");
+        await this.remoteAdminClient.emit(Channel.health, "", "");
         return true;
       },
       async () => {

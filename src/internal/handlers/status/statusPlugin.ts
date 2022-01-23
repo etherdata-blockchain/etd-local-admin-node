@@ -1,7 +1,8 @@
-import Logger from "../../../logger";
+import Logger from "@etherdata-blockchain/logger";
 import { BasePlugin, RegisteredPlugin } from "../basePlugin";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
+import { Channel } from "../job/admin-client";
 
 export class StatusPlugin extends BasePlugin {
   protected pluginName: RegisteredPlugin = "statusPlugin";
@@ -29,7 +30,7 @@ export class StatusPlugin extends BasePlugin {
       await this.startWeb3Connection();
       await this.startDockerConnection();
       await this.remoteAdminClient.emit(
-        "node-info",
+        Channel.nodeInfo,
         { nodeName: this.config.nodeName, key: this.web3StatusService.prevKey },
         this.config.nodeId
       );
@@ -47,7 +48,7 @@ export class StatusPlugin extends BasePlugin {
     const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
 
     const data = await this.remoteAdminClient.emit(
-      "node-info",
+      Channel.nodeInfo,
       {
         key: this.web3StatusService.prevKey,
         data: webThreeInfo,

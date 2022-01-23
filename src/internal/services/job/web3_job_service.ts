@@ -1,13 +1,10 @@
 import axios from "axios";
+import { enums } from "@etherdata-blockchain/common";
 import { CoinbaseHandler } from "../../utils/command";
 import { Config } from "../../../config";
+import { GeneralService } from "../general_service";
 
-interface Web3Value {
-  method: string;
-  params: string[];
-}
-
-export class Web3JobService {
+export class Web3JobService extends GeneralService<enums.Web3ValueType> {
   config = Config.fromEnvironment();
 
   /**
@@ -16,10 +13,10 @@ export class Web3JobService {
    * @param params
    * @private
    */
-  async handleWeb3Job({
+  async handle({
     method,
     params,
-  }: Web3Value): Promise<[string | undefined, string | undefined]> {
+  }: enums.Web3ValueType): Promise<[string | undefined, string | undefined]> {
     const result = await axios.post(this.config.rpc, {
       method,
       params,

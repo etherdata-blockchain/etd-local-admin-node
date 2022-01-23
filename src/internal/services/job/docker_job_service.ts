@@ -1,19 +1,16 @@
 import Docker from "dockerode";
 import fs from "fs";
-import Logger from "../../../logger";
+import Logger from "@etherdata-blockchain/logger";
+import { enums } from "@etherdata-blockchain/common";
+import { GeneralService } from "../general_service";
 
-interface DockerValue {
-  method: "logs" | "start" | "stop" | "remove" | "restart" | "exec";
-  value: any;
-}
-
-export class DockerJobService {
+export class DockerJobService extends GeneralService<enums.DockerValueType> {
   docker?: Docker;
 
-  async handleDocker({
+  async handle({
     method,
     value,
-  }: DockerValue): Promise<[string | undefined, string | undefined]> {
+  }: enums.DockerValueType): Promise<[string | undefined, string | undefined]> {
     switch (method) {
       case "logs":
         const container = this.docker?.getContainer(value);

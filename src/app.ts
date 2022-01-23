@@ -1,6 +1,6 @@
 import { config } from "dotenv";
+import Logger from "@etherdata-blockchain/logger";
 import { NodeClient } from "./node_client/node_client";
-import Logger from "./logger";
 // @ts-ignore
 import pjson from "../package.json";
 

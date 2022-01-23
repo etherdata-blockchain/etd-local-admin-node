@@ -1,6 +1,6 @@
+import Logger from "@etherdata-blockchain/logger";
 import { Config } from "../../config";
 import { RemoteAdminClient } from "./job/admin-client";
-import Logger from "../../logger";
 
 export interface PeriodicTask {
   name: string;

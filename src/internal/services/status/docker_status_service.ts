@@ -1,6 +1,6 @@
 import fs from "fs";
 import Docker, { ContainerInfo, ImageInfo } from "dockerode";
-import Logger from "../../../logger";
+import Logger from "@etherdata-blockchain/logger";
 
 export class DockerStatusService {
   dockerClient?: Docker;
