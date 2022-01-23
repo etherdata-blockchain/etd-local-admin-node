@@ -1,7 +1,8 @@
-import { RemoteAdminClient } from "../../node_client/admin-client";
 import axios from "axios";
+import { RemoteAdminClient } from "../../internal/handlers/job/admin-client";
 
 jest.mock("axios");
+jest.mock("chalk");
 
 beforeEach(() => {
   process.env = {

@@ -1,4 +1,4 @@
-import {BlockTransactionString} from "web3-eth";
+import { BlockTransactionString } from "web3-eth";
 
 interface PeerInfo {
   caps: string[];
@@ -12,7 +12,7 @@ interface PeerInfo {
 }
 
 export interface Web3DataInfo extends BlockTransactionString {
-  balance: string,
+  balance: string;
   systemInfo: {
     name: string;
     nodeId?: string;

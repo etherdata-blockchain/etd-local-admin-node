@@ -1,28 +1,18 @@
-import chalk from "chalk";
 import moment from "moment";
 
 export class Logger {
   static info(message: any) {
-    console.log(
-      `[${chalk.blue("INFO")}] ${chalk.gray(
-        moment().format("hh:mm:ss")
-      )} ${message}`
-    );
+    // eslint-disable-next-line no-console
+    console.log(`[INFO] ${moment().format("hh:mm:ss")} ${message}`);
   }
 
   static warning(message: any) {
-    console.log(
-      `[${chalk.yellow("WARNING")}] ${chalk.gray(
-        moment().format("hh:mm:ss")
-      )} ${message}`
-    );
+    // eslint-disable-next-line no-console
+    console.log(`[WARNING] ${moment().format("hh:mm:ss")} ${message}`);
   }
 
   static error(message: any) {
-    console.log(
-      `[${chalk.red("Error")}] ${chalk.gray(
-        moment().format("hh:mm:ss")
-      )} ${message}`
-    );
+    // eslint-disable-next-line no-console
+    console.log(`[Error] ${moment().format("hh:mm:ss")} ${message}`);
   }
 }

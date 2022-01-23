@@ -11,6 +11,20 @@ on:
       - "main"
 
 jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +35,7 @@ jobs:
       - run: yarn install
       - run: yarn lint
       - run: yarn test --coverage
+      - run: yarn build
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -29,6 +44,7 @@ jobs:
   deploy:
     needs:
       - test
+      - dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -80,3 +96,24 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.pusher.name != 'github action') && (github.ref == 'refs/heads/main') }}
+    needs: [ deploy ]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn install
+        name: Installing dependencies
+      - name: Setup git identity
+        run: |
+          git config --global user.email "github-action.github.com"
+          git config --global user.name "github action"
+      - name: Pre-release
+        run: yarn release --ci
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

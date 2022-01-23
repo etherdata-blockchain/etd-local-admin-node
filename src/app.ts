@@ -1,7 +1,7 @@
+import { config } from "dotenv";
 import { NodeClient } from "./node_client/node_client";
 import Logger from "./logger";
-import { config } from "dotenv";
-//@ts-ignore
+// @ts-ignore
 import pjson from "../package.json";
 
 (async () => {

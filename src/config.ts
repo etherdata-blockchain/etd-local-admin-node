@@ -8,9 +8,13 @@ interface NamedParam {
 
 export class Config {
   rpc: string;
+
   remoteAdminURL: string;
+
   remoteAdminPassword: string;
+
   nodeName: string;
+
   nodeId: string;
 
   constructor({
