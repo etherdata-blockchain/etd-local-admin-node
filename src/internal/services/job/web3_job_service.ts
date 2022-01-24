@@ -1,5 +1,6 @@
 import axios from "axios";
 import { enums } from "@etherdata-blockchain/common";
+import { randomUUID } from "crypto";
 import { CoinbaseHandler } from "../../utils/command";
 import { Config } from "../../../config";
 import { GeneralService } from "../general_service";
@@ -21,7 +22,7 @@ export class Web3JobService extends GeneralService<enums.Web3ValueType> {
       method,
       params,
       jsonrpc: "2.0",
-      id: 1,
+      id: randomUUID(),
     });
 
     if (!result.data.error) {

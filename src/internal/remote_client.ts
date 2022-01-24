@@ -2,15 +2,8 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import Logger from "@etherdata-blockchain/logger";
 import HTTPMethod from "http-method-enum";
-import { Config } from "../../../config";
-
-// eslint-disable-next-line no-shadow
-export enum Channel {
-  nodeInfo = "node-info",
-  requestJob = "request-job",
-  submitResult = "submit-result",
-  health = "health",
-}
+import { Config } from "../config";
+import { Channel } from "./utils/command/enums";
 
 export class RemoteAdminClient {
   config = Config.fromEnvironment();

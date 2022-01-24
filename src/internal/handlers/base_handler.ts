@@ -1,7 +1,7 @@
 import Logger from "@etherdata-blockchain/logger";
 import cron from "node-cron";
 import { Config } from "../../config";
-import { RemoteAdminClient } from "./job/admin-client";
+import { RemoteAdminClient } from "../remote_client";
 
 export interface PeriodicTask {
   name: string;
@@ -17,9 +17,9 @@ export enum RegisteredPlugin {
   testPlugin = "test-plugin",
 }
 
-export abstract class BasePlugin {
+export abstract class BaseHandler {
   // eslint-disable-next-line no-use-before-define
-  otherPlugin: { [key: string]: BasePlugin } = {};
+  otherPlugin: { [key: string]: BaseHandler } = {};
 
   periodicTasks: PeriodicTask[];
 
@@ -39,7 +39,7 @@ export abstract class BasePlugin {
     return this.pluginName;
   }
 
-  addPlugins(plugins: BasePlugin[]) {
+  addPlugins(plugins: BaseHandler[]) {
     for (const plugin of plugins) {
       if (plugin.pluginName !== this.pluginName) {
         this.otherPlugin[plugin.pluginName] = plugin;
@@ -47,7 +47,7 @@ export abstract class BasePlugin {
     }
   }
 
-  findPlugin<T extends BasePlugin>(pluginName: string): T {
+  findPlugin<T extends BaseHandler>(pluginName: string): T {
     const plugin = this.otherPlugin[pluginName];
     if (plugin) {
       // @ts-ignore
@@ -82,7 +82,7 @@ export abstract class BasePlugin {
 }
 
 export abstract class PluginApp {
-  plugins: BasePlugin[];
+  plugins: BaseHandler[];
 
   async startApp() {
     for (const plugin of this.plugins) {

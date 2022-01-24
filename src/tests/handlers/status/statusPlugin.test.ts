@@ -1,8 +1,8 @@
 import * as fs from "fs";
-import { StatusPlugin } from "../../internal/handlers/status/status_plugin";
-import { RemoteAdminClient } from "../../internal/handlers/job/admin-client";
+import { StatusPlugin } from "../../../internal/handlers/status/status_handler";
+import { RemoteAdminClient } from "../../../internal/remote_client";
 
-jest.mock("../../internal/handlers/job/admin-client", () => ({
+jest.mock("../../../internal/remote_client", () => ({
   RemoteAdminClient: jest.fn().mockImplementation(function () {
     this.emit = jest.fn(() => ({ key: "abcde" }));
   }),

@@ -11,6 +11,10 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
     method,
     value,
   }: enums.DockerValueType): Promise<[string | undefined, string | undefined]> {
+    if (this.docker === undefined) {
+      return [undefined, "Docker is not found on this machine"];
+    }
+
     switch (method) {
       case "logs":
         const container = this.docker?.getContainer(value);

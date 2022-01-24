@@ -1,11 +1,11 @@
 import Logger from "@etherdata-blockchain/logger";
 import { utils } from "@etherdata-blockchain/common";
 import moment from "moment";
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
+import { Base_handler, RegisteredPlugin } from "../basePlugin";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
 
-export class TestPlugin extends BasePlugin {
+export class TestPlugin extends Base_handler {
   protected pluginName: RegisteredPlugin = RegisteredPlugin.testPlugin;
 
   constructor() {

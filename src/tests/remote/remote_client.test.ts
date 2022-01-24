@@ -1,8 +1,6 @@
 import axios from "axios";
-import {
-  Channel,
-  RemoteAdminClient,
-} from "../../internal/handlers/job/admin-client";
+import { RemoteAdminClient } from "../../internal/remote_client";
+import { Channel } from "../../internal/utils/command/enums";
 
 jest.mock("axios");
 

@@ -1,11 +1,11 @@
 import Logger from "@etherdata-blockchain/logger";
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
+import { BaseHandler, RegisteredPlugin } from "../base_handler";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
-import { Channel } from "../job/admin-client";
 import { DefaultTimeSettings } from "../../../config";
+import { Channel } from "../../utils/command/enums";
 
-export class StatusPlugin extends BasePlugin {
+export class StatusPlugin extends BaseHandler {
   protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
 
   web3StatusService: Web3StatusService;

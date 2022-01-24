@@ -1,12 +1,12 @@
 import Logger from "@etherdata-blockchain/logger";
 import { enums, interfaces } from "@etherdata-blockchain/common";
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
+import { Base_handler, RegisteredPlugin } from "../basePlugin";
 import { DockerJobService } from "../../services/job/docker_job_service";
 import { Web3JobService } from "../../services/job/web3_job_service";
 import { Channel } from "./admin-client";
 import { DefaultTimeSettings } from "../../../config";
 
-export class JobPlugin extends BasePlugin {
+export class JobPlugin extends Base_handler {
   prevKey: string | undefined;
 
   protected pluginName: RegisteredPlugin = RegisteredPlugin.jobPlugin;
