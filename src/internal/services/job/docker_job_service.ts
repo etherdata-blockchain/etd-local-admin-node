@@ -2,17 +2,19 @@ import Docker from "dockerode";
 import fs from "fs";
 import Logger from "@etherdata-blockchain/logger";
 import { enums } from "@etherdata-blockchain/common";
-import { GeneralService } from "../general_service";
+import { GeneralService, JobResult } from "../general_service";
 
 export class DockerJobService extends GeneralService<enums.DockerValueType> {
   docker?: Docker;
 
-  async handle({
-    method,
-    value,
-  }: enums.DockerValueType): Promise<[string | undefined, string | undefined]> {
+  targetJobTaskType = enums.JobTaskType.Docker;
+
+  async handle({ method, value }: enums.DockerValueType): Promise<JobResult> {
     if (this.docker === undefined) {
-      return [undefined, "Docker is not found on this machine"];
+      return {
+        result: undefined,
+        error: "Docker is not found on this machine",
+      };
     }
 
     switch (method) {
@@ -23,13 +25,13 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
           stderr: true,
           stdout: true,
         })) as unknown as Buffer;
-        return [logs?.toString(), undefined];
+        return { result: logs?.toString(), error: undefined };
       default:
-        return [undefined, "Command is not supported"];
+        return { error: "Command is not supported", result: undefined };
     }
   }
 
-  async startDockerConnection(): Promise<void> {
+  async start(): Promise<void> {
     const dockerPath = "/var/run/docker.sock";
     if (fs.existsSync(dockerPath)) {
       this.docker = new Docker({ socketPath: dockerPath });

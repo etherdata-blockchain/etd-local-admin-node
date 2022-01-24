@@ -26,8 +26,8 @@ describe("Given a web3 job service", () => {
     });
     const web3Service = new Web3JobService();
     const result = await web3Service.handle(MockDataWeb3Calling);
-    expect(result[0]).toStrictEqual([MockBlockNumber.one]);
-    expect(result[1]).toBeUndefined();
+    expect(result.result).toStrictEqual([MockBlockNumber.one]);
+    expect(result.error).toBeUndefined();
   });
 
   test("When calling with coinbase handler", async () => {
@@ -41,8 +41,8 @@ describe("Given a web3 job service", () => {
     const mockCoinbaseHandler = (CoinbaseHandler as any).mock.instances[0];
 
     expect(mockCoinbaseHandler.handle).toBeCalled();
-    expect(result[0]).toStrictEqual([MockBlockNumber.one]);
-    expect(result[1]).toBeUndefined();
+    expect(result.result).toStrictEqual([MockBlockNumber.one]);
+    expect(result.error).toBeUndefined();
   });
 
   test("When calling with error", async () => {
@@ -53,7 +53,7 @@ describe("Given a web3 job service", () => {
     });
     const web3Service = new Web3JobService();
     const result = await web3Service.handle(MockDataWeb3Calling);
-    expect(result[0]).toBeUndefined();
-    expect(result[1]).toBe(MockError.rpcConnectionError);
+    expect(result.result).toBeUndefined();
+    expect(result.error).toBe(MockError.rpcConnectionError);
   });
 });

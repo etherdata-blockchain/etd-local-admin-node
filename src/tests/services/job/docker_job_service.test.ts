@@ -34,20 +34,20 @@ describe("Given a docker job service and docker exists", () => {
 
   test("When calling without any error", async () => {
     const service = new DockerJobService();
-    await service.startDockerConnection();
+    await service.start();
 
     const result = await service.handle(MockDataDockerCalling);
-    expect(result[0]).toBe(MockDockerLogs.simpleLog);
-    expect(result[1]).toBeUndefined();
+    expect(result.result).toBe(MockDockerLogs.simpleLog);
+    expect(result.error).toBeUndefined();
   });
 
   test("When calling with error", async () => {
     const service = new DockerJobService();
-    await service.startDockerConnection();
+    await service.start();
 
     const result = await service.handle(MockDataDockerCallingUnsupported);
-    expect(result[0]).toBeUndefined();
-    expect(result[1]).toBeDefined();
+    expect(result.result).toBeUndefined();
+    expect(result.error).toBeDefined();
   });
 });
 
@@ -58,19 +58,19 @@ describe("Given a docker job service and docker not exist", () => {
 
   test("When calling with error and supported", async () => {
     const service = new DockerJobService();
-    await service.startDockerConnection();
+    await service.start();
 
     const result = await service.handle(MockDataDockerCalling);
-    expect(result[0]).toBeUndefined();
-    expect(result[1]).toBeDefined();
+    expect(result.result).toBeUndefined();
+    expect(result.error).toBeDefined();
   });
 
   test("When calling with error", async () => {
     const service = new DockerJobService();
-    await service.startDockerConnection();
+    await service.start();
 
     const result = await service.handle(MockDataDockerCallingUnsupported);
-    expect(result[0]).toBeUndefined();
-    expect(result[1]).toBeDefined();
+    expect(result.result).toBeUndefined();
+    expect(result.error).toBeDefined();
   });
 });
