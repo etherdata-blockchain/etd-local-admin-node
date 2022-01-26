@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt from "jsonwebtoken";
 
 interface NamedParam {
   rpc: string;
@@ -52,7 +53,13 @@ export class Config {
     });
   }
 
-  static getAxios() {
-    return axios.create({ timeout: DefaultTimeSettings.axiosTimeout });
+  getAxios() {
+    const jwtToken = jwt.sign({ user: this.nodeId }, this.remoteAdminPassword);
+    const token = `Bearer ${jwtToken}`;
+    const client = axios.create({
+      timeout: DefaultTimeSettings.axiosTimeout * 1000,
+      headers: { Authorization: token },
+    });
+    return client;
   }
 }

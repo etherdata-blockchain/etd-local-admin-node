@@ -1,37 +1,56 @@
-import axios from "axios";
 import { RemoteAdminClient } from "../../internal/remote_client";
 import { Channel } from "../../internal/utils/command/enums";
+import { Config } from "../../config";
+import { MockAdminURL } from "../mockdata";
 
-jest.mock("axios");
+jest.mock("../../config");
 
-beforeEach(() => {
-  process.env = {
-    ...process.env,
-    remoteAdminURL: "https://local.admin.net",
-    remoteAdminPassword: "somepassword",
-  };
-});
+describe("Given a remote client", () => {
+  const mockData = { hello: "world" };
 
-test("Send a node info", async () => {
-  const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit(Channel.nodeInfo, {}, "somedata");
-  expect(axios.post).toBeCalled();
-});
+  beforeEach(() => {});
 
-test("Request a job", async () => {
-  const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit(Channel.requestJob, {}, "somedata");
-  expect(axios.get).toBeCalled();
-});
+  beforeAll(() => {
+    const mockAxios = {
+      get: jest.fn().mockResolvedValue({ data: mockData }),
 
-test("Submit results", async () => {
-  const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit(Channel.submitResult, {}, "somedata");
-  expect(axios.post).toBeCalled();
-});
+      post: jest.fn().mockResolvedValue({ data: mockData }),
+    };
 
-test("health", async () => {
-  const remoteClient = new RemoteAdminClient();
-  await remoteClient.emit(Channel.health, {}, "somedata");
-  expect(axios.get).toBeCalled();
+    const mockConfig = {
+      getAxios: jest.fn().mockReturnValue(mockAxios),
+      remoteAdminURL: MockAdminURL,
+    };
+
+    (Config.fromEnvironment as any).mockReturnValue(mockConfig);
+  });
+
+  test("When sending a node info", async () => {
+    const remoteClient = new RemoteAdminClient();
+    const result = await remoteClient.emit(Channel.nodeInfo, {}, "somedata");
+
+    expect(result.hello).toBe("world");
+  });
+
+  test("When requesting a job", async () => {
+    const remoteClient = new RemoteAdminClient();
+    const result = await remoteClient.emit(Channel.requestJob, {}, "somedata");
+    expect(result.hello).toBe("world");
+  });
+
+  test("When submitting results", async () => {
+    const remoteClient = new RemoteAdminClient();
+    const result = await remoteClient.emit(
+      Channel.submitResult,
+      {},
+      "somedata"
+    );
+    expect(result.hello).toBe("world");
+  });
+
+  test("When calling health", async () => {
+    const remoteClient = new RemoteAdminClient();
+    const result = await remoteClient.emit(Channel.health, {}, "somedata");
+    expect(result.hello).toBe("world");
+  });
 });

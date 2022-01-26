@@ -35,25 +35,12 @@ export abstract class BaseHandler {
     Logger.info(`Starting services: ${this.pluginName}`);
   }
 
-  getPluginName() {
-    return this.pluginName;
-  }
-
   addPlugins(plugins: BaseHandler[]) {
     for (const plugin of plugins) {
       if (plugin.pluginName !== this.pluginName) {
         this.otherPlugin[plugin.pluginName] = plugin;
       }
     }
-  }
-
-  findPlugin<T extends BaseHandler>(pluginName: string): T {
-    const plugin = this.otherPlugin[pluginName];
-    if (plugin) {
-      // @ts-ignore
-      return plugin;
-    }
-    throw Error("Cannot find handlers with this name");
   }
 
   // eslint-disable-next-line class-methods-use-this

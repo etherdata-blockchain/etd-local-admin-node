@@ -3,4 +3,5 @@ export enum Channel {
   requestJob = "request-job",
   submitResult = "submit-result",
   health = "health",
+  updateTemplate = "update-template",
 }

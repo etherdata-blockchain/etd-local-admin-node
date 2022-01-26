@@ -18,6 +18,10 @@ const MockDataWeb3Calling: enums.Web3ValueType = {
 };
 
 describe("Given a web3 job service", () => {
+  beforeAll(() => {
+    jest.clearAllMocks();
+  });
+
   test("When calling without any error", async () => {
     (axios.post as any).mockResolvedValueOnce({
       data: {

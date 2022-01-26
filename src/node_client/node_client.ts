@@ -1,7 +1,5 @@
 import Logger from "@etherdata-blockchain/logger";
-import { PluginApp } from "../internal/handlers/basePlugin";
-import { StatusPlugin } from "../internal/handlers/status/status_plugin";
-import { JobPlugin } from "../internal/handlers/job/job_plugin";
+import { PluginApp } from "../internal/handlers/base_handler";
 import { TestPlugin } from "../internal/handlers/test/test_plugin";
 
 interface NamedParam {}

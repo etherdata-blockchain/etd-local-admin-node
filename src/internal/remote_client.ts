@@ -1,9 +1,9 @@
-import axios from "axios";
-import jwt from "jsonwebtoken";
 import Logger from "@etherdata-blockchain/logger";
 import HTTPMethod from "http-method-enum";
+import { interfaces } from "@etherdata-blockchain/common";
 import { Config } from "../config";
 import { Channel } from "./utils/command/enums";
+import { Urls } from "./enums/urls";
 
 export class RemoteAdminClient {
   config = Config.fromEnvironment();
@@ -15,20 +15,17 @@ export class RemoteAdminClient {
     authData: string,
     throwError?: boolean
   ) {
-    Logger.info("Emmiting");
     try {
       const url = new URL(this.getURL(channel), this.config.remoteAdminURL);
       const method = this.getMethod(channel);
-      const token = this.getAuthenticationToken(authData);
-      if (method === "POST") {
-        const response = await axios.post(url.toString(), data, {
-          headers: { Authorization: token },
-        });
+      const client = this.config.getAxios();
+
+      if (method === HTTPMethod.POST) {
+        const response = await client.post(url.toString(), data);
         return response.data;
       }
-      if (method === "GET") {
-        const response = await axios.get(url.toString(), {
-          headers: { Authorization: token },
+      if (method === HTTPMethod.GET) {
+        const response = await client.get(url.toString(), {
           data,
         });
         return response.data;
@@ -48,16 +45,20 @@ export class RemoteAdminClient {
    */
   private getURL(channel: Channel): string {
     if (channel === Channel.nodeInfo) {
-      return "/api/v1/device/status/send-status";
+      return Urls.status;
     }
     if (channel === Channel.requestJob) {
-      return "/api/v1/device/job/get-job";
+      return Urls.job;
     }
     if (channel === Channel.submitResult) {
-      return "/api/v1/device/result/submit-result";
+      return Urls.result;
     }
     if (channel === Channel.health) {
-      return "/api/v1/health";
+      return Urls.health;
+    }
+
+    if (channel === Channel.updateTemplate) {
+      return Urls.update;
     }
     throw Error();
   }
@@ -76,13 +77,17 @@ export class RemoteAdminClient {
     if (channel === Channel.health) {
       return HTTPMethod.GET;
     }
+
+    if (channel === Channel.updateTemplate) {
+      return HTTPMethod.GET;
+    }
   }
 
-  private getAuthenticationToken(authData: string) {
-    const jwtToken = jwt.sign(
-      { user: authData },
-      this.config.remoteAdminPassword
-    );
-    return `Bearer ${jwtToken}`;
+  async getUpdateTemplate(
+    templateId: string
+  ): Promise<interfaces.db.UpdateTemplateWithDockerImageDBInterface> {
+    const url = this.getURL(Channel.updateTemplate);
+    const result = await this.config.getAxios().get(`${url}/${templateId}`);
+    return result.data;
   }
 }

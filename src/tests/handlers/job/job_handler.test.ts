@@ -1,19 +1,18 @@
 import axios from "axios";
 import { enums, interfaces } from "@etherdata-blockchain/common";
+// @ts-ignore
+import nock from "nock";
+import { StatusCodes } from "http-status-codes";
 import { JobHandler } from "../../../internal/handlers/job/job_handler";
 import { DockerJobService } from "../../../internal/services/job/docker_job_service";
 import { Web3JobService } from "../../../internal/services/job/web3_job_service";
 import { UpdateTemplateJobService } from "../../../internal/services/job/update_template_job_service";
-import { RemoteAdminClient } from "../../../internal/remote_client";
-import { MockBlockNumber, MockError, MockResult } from "../../mockdata";
-import { Config } from "../../../config";
-import { JobResult } from "../../../internal/services/general_service";
-import clearAllMocks = jest.clearAllMocks;
+import { MockAdminURL, MockError, MockResult } from "../../mockdata";
+import { Urls } from "../../../internal/enums/urls";
 
 jest.mock("../../../internal/services/job/update_template_job_service");
 jest.mock("../../../internal/services/job/docker_job_service");
 jest.mock("../../../internal/services/job/web3_job_service");
-jest.mock("axios");
 
 const MockWeb3Job: interfaces.db.PendingJobDBInterface<enums.Web3ValueType> = {
   targetDeviceId: "",
@@ -62,7 +61,7 @@ describe("Given a job handler", () => {
   beforeAll(() => {
     process.env = {
       ...process.env,
-      remoteAdminURL: "https://mock_server.com",
+      remoteAdminURL: MockAdminURL,
       remoteAdminPassword: "test",
     };
   });
@@ -80,11 +79,9 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockWeb3Job,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockWeb3Job });
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
@@ -101,11 +98,10 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockWeb3Job,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockWeb3Job });
+
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
@@ -122,11 +118,10 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockDockerJob,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockDockerJob });
+
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
@@ -143,11 +138,10 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockDockerJob,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockDockerJob });
+
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
@@ -164,11 +158,9 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockUpdateTemplateJob,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
@@ -185,15 +177,19 @@ describe("Given a job handler", () => {
       }),
     }));
 
-    (axios.get as any).mockResolvedValueOnce({
-      data: {
-        job: MockUpdateTemplateJob,
-      },
-    });
+    nock(MockAdminURL)
+      .get(Urls.job)
+      .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
     const handler = new JobHandler();
     const result = await handler.requestJob();
     expect(result).toBeDefined();
     expect(result.result).toBe(MockError.updateError);
     expect(result.success).toBeFalsy();
+  });
+
+  test("When starting plugin", async () => {
+    nock(MockAdminURL).get(Urls.health).reply(StatusCodes.OK);
+    const handler = new JobHandler();
+    await handler.startPlugin();
   });
 });
