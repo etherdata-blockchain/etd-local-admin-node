@@ -50,7 +50,7 @@ describe("Given a update template job service", () => {
       .reply(StatusCodes.OK, MockUpdateTemplate);
 
     const service = new UpdateTemplateJobService();
-    const result = await service.handle("1");
+    const result = await service.handle({ templateId: "1" });
     expect(result.error).toBeUndefined();
     expect(result.result).toBe("success");
   });
@@ -61,7 +61,7 @@ describe("Given a update template job service", () => {
       .reply(StatusCodes.INTERNAL_SERVER_ERROR);
 
     const service = new UpdateTemplateJobService();
-    const result = await service.handle("1");
+    const result = await service.handle({ templateId: "1" });
     expect(result.error).toBeDefined();
     expect(result.result).toBeUndefined();
   });

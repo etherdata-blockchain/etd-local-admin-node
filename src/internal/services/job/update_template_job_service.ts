@@ -13,16 +13,18 @@ import { GeneralService, JobResult } from "../general_service";
  * Handle update template
  */
 // eslint-disable-next-line max-len
-export class UpdateTemplateJobService extends GeneralService<string> {
+export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplateValueType> {
   targetJobTaskType = JobTaskType.UpdateTemplate;
 
   /**
    * Given a update template's value, return a update result
    * @param value
    */
-  async handle(value: string): Promise<JobResult> {
+  async handle(value: enums.UpdateTemplateValueType): Promise<JobResult> {
     try {
-      const updateTemplate = await this.remoteClient.getUpdateTemplate(value);
+      const updateTemplate = await this.remoteClient.getUpdateTemplate(
+        value.templateId
+      );
 
       const dockerService = new DockerService();
       const plan = new DockerPlan(dockerService);
