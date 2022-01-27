@@ -1,13 +1,14 @@
 import Logger from "@etherdata-blockchain/logger";
-import { PluginApp } from "../internal/handlers/base_handler";
-import { TestPlugin } from "../internal/handlers/test/test_plugin";
+import { BaseHandler, PluginApp } from "../internal/handlers/base_handler";
 
-interface NamedParam {}
+interface NamedParam {
+  handlers: BaseHandler[];
+}
 
 export class NodeClient extends PluginApp {
-  constructor({}: NamedParam) {
+  constructor({ handlers }: NamedParam) {
     super();
-    this.plugins = [new TestPlugin()];
+    this.handlers = handlers;
     Logger.info("Start server");
   }
 }

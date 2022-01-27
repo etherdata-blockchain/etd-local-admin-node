@@ -69,18 +69,18 @@ export abstract class BaseHandler {
 }
 
 export abstract class PluginApp {
-  plugins: BaseHandler[];
+  handlers: BaseHandler[];
 
   async startApp() {
-    for (const plugin of this.plugins) {
-      plugin.addPlugins(this.plugins);
+    for (const plugin of this.handlers) {
+      plugin.addPlugins(this.handlers);
     }
 
-    for (const plugin of this.plugins) {
+    for (const plugin of this.handlers) {
       await plugin.startPlugin();
     }
 
-    for (const plugin of this.plugins) {
+    for (const plugin of this.handlers) {
       for (const task of plugin.periodicTasks) {
         cron.schedule(`'*/${task.interval} * * * * *'`, async () => {
           await task.job();

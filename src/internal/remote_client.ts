@@ -86,8 +86,13 @@ export class RemoteAdminClient {
   async getUpdateTemplate(
     templateId: string
   ): Promise<interfaces.db.UpdateTemplateWithDockerImageDBInterface> {
-    const url = this.getURL(Channel.updateTemplate);
-    const result = await this.config.getAxios().get(`${url}/${templateId}`);
+    const url = new URL(
+      this.getURL(Channel.updateTemplate),
+      this.config.remoteAdminURL
+    );
+    const result = await this.config
+      .getAxios()
+      .get(`${url.toString()}/${templateId}`);
     return result.data;
   }
 }

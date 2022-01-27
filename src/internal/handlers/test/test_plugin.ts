@@ -3,7 +3,7 @@ import { utils } from "@etherdata-blockchain/common";
 import moment from "moment";
 import { BaseHandler, RegisteredPlugin } from "../base_handler";
 
-export class TestPlugin extends BaseHandler {
+export class TestHandler extends BaseHandler {
   protected pluginName: RegisteredPlugin = RegisteredPlugin.testPlugin;
 
   constructor() {
@@ -24,13 +24,13 @@ export class TestPlugin extends BaseHandler {
 
   async printData() {
     const start = moment();
-    await utils.sleep(5000);
+    await utils.sleep(2000);
     Logger.info(`[1] Start at ${start}`);
   }
 
   async printData2() {
     const start = moment();
-    await utils.sleep(5000);
+    await utils.sleep(2000);
     Logger.info(`[2] Start at ${start}`);
   }
 }
