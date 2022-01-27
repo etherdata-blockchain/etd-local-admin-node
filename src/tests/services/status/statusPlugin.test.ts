@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { StatusPlugin } from "../../../internal/handlers/status/status_handler";
+import { StatusHandler } from "../../../internal/handlers/status/status_handler";
 import { RemoteAdminClient } from "../../../internal/remote_client";
 
 jest.mock("../../../internal/remote_client", () => ({
@@ -39,7 +39,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Docker is not found and etd client is not on system and initialize Plugin", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(false);
     // @ts-ignore
@@ -52,7 +52,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Docker is found and can be initialized", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(true);
     // @ts-ignore
@@ -63,7 +63,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Send status with docker and web3's info", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(true);
     // @ts-ignore

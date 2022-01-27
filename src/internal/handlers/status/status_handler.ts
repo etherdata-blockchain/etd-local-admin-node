@@ -5,7 +5,7 @@ import { DockerStatusService } from "../../services/status/docker_status_service
 import { DefaultTimeSettings } from "../../../config";
 import { Channel } from "../../utils/command/enums";
 
-export class StatusPlugin extends BaseHandler {
+export class StatusHandler extends BaseHandler {
   protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
 
   web3StatusService: Web3StatusService;

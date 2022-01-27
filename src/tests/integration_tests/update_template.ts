@@ -1,19 +1,15 @@
 import { enums, interfaces, utils } from "@etherdata-blockchain/common";
 // @ts-ignore
 import nock from "nock";
-import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 // @ts-ignore
 import Docker from "dockerode";
 import * as fs from "fs";
+import { assert, expect, should } from "chai";
 import { MockAdminURL } from "../mockdata";
 import { Urls } from "../../internal/enums/urls";
-import { Config } from "../../config";
-import { UpdateTemplateJobService } from "../../internal/services/job/update_template_job_service";
 import { NodeClient } from "../../node_client/node_client";
 import { JobHandler } from "../../internal/handlers/job/job_handler";
-
-jest.mock("../../config");
 
 const containerName = "hello-world-test";
 
@@ -69,52 +65,38 @@ async function deleteMockContainer(name: string) {
   }
 }
 
-describe("Given a update template", () => {
+export default async function run() {
   const docker = new Docker();
+  process.env = {
+    ...process.env,
+    remoteAdminURL: MockAdminURL,
+    remoteAdminPassword: "password",
+  };
 
-  beforeAll(async () => {
-    const mockConfig = {
-      getAxios: () => axios.create(),
-      remoteAdminURL: MockAdminURL,
-    };
+  if (fs.existsSync("stack.lock.yaml")) {
+    fs.unlinkSync("stack.lock.yaml");
+  }
+  nock(MockAdminURL)
+    .get(`${Urls.update}/1`)
+    .reply(StatusCodes.OK, MockUpdateTemplate);
 
-    (Config.fromEnvironment as any).mockReturnValue(mockConfig);
-  });
+  nock(MockAdminURL)
+    .get(Urls.job)
+    .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
 
-  afterEach(async () => {
-    await deleteMockContainer(containerName);
-  });
+  nock(MockAdminURL).get(Urls.result).reply(StatusCodes.OK);
 
-  test.skip(
-    "When trying to set up docker without any existing container",
-    async () => {
-      if (fs.existsSync("stack.lock.yaml")) {
-        fs.unlinkSync("stack.lock.yaml");
-      }
-      nock(MockAdminURL)
-        .get(`${Urls.update}/1`)
-        .reply(StatusCodes.OK, MockUpdateTemplate);
+  nock(MockAdminURL).get(Urls.health).reply(StatusCodes.OK);
 
-      nock(MockAdminURL)
-        .get(Urls.job)
-        .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
+  const client = new NodeClient({ handlers: [new JobHandler()] });
 
-      nock(MockAdminURL).get(Urls.result).reply(StatusCodes.OK);
+  await client.startApp();
 
-      nock(MockAdminURL).get(Urls.health).reply(StatusCodes.OK);
+  await utils.sleep(60 * 1000);
 
-      const client = new NodeClient({ handlers: [new JobHandler()] });
-
-      await client.startApp();
-
-      await utils.sleep(15 * 1000);
-
-      const containers = await docker.listContainers({ all: true });
-      const found = containers.find((c) =>
-        c.Names.includes(`/${containerName}`)
-      );
-      expect(found).toBeDefined();
-    },
-    60 * 1000
-  );
-});
+  const containers = await docker.listContainers({ all: true });
+  const found = containers.find((c) => c.Names.includes(`/${containerName}`));
+  assert.isDefined(found);
+  await deleteMockContainer(containerName);
+  process.exit();
+}
