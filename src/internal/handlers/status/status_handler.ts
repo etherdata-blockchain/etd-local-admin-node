@@ -41,27 +41,34 @@ export class StatusHandler extends BaseHandler {
   }
 
   async sendNodeInfo(): Promise<void> {
-    const latestBlockNumber =
-      await this.web3StatusService.getLatestBlockNumber();
-    const webThreeInfo = await this.web3StatusService.prepareWebThreeInfo(
-      latestBlockNumber
-    );
-    const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
+    try {
+      Logger.info("Sending node info");
+      const latestBlockNumber =
+        await this.web3StatusService.getLatestBlockNumber();
+      // Only check latest web three info when latest block number is defined
+      const webThreeInfo =
+        latestBlockNumber !== undefined
+          ? await this.web3StatusService.prepareWebThreeInfo(latestBlockNumber)
+          : undefined;
+      const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
 
-    const data = await this.remoteAdminClient.emit(
-      Channel.nodeInfo,
-      {
-        key: this.web3StatusService.prevKey,
-        data: webThreeInfo,
-        nodeName: this.config.nodeName,
-        adminVersion: global.version,
-        docker: { ...dockerInfo },
-      },
-      this.config.nodeId
-    );
+      const data = await this.remoteAdminClient.emit(
+        Channel.nodeInfo,
+        {
+          key: this.web3StatusService.prevKey,
+          data: webThreeInfo,
+          nodeName: this.config.nodeName,
+          adminVersion: global.version,
+          docker: { ...dockerInfo },
+        },
+        this.config.nodeId
+      );
 
-    if (data) {
-      this.web3StatusService.prevKey = data.key;
+      if (data) {
+        this.web3StatusService.prevKey = data.key;
+      }
+    } catch (e) {
+      Logger.error(e);
     }
   }
 

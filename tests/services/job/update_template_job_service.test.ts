@@ -4,11 +4,11 @@ import { StatusCodes } from "http-status-codes";
 import { interfaces } from "@etherdata-blockchain/common";
 import axios from "axios";
 import { MockAdminURL } from "../../mockdata";
-import { Urls } from "../../../internal/enums/urls";
-import { UpdateTemplateJobService } from "../../../internal/services/job/update_template_job_service";
-import { Config } from "../../../config";
+import { UpdateTemplateJobService } from "../../../src/internal/services/job/update_template_job_service";
+import { Urls } from "../../../src/internal/enums/urls";
+import { Config } from "../../../src/config";
 
-jest.mock("../../../config");
+jest.mock("../../../src/config");
 jest.mock("@etherdata-blockchain/docker-plan");
 
 const MockImageStack = {

@@ -1,5 +1,4 @@
-import { utils } from "@etherdata-blockchain/common";
-import { TestHandler } from "../../../internal/handlers/test/test_plugin";
+import { TestHandler } from "../../../src/internal/handlers/test/test_plugin";
 
 describe("Given a test plugin", () => {
   test("When calling some function", () => {

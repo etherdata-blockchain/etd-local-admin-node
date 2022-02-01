@@ -5,11 +5,11 @@ import { StatusCodes } from "http-status-codes";
 // @ts-ignore
 import Docker from "dockerode";
 import * as fs from "fs";
-import { assert, expect, should } from "chai";
+import { assert } from "chai";
 import { MockAdminURL } from "../mockdata";
-import { Urls } from "../../internal/enums/urls";
-import { NodeClient } from "../../node_client/node_client";
-import { JobHandler } from "../../internal/handlers/job/job_handler";
+import { Urls } from "../../src/internal/enums/urls";
+import { NodeClient } from "../../src/node_client/node_client";
+import { JobHandler } from "../../src/internal/handlers/job/job_handler";
 
 const containerName = "hello-world-test";
 

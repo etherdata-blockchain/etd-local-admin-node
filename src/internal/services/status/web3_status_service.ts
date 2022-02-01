@@ -27,8 +27,12 @@ export class Web3StatusService {
   /**
    * Return the latest block number
    */
-  async getLatestBlockNumber(): Promise<number> {
-    return this.web3?.eth.getBlockNumber();
+  async getLatestBlockNumber(): Promise<number | undefined> {
+    try {
+      return await this.web3?.eth.getBlockNumber();
+    } catch (e) {
+      return undefined;
+    }
   }
 
   /**

@@ -1,5 +1,5 @@
-import { NodeClient } from "../../node_client/node_client";
-import { TestHandler } from "../../internal/handlers/test/test_plugin";
+import { NodeClient } from "../../src/node_client/node_client";
+import { TestHandler } from "../../src/internal/handlers/test/test_plugin";
 
 describe("Given a base handler", () => {
   test("When calling start", async () => {

@@ -2,7 +2,7 @@ import { enums } from "@etherdata-blockchain/common";
 import { Buffer } from "buffer";
 import * as fs from "fs";
 import { MockDockerLogs } from "../../mockdata";
-import { DockerJobService } from "../../../internal/services/job/docker_job_service";
+import { DockerJobService } from "../../../src/internal/services/job/docker_job_service";
 
 const container = {
   id: "1",

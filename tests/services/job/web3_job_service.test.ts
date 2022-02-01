@@ -1,11 +1,11 @@
 import axios from "axios";
 import { enums } from "@etherdata-blockchain/common";
-import { Web3JobService } from "../../../internal/services/job/web3_job_service";
+import { Web3JobService } from "../../../src/internal/services/job/web3_job_service";
 import { MockBlockNumber, MockError } from "../../mockdata";
-import { CoinbaseHandler } from "../../../internal/utils/command";
+import { CoinbaseHandler } from "../../../src/internal/utils/command";
 
 jest.mock("axios");
-jest.mock("../../../internal/utils/command", () => ({
+jest.mock("../../../src/internal/utils/command", () => ({
   CoinbaseHandler: jest.fn().mockImplementation(function () {
     this.handle = jest.fn(() => "abc=abc");
     this.canHandle = jest.fn().mockResolvedValueOnce(true);

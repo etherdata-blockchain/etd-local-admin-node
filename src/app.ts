@@ -1,5 +1,13 @@
 import { config } from "dotenv";
 import Logger from "@etherdata-blockchain/logger";
+import Docker from "dockerode";
+import {
+  ContainerStack,
+  DockerPlan,
+  ImageStack,
+} from "@etherdata-blockchain/docker-plan";
+import DockerService from "@etherdata-blockchain/docker-plan/dist/internal/services/docker";
+import { StackInterface } from "@etherdata-blockchain/docker-plan/dist/internal/stack/stack";
 import { NodeClient } from "./node_client/node_client";
 // @ts-ignore
 import pjson from "../package.json";

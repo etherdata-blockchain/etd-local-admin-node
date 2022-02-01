@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { CoinbaseHandler } from "../../internal/utils/command";
+import { CoinbaseHandler } from "../../src/internal/utils/command";
 
 jest.mock("fs");
 jest.mock("chalk");

@@ -1,9 +1,9 @@
-import { RemoteAdminClient } from "../../internal/remote_client";
-import { Channel } from "../../internal/utils/command/enums";
-import { Config } from "../../config";
+import { RemoteAdminClient } from "../../src/internal/remote_client";
+import { Channel } from "../../src/internal/utils/command/enums";
+import { Config } from "../../src/config";
 import { MockAdminURL } from "../mockdata";
 
-jest.mock("../../config");
+jest.mock("../../src/config");
 
 describe("Given a remote client", () => {
   const mockData = { hello: "world" };

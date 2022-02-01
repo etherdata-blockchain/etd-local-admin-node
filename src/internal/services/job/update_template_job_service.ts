@@ -7,6 +7,8 @@ import {
 import DockerService from "@etherdata-blockchain/docker-plan/dist/internal/services/docker";
 import { StackInterface } from "@etherdata-blockchain/docker-plan/dist/internal/stack/stack";
 import { JobTaskType } from "@etherdata-blockchain/common/dist/enums";
+import Docker from "dockerode";
+import Logger from "@etherdata-blockchain/logger";
 import { GeneralService, JobResult } from "../general_service";
 
 /**
@@ -15,6 +17,8 @@ import { GeneralService, JobResult } from "../general_service";
 // eslint-disable-next-line max-len
 export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplateValueType> {
   targetJobTaskType = JobTaskType.UpdateTemplate;
+
+  dockerService: DockerService | undefined;
 
   /**
    * Given a update template's value, return a update result
@@ -26,7 +30,8 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
         value.templateId
       );
 
-      const dockerService = new DockerService();
+      const docker = new Docker();
+      const dockerService = new DockerService(docker);
       const plan = new DockerPlan(dockerService);
 
       const images: ImageStack[] = updateTemplate.imageStacks.map((i) => ({
@@ -51,14 +56,19 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
       };
 
       await plan.create(stacks);
-      await plan.apply();
-      return { result: "success", error: undefined };
+      const result = await plan.apply();
+      return {
+        result: result.success ? "success" : undefined,
+        error: result.error,
+      };
     } catch (err) {
+      Logger.error(err);
       return { result: undefined, error: `${err}` };
     }
   }
 
-  start(): Promise<any> {
-    return Promise.resolve(undefined);
+  async start(): Promise<any> {
+    const docker = new Docker();
+    this.dockerService = new DockerService(docker);
   }
 }

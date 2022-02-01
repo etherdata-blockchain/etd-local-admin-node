@@ -1,18 +1,17 @@
-import axios from "axios";
 import { enums, interfaces } from "@etherdata-blockchain/common";
 // @ts-ignore
 import nock from "nock";
 import { StatusCodes } from "http-status-codes";
-import { JobHandler } from "../../../internal/handlers/job/job_handler";
-import { DockerJobService } from "../../../internal/services/job/docker_job_service";
-import { Web3JobService } from "../../../internal/services/job/web3_job_service";
-import { UpdateTemplateJobService } from "../../../internal/services/job/update_template_job_service";
+import { JobHandler } from "../../../src/internal/handlers/job/job_handler";
+import { DockerJobService } from "../../../src/internal/services/job/docker_job_service";
+import { Web3JobService } from "../../../src/internal/services/job/web3_job_service";
+import { UpdateTemplateJobService } from "../../../src/internal/services/job/update_template_job_service";
 import { MockAdminURL, MockError, MockResult } from "../../mockdata";
-import { Urls } from "../../../internal/enums/urls";
+import { Urls } from "../../../src/internal/enums/urls";
 
-jest.mock("../../../internal/services/job/update_template_job_service");
-jest.mock("../../../internal/services/job/docker_job_service");
-jest.mock("../../../internal/services/job/web3_job_service");
+jest.mock("../../../src/internal/services/job/update_template_job_service");
+jest.mock("../../../src/internal/services/job/docker_job_service");
+jest.mock("../../../src/internal/services/job/web3_job_service");
 
 const MockWeb3Job: interfaces.db.PendingJobDBInterface<enums.Web3ValueType> = {
   targetDeviceId: "",
