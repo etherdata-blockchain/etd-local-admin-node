@@ -2,15 +2,15 @@ import Logger from "@etherdata-blockchain/logger";
 import { BaseHandler, RegisteredPlugin } from "../base_handler";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
-import { DefaultTimeSettings } from "../../../config";
-import { Channel } from "../../utils/command/enums";
+import { DefaultSettings } from "../../../config";
+import { Channel } from "../../enums/channels";
 
 export class StatusHandler extends BaseHandler {
-  protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
-
   web3StatusService: Web3StatusService;
 
   dockerStatusService: DockerStatusService;
+
+  protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
 
   constructor() {
     super();
@@ -19,7 +19,7 @@ export class StatusHandler extends BaseHandler {
     this.periodicTasks = [
       {
         name: "latest-node-info",
-        interval: DefaultTimeSettings.statusInterval,
+        interval: DefaultSettings.statusInterval,
         job: this.sendNodeInfo.bind(this),
       },
     ];

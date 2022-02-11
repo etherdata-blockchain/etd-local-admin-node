@@ -3,6 +3,8 @@ import nock from "nock";
 import { StatusCodes } from "http-status-codes";
 import { interfaces } from "@etherdata-blockchain/common";
 import axios from "axios";
+import { DockerPlan } from "@etherdata-blockchain/docker-plan";
+import DockerService from "@etherdata-blockchain/docker-plan/dist/internal/services/docker";
 import { MockAdminURL } from "../../mockdata";
 import { UpdateTemplateJobService } from "../../../src/internal/services/job/update_template_job_service";
 import { Urls } from "../../../src/internal/enums/urls";
@@ -12,6 +14,8 @@ jest.mock("../../../src/config");
 jest.mock("@etherdata-blockchain/docker-plan");
 
 const MockImageStack = {
+  image: "hello-world",
+  tag: "latest",
   imageName: "hello-world",
   tags: {
     tag: "latest",
@@ -48,6 +52,14 @@ describe("Given a update template job service", () => {
     nock(MockAdminURL)
       .get(`${Urls.update}/1`)
       .reply(StatusCodes.OK, MockUpdateTemplate);
+
+    (DockerPlan as any).mockImplementation(() => ({
+      apply: jest.fn().mockReturnValue({
+        success: true,
+        error: undefined,
+      }),
+      create: jest.fn().mockReturnValue({}),
+    }));
 
     const service = new UpdateTemplateJobService();
     const result = await service.handle({ templateId: "1" });

@@ -3,17 +3,17 @@ import { interfaces } from "@etherdata-blockchain/common";
 import { BaseHandler, RegisteredPlugin } from "../base_handler";
 import { DockerJobService } from "../../services/job/docker_job_service";
 import { Web3JobService } from "../../services/job/web3_job_service";
-import { DefaultTimeSettings } from "../../../config";
-import { Channel } from "../../utils/command/enums";
+import { DefaultSettings } from "../../../config";
+import { Channel } from "../../enums/channels";
 import { UpdateTemplateJobService } from "../../services/job/update_template_job_service";
 import { GeneralService, JobResult } from "../../services/general_service";
 
 export class JobHandler extends BaseHandler {
   prevKey: string | undefined;
 
-  protected pluginName: RegisteredPlugin = RegisteredPlugin.jobPlugin;
-
   services: GeneralService<any>[];
+
+  protected pluginName: RegisteredPlugin = RegisteredPlugin.jobPlugin;
 
   constructor() {
     super();
@@ -26,7 +26,7 @@ export class JobHandler extends BaseHandler {
     this.periodicTasks = [
       {
         name: "Get pending job",
-        interval: DefaultTimeSettings.jobInterval,
+        interval: DefaultSettings.jobInterval,
         job: this.requestJob.bind(this),
       },
     ];

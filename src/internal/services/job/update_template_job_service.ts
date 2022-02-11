@@ -1,4 +1,4 @@
-import { enums, interfaces } from "@etherdata-blockchain/common";
+import { enums } from "@etherdata-blockchain/common";
 import {
   ContainerStack,
   DockerPlan,

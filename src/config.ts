@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import axiosRetry from "axios-retry";
 
 interface NamedParam {
   rpc: string;
@@ -9,10 +10,23 @@ interface NamedParam {
   nodeId: string;
 }
 
-export const DefaultTimeSettings = {
+export const DefaultSettings = {
+  /**
+   * Axios timeout in seconds
+   */
   axiosTimeout: 10,
+  /**
+   * Status checking interval in seconds
+   */
   statusInterval: 15,
+  /**
+   * Job checking interval in seconds
+   */
   jobInterval: 15,
+  /**
+   * Number of axios request times
+   */
+  axiosRetryTimes: 4,
 };
 
 export class Config {
@@ -57,8 +71,13 @@ export class Config {
     const jwtToken = jwt.sign({ user: this.nodeId }, this.remoteAdminPassword);
     const token = `Bearer ${jwtToken}`;
     const client = axios.create({
-      timeout: DefaultTimeSettings.axiosTimeout * 1000,
+      timeout: DefaultSettings.axiosTimeout * 1000,
       headers: { Authorization: token },
+    });
+    axiosRetry(client, {
+      retries: DefaultSettings.axiosRetryTimes,
+      retryDelay: axiosRetry.exponentialDelay,
+      shouldResetTimeout: true,
     });
     return client;
   }

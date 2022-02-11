@@ -1,7 +1,7 @@
 import { RemoteAdminClient } from "../../src/internal/remote_client";
-import { Channel } from "../../src/internal/utils/command/enums";
 import { Config } from "../../src/config";
 import { MockAdminURL } from "../mockdata";
+import { Channel } from "../../src/internal/enums/channels";
 
 jest.mock("../../src/config");
 
