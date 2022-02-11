@@ -7,6 +7,7 @@ export interface PeriodicTask {
   name: string;
   // In seconds
   interval: number;
+
   job(): Promise<void>;
 }
 

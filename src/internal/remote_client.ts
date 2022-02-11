@@ -2,7 +2,7 @@ import Logger from "@etherdata-blockchain/logger";
 import HTTPMethod from "http-method-enum";
 import { interfaces } from "@etherdata-blockchain/common";
 import { Config } from "../config";
-import { Channel } from "./utils/command/enums";
+import { Channel } from "./enums/channels";
 import { Urls } from "./enums/urls";
 
 export class RemoteAdminClient {
@@ -36,6 +36,19 @@ export class RemoteAdminClient {
       }
       Logger.error(`${e}: ${e.data}`);
     }
+  }
+
+  async getUpdateTemplate(
+    templateId: string
+  ): Promise<interfaces.db.UpdateTemplateWithDockerImageDBInterface> {
+    const url = new URL(
+      this.getURL(Channel.updateTemplate),
+      this.config.remoteAdminURL
+    );
+    const result = await this.config
+      .getAxios()
+      .get(`${url.toString()}/${templateId}`);
+    return result.data;
   }
 
   /**
@@ -81,18 +94,5 @@ export class RemoteAdminClient {
     if (channel === Channel.updateTemplate) {
       return HTTPMethod.GET;
     }
-  }
-
-  async getUpdateTemplate(
-    templateId: string
-  ): Promise<interfaces.db.UpdateTemplateWithDockerImageDBInterface> {
-    const url = new URL(
-      this.getURL(Channel.updateTemplate),
-      this.config.remoteAdminURL
-    );
-    const result = await this.config
-      .getAxios()
-      .get(`${url.toString()}/${templateId}`);
-    return result.data;
   }
 }

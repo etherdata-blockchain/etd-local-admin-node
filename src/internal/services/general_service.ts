@@ -11,14 +11,14 @@ export abstract class GeneralService<T> {
   config = Config.fromEnvironment();
 
   /**
-   * Remote client for any remote connection
-   */
-  protected remoteClient = new RemoteAdminClient();
-
-  /**
    * What kind of job can this service handle
    */
   abstract targetJobTaskType: enums.JobTaskType;
+
+  /**
+   * Remote client for any remote connection
+   */
+  protected remoteClient = new RemoteAdminClient();
 
   canHandle(jobType: enums.JobTaskType): boolean {
     if (this.targetJobTaskType === jobType) {
