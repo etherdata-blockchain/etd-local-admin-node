@@ -2,5 +2,11 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testPathIgnorePatterns: ["dist", "packages"],
+  testPathIgnorePatterns: ["dist"],
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!<rootDir>/node_modules/",
+    "!index.ts",
+  ],
+  testTimeout: 20000,
 };

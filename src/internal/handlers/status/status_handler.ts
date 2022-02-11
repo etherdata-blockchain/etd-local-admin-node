@@ -1,10 +1,12 @@
-import Logger from "../../../logger";
-import { BasePlugin, RegisteredPlugin } from "../basePlugin";
+import Logger from "@etherdata-blockchain/logger";
+import { BaseHandler, RegisteredPlugin } from "../base_handler";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
+import { DefaultTimeSettings } from "../../../config";
+import { Channel } from "../../utils/command/enums";
 
-export class StatusPlugin extends BasePlugin {
-  protected pluginName: RegisteredPlugin = "statusPlugin";
+export class StatusHandler extends BaseHandler {
+  protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
 
   web3StatusService: Web3StatusService;
 
@@ -17,7 +19,7 @@ export class StatusPlugin extends BasePlugin {
     this.periodicTasks = [
       {
         name: "latest-node-info",
-        interval: 15,
+        interval: DefaultTimeSettings.statusInterval,
         job: this.sendNodeInfo.bind(this),
       },
     ];
@@ -29,7 +31,7 @@ export class StatusPlugin extends BasePlugin {
       await this.startWeb3Connection();
       await this.startDockerConnection();
       await this.remoteAdminClient.emit(
-        "node-info",
+        Channel.nodeInfo,
         { nodeName: this.config.nodeName, key: this.web3StatusService.prevKey },
         this.config.nodeId
       );
@@ -39,27 +41,34 @@ export class StatusPlugin extends BasePlugin {
   }
 
   async sendNodeInfo(): Promise<void> {
-    const latestBlockNumber =
-      await this.web3StatusService.getLatestBlockNumber();
-    const webThreeInfo = await this.web3StatusService.prepareWebThreeInfo(
-      latestBlockNumber
-    );
-    const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
+    try {
+      Logger.info("Sending node info");
+      const latestBlockNumber =
+        await this.web3StatusService.getLatestBlockNumber();
+      // Only check latest web three info when latest block number is defined
+      const webThreeInfo =
+        latestBlockNumber !== undefined
+          ? await this.web3StatusService.prepareWebThreeInfo(latestBlockNumber)
+          : undefined;
+      const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
 
-    const data = await this.remoteAdminClient.emit(
-      "node-info",
-      {
-        key: this.web3StatusService.prevKey,
-        data: webThreeInfo,
-        nodeName: this.config.nodeName,
-        adminVersion: global.version,
-        docker: { ...dockerInfo },
-      },
-      this.config.nodeId
-    );
+      const data = await this.remoteAdminClient.emit(
+        Channel.nodeInfo,
+        {
+          key: this.web3StatusService.prevKey,
+          data: webThreeInfo,
+          nodeName: this.config.nodeName,
+          adminVersion: global.version,
+          docker: { ...dockerInfo },
+        },
+        this.config.nodeId
+      );
 
-    if (data) {
-      this.web3StatusService.prevKey = data.key;
+      if (data) {
+        this.web3StatusService.prevKey = data.key;
+      }
+    } catch (e) {
+      Logger.error(e);
     }
   }
 

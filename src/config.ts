@@ -1,3 +1,6 @@
+import axios from "axios";
+import jwt from "jsonwebtoken";
+
 interface NamedParam {
   rpc: string;
   remoteAdminURL: string;
@@ -5,6 +8,12 @@ interface NamedParam {
   nodeName: string;
   nodeId: string;
 }
+
+export const DefaultTimeSettings = {
+  axiosTimeout: 10,
+  statusInterval: 15,
+  jobInterval: 15,
+};
 
 export class Config {
   rpc: string;
@@ -42,5 +51,15 @@ export class Config {
       nodeName: process.env.etd_node_name!,
       nodeId: process.env.etd_node_id!,
     });
+  }
+
+  getAxios() {
+    const jwtToken = jwt.sign({ user: this.nodeId }, this.remoteAdminPassword);
+    const token = `Bearer ${jwtToken}`;
+    const client = axios.create({
+      timeout: DefaultTimeSettings.axiosTimeout * 1000,
+      headers: { Authorization: token },
+    });
+    return client;
   }
 }

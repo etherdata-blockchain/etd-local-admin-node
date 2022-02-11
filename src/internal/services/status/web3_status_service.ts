@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import { Admin } from "web3-eth-admin";
-import { Web3DataInfo } from "../../interfaces/web3DataInfo";
-import Logger from "../../../logger";
+import Logger from "@etherdata-blockchain/logger";
+import { interfaces } from "@etherdata-blockchain/common";
 import { Config } from "../../../config";
 
 export class Web3StatusService {
@@ -27,8 +27,12 @@ export class Web3StatusService {
   /**
    * Return the latest block number
    */
-  async getLatestBlockNumber(): Promise<number> {
-    return this.web3?.eth.getBlockNumber();
+  async getLatestBlockNumber(): Promise<number | undefined> {
+    try {
+      return await this.web3?.eth.getBlockNumber();
+    } catch (e) {
+      return undefined;
+    }
   }
 
   /**
@@ -37,7 +41,7 @@ export class Web3StatusService {
    */
   async prepareWebThreeInfo(
     blockNumber: number
-  ): Promise<Web3DataInfo | undefined> {
+  ): Promise<interfaces.Web3DataInfo | undefined> {
     if (this.web3 && this.web3Admin) {
       let coinbase: string | undefined;
       let balance: string | undefined;
@@ -74,12 +78,15 @@ export class Web3StatusService {
         try {
           coinbase = await this.web3.eth.getCoinbase();
           balance = await this.web3.eth.getBalance(coinbase);
-        } catch (err) {}
+        } catch (err) {
+          Logger.error(`${err}`);
+        }
 
         return {
           ...currentBlock,
           balance,
           systemInfo: {
+            // @ts-ignore
             name: this.config.nodeName,
             peerCount,
             isMining,

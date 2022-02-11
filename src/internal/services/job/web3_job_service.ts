@@ -1,14 +1,14 @@
 import axios from "axios";
+import { enums } from "@etherdata-blockchain/common";
+import { randomUUID } from "crypto";
 import { CoinbaseHandler } from "../../utils/command";
 import { Config } from "../../../config";
+import { GeneralService, JobResult } from "../general_service";
 
-interface Web3Value {
-  method: string;
-  params: string[];
-}
-
-export class Web3JobService {
+export class Web3JobService extends GeneralService<enums.Web3ValueType> {
   config = Config.fromEnvironment();
+
+  targetJobTaskType = enums.JobTaskType.Web3;
 
   /**
    * Will return a array includes result or error
@@ -16,15 +16,12 @@ export class Web3JobService {
    * @param params
    * @private
    */
-  async handleWeb3Job({
-    method,
-    params,
-  }: Web3Value): Promise<[string | undefined, string | undefined]> {
+  async handle({ method, params }: enums.Web3ValueType): Promise<JobResult> {
     const result = await axios.post(this.config.rpc, {
       method,
       params,
       jsonrpc: "2.0",
-      id: 1,
+      id: randomUUID(),
     });
 
     if (!result.data.error) {
@@ -36,9 +33,13 @@ export class Web3JobService {
         });
       }
 
-      return [result.data.result, undefined];
+      return { result: result.data.result, error: undefined };
     }
 
-    return [undefined, result.data.error.message];
+    return { result: undefined, error: result.data.error.message };
+  }
+
+  start(): Promise<any> {
+    return Promise.resolve(undefined);
   }
 }

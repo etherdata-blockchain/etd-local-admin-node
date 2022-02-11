@@ -1,8 +1,8 @@
 import * as fs from "fs";
-import { StatusPlugin } from "../../internal/handlers/status/statusPlugin";
-import { RemoteAdminClient } from "../../internal/handlers/job/admin-client";
+import { StatusHandler } from "../../../src/internal/handlers/status/status_handler";
+import { RemoteAdminClient } from "../../../src/internal/remote_client";
 
-jest.mock("../../internal/handlers/job/admin-client", () => ({
+jest.mock("../../../src/internal/remote_client", () => ({
   RemoteAdminClient: jest.fn().mockImplementation(function () {
     this.emit = jest.fn(() => ({ key: "abcde" }));
   }),
@@ -39,7 +39,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Docker is not found and etd client is not on system and initialize Plugin", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(false);
     // @ts-ignore
@@ -52,7 +52,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Docker is found and can be initialized", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(true);
     // @ts-ignore
@@ -63,7 +63,7 @@ describe("Given a status plugin", () => {
   });
 
   test("Send status with docker and web3's info", async () => {
-    const statusPlugin = new StatusPlugin();
+    const statusPlugin = new StatusHandler();
     // @ts-ignore
     fs.existsSync.mockReturnValue(true);
     // @ts-ignore

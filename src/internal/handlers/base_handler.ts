@@ -1,22 +1,25 @@
+import Logger from "@etherdata-blockchain/logger";
+import cron from "node-cron";
 import { Config } from "../../config";
-import { RemoteAdminClient } from "./job/admin-client";
-import Logger from "../../logger";
+import { RemoteAdminClient } from "../remote_client";
 
 export interface PeriodicTask {
   name: string;
   // In seconds
   interval: number;
-  // eslint-disable-next-line no-undef
-  timer?: NodeJS.Timer;
-
   job(): Promise<void>;
 }
 
-export type RegisteredPlugin = "statusPlugin" | "jobPlugin";
+// eslint-disable-next-line no-shadow
+export enum RegisteredPlugin {
+  jobPlugin = "job-plugin",
+  statusPlugin = "status-plugin",
+  testPlugin = "test-plugin",
+}
 
-export abstract class BasePlugin {
+export abstract class BaseHandler {
   // eslint-disable-next-line no-use-before-define
-  otherPlugin: { [key: string]: BasePlugin } = {};
+  otherPlugin: { [key: string]: BaseHandler } = {};
 
   periodicTasks: PeriodicTask[];
 
@@ -32,25 +35,12 @@ export abstract class BasePlugin {
     Logger.info(`Starting services: ${this.pluginName}`);
   }
 
-  getPluginName() {
-    return this.pluginName;
-  }
-
-  addPlugins(plugins: BasePlugin[]) {
+  addPlugins(plugins: BaseHandler[]) {
     for (const plugin of plugins) {
       if (plugin.pluginName !== this.pluginName) {
         this.otherPlugin[plugin.pluginName] = plugin;
       }
     }
-  }
-
-  findPlugin<T extends BasePlugin>(pluginName: string): T {
-    const plugin = this.otherPlugin[pluginName];
-    if (plugin) {
-      // @ts-ignore
-      return plugin;
-    }
-    throw Error("Cannot find handlers with this name");
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -79,35 +69,22 @@ export abstract class BasePlugin {
 }
 
 export abstract class PluginApp {
-  plugins: BasePlugin[];
+  handlers: BaseHandler[];
 
   async startApp() {
-    for (const plugin of this.plugins) {
-      plugin.addPlugins(this.plugins);
+    for (const plugin of this.handlers) {
+      plugin.addPlugins(this.handlers);
     }
 
-    for (const plugin of this.plugins) {
+    for (const plugin of this.handlers) {
       await plugin.startPlugin();
     }
 
-    for (const plugin of this.plugins) {
+    for (const plugin of this.handlers) {
       for (const task of plugin.periodicTasks) {
-        task.timer = setInterval(async () => {
-          if (!plugin.isRunning) {
-            try {
-              plugin.isRunning = true;
-              await task.job();
-            } catch (e) {
-              Logger.error(e);
-            } finally {
-              plugin.isRunning = false;
-            }
-          } else {
-            Logger.warning(
-              `${plugin.getPluginName()}: Previous job is running, skipping!`
-            );
-          }
-        }, task.interval * 1000);
+        cron.schedule(`'*/${task.interval} * * * * *'`, async () => {
+          await task.job();
+        });
       }
     }
   }

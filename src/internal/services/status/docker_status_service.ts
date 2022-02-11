@@ -1,6 +1,6 @@
 import fs from "fs";
 import Docker, { ContainerInfo, ImageInfo } from "dockerode";
-import Logger from "../../../logger";
+import Logger from "@etherdata-blockchain/logger";
 
 export class DockerStatusService {
   dockerClient?: Docker;
@@ -19,12 +19,16 @@ export class DockerStatusService {
     images: ImageInfo[];
     containers: ContainerInfo[];
   }> {
-    const images = await this.dockerClient?.listImages();
-    const containers = await this.dockerClient?.listContainers();
+    try {
+      const images = await this.dockerClient?.listImages();
+      const containers = await this.dockerClient?.listContainers();
 
-    return {
-      images: images ?? [],
-      containers: containers ?? [],
-    };
+      return {
+        images: images ?? [],
+        containers: containers ?? [],
+      };
+    } catch (e) {
+      return undefined;
+    }
   }
 }
