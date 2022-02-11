@@ -1,3 +1,10 @@
+# 1.8.0 (2022-02-11)
+
+
+### Features
+
+* add release action ([c175816](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/c175816b98b2374185a02a417fb1e9804e68ddb6))
+
 # 1.7.0 (2022-02-11)
 
 
