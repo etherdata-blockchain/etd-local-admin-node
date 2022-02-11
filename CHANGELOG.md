@@ -1,3 +1,10 @@
+# 1.7.0 (2022-02-11)
+
+
+### Features
+
+* add automatically retry on axios client ([#10](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/10)) ([6e4e5a8](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/6e4e5a8443fef52c736ebf6b4953284f11f0860e))
+
 ## 1.6.1 (2022-01-23)
 
 
