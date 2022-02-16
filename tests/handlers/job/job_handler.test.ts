@@ -25,6 +25,7 @@ const MockWeb3Job: interfaces.db.PendingJobDBInterface<enums.Web3ValueType> = {
   },
   createdAt: "",
   retrieved: false,
+  tries: 0,
 };
 
 const MockDockerJob: interfaces.db.PendingJobDBInterface<enums.DockerValueType> =
@@ -40,6 +41,7 @@ const MockDockerJob: interfaces.db.PendingJobDBInterface<enums.DockerValueType> 
     },
     createdAt: "",
     retrieved: false,
+    tries: 0,
   };
 
 const MockUpdateTemplateJob: interfaces.db.PendingJobDBInterface<enums.UpdateTemplateValueType> =
@@ -54,6 +56,7 @@ const MockUpdateTemplateJob: interfaces.db.PendingJobDBInterface<enums.UpdateTem
     },
     createdAt: "",
     retrieved: false,
+    tries: 0,
   };
 
 describe("Given a job handler", () => {
