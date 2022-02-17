@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "lint": "eslint src/*.ts",
-    "build": "tsc",
+    "prod": "node dist/index.js",
+    "prebuild": "tsc",
+    "build": "ncc build build/app.js -o dist",
     "docker": "docker buildx build  -t sirily11/etd-admin-node --platform linux/arm64,linux/amd64 --push . ",
     "test": "jest --forceExit",
     "it": "ts-node src/tests/integration_tests/run.ts",
@@ -30,7 +32,8 @@
     "moment": "^2.29.1",
     "node-cron": "^3.0.0",
     "typescript": "^4.4.3",
-    "web3-eth-admin": "^1.0.0-beta.55"
+    "web3-eth-admin": "^1.0.0-beta.55",
+    "@vercel/ncc": "^0.33.3"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^4.1.0",
