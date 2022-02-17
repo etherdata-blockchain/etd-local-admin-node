@@ -13,9 +13,9 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@etherdata-blockchain/common": "^1.13.1",
-    "@etherdata-blockchain/docker-plan": "^1.13.1",
-    "@etherdata-blockchain/logger": "^1.13.1",
+    "@etherdata-blockchain/common": "^1.14.0",
+    "@etherdata-blockchain/docker-plan": "^1.14.0",
+    "@etherdata-blockchain/logger": "^1.14.0",
     "@types/dockerode": "^3.3.0",
     "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^16.3.1",
