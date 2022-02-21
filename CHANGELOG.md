@@ -1,3 +1,10 @@
+# 1.11.0 (2022-02-21)
+
+
+### Features
+
+* add new dependencies outdater action ([#14](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/14)) ([811b6ad](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/811b6ad62cbeb70f9bcf63dfe6fdccbc71a4532e))
+
 # 1.10.0 (2022-02-21)
 
 
