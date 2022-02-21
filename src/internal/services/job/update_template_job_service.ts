@@ -30,6 +30,8 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
         value.templateId
       );
 
+      const { coinbase } = value;
+
       const docker = new Docker();
       const dockerService = new DockerService(docker);
       const plan = new DockerPlan(dockerService);
@@ -45,6 +47,11 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
           image: {
             image: c.image.imageName,
             tag: c.image.tags.tag,
+          },
+          config: {
+            Env: c?.config?.Env.map((e) =>
+              e.replace("${etd_coinbase}", coinbase)
+            ),
           },
         })
       );

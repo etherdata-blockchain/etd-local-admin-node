@@ -30,5 +30,6 @@ module.exports = {
     "no-unused-vars": "off",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
+    "no-template-curly-in-string": "off",
   },
 };
