@@ -19,3 +19,4 @@ yarn.lock
 yarn-error.log
 *.lock.yaml
 stack.lock.yaml
+build
