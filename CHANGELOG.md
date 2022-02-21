@@ -1,3 +1,10 @@
+# 1.10.0 (2022-02-21)
+
+
+### Features
+
+* use ncc to compile the image and shrink the size ([#13](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/13)) ([a212624](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/a212624858240e309d33e770834d40b4735dcf26))
+
 ## 1.9.2 (2022-02-17)
 
 
