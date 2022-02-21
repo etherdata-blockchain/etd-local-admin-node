@@ -4,7 +4,6 @@ import { StatusCodes } from "http-status-codes";
 import { interfaces } from "@etherdata-blockchain/common";
 import axios from "axios";
 import { DockerPlan } from "@etherdata-blockchain/docker-plan";
-import DockerService from "@etherdata-blockchain/docker-plan/dist/internal/services/docker";
 import { MockAdminURL } from "../../mockdata";
 import { UpdateTemplateJobService } from "../../../src/internal/services/job/update_template_job_service";
 import { Urls } from "../../../src/internal/enums/urls";
@@ -22,9 +21,12 @@ const MockImageStack = {
   },
 };
 
-const MockContainStack = {
+const MockContainStack: interfaces.db.ContainerStack = {
   containerName: "hello-world",
   image: MockImageStack,
+  config: {
+    Env: ["coinbase=${etd_coinbase}", "name=mock_name"],
+  },
 };
 
 const MockUpdateTemplate: interfaces.db.UpdateTemplateWithDockerImageDBInterface =
@@ -35,7 +37,7 @@ const MockUpdateTemplate: interfaces.db.UpdateTemplateWithDockerImageDBInterface
     targetGroupIds: ["1"],
     from: "admin",
     imageStacks: [MockImageStack],
-    containerStacks: [MockContainStack],
+    containerStacks: [MockContainStack as any],
   };
 
 describe("Given a update template job service", () => {
@@ -53,18 +55,26 @@ describe("Given a update template job service", () => {
       .get(`${Urls.update}/1`)
       .reply(StatusCodes.OK, MockUpdateTemplate);
 
+    const mockCreate = jest.fn();
+
     (DockerPlan as any).mockImplementation(() => ({
       apply: jest.fn().mockReturnValue({
         success: true,
         error: undefined,
       }),
-      create: jest.fn().mockReturnValue({}),
+      create: mockCreate,
     }));
 
     const service = new UpdateTemplateJobService();
-    const result = await service.handle({ templateId: "1" });
+    const result = await service.handle({ templateId: "1", coinbase: "123" });
     expect(result.error).toBeUndefined();
     expect(result.result).toBe("success");
+    expect(mockCreate.mock.calls[0][0].containers[0].config.Env[0]).toBe(
+      "coinbase=123"
+    );
+    expect(mockCreate.mock.calls[0][0].containers[0].config.Env[1]).toBe(
+      "name=mock_name"
+    );
   });
 
   test("When calling handler on update template service with ise", async () => {
