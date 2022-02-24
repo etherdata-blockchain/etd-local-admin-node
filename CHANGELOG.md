@@ -1,3 +1,10 @@
+## 1.11.1 (2022-02-24)
+
+
+### Bug Fixes
+
+* update dependencies ([#15](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/15)) ([2f0a7ff](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/2f0a7ff81fba00edc653985f7e1aa677d03cb4a3))
+
 # 1.11.0 (2022-02-21)
 
 
