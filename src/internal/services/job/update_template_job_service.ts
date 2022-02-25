@@ -49,6 +49,7 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
             tag: c.image.tags.tag,
           },
           config: {
+            ...c.config,
             Env: c?.config?.Env.map((e) =>
               e.replace("${etd_coinbase}", coinbase)
             ),

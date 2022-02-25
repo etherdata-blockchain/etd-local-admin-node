@@ -26,6 +26,9 @@ const MockContainStack: interfaces.db.ContainerStack = {
   image: MockImageStack,
   config: {
     Env: ["coinbase=${etd_coinbase}", "name=mock_name"],
+    HostConfig: {
+      Binds: ["a:b"],
+    },
   },
 };
 
@@ -72,6 +75,9 @@ describe("Given a update template job service", () => {
     expect(mockCreate.mock.calls[0][0].containers[0].config.Env[0]).toBe(
       "coinbase=123"
     );
+    expect(
+      mockCreate.mock.calls[0][0].containers[0].config.HostConfig.Binds[0]
+    ).toBe("a:b");
     expect(mockCreate.mock.calls[0][0].containers[0].config.Env[1]).toBe(
       "name=mock_name"
     );
