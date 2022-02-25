@@ -8,7 +8,6 @@ RUN yarn install --production=true && yarn build
 FROM node:16-alpine
 
 WORKDIR /app/
-
 # copy from build image
 COPY --from=builder /app/dist ./dist
 

@@ -31,5 +31,6 @@ module.exports = {
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "no-template-curly-in-string": "off",
+    indent: "off",
   },
 };
