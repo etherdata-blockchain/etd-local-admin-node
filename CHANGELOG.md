@@ -1,4 +1,11 @@
-## 1.11.1 (2022-02-24)
+undefined
+
+## 1.11.2 (2022-02-25)
+
+
+### Bug Fixes
+
+* missing config in docker-plan ([#16](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/16)) ([e8b2932](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/e8b2932117df64fb3a55398c0c518415cf20f305))## 1.11.1 (2022-02-24)
 
 
 ### Bug Fixes
