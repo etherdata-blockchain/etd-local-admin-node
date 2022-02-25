@@ -11,6 +11,23 @@ import Docker from "dockerode";
 import Logger from "@etherdata-blockchain/logger";
 import { GeneralService, JobResult } from "../general_service";
 
+function cleanString(input: string | undefined) {
+  const output = input?.replace(/[^\w\s]/gi, "");
+  return output ?? "";
+}
+
+function assembleString(inputs: string[]) {
+  let output = "";
+  let index = 0;
+  for (const input of inputs) {
+    output += `Output ${index + 1}\n`;
+    output += `${input}\n`;
+    index += 1;
+  }
+
+  return output;
+}
+
 /**
  * Handle update template
  */
@@ -65,11 +82,17 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
 
       await plan.create(stacks);
       const result = await plan.apply();
+      Logger.info(`Result: ${JSON.stringify(result, null, 2)}`);
       return {
-        result: result.success ? "success" : undefined,
+        result: result.success
+          ? assembleString(
+              stacks.containers.map((c) => cleanString(c.runningLog))
+            )
+          : undefined,
         error: result.error,
       };
     } catch (err) {
+      Logger.error("Failed");
       Logger.error(err);
       return { result: undefined, error: `${err}` };
     }
