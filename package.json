@@ -12,7 +12,7 @@
     "docker": "docker buildx build  -t sirily11/etd-admin-node --platform linux/arm64,linux/amd64 --push . ",
     "test": "jest --forceExit",
     "it": "ts-node src/tests/integration_tests/run.ts",
-    "release": "release-it"
+    "release": "release-it --no-requireCleanWorkingDir"
   },
   "dependencies": {
     "@etherdata-blockchain/common": "^1.16.2",
