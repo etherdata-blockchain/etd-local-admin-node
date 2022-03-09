@@ -1,4 +1,11 @@
-## 1.11.2 (2022-02-25)
+# Changelog
+
+## 1.12.1 (2022-03-09)
+
+
+### Bug Fixes
+
+* update release it.json ([6a9c770](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/6a9c7702c03c3819eb1fbd65261c2e7ba660703e))## 1.11.2 (2022-02-25)
 
 
 ### Bug Fixes
@@ -66,7 +73,7 @@
 
 * naming issues ([b33a7b0](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/b33a7b01cced3bcf0a5024639b23edf415bc1d6e))
 
-# Changelog
+
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
