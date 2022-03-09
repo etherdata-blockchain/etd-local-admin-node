@@ -31,6 +31,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -48,3 +56,9 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+      - name: Push Image to multiple registries
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: docker.io/${{ steps.prep.outputs.tags }}
+          dst: |
+            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.version }}
