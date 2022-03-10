@@ -64,5 +64,12 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.version }}
             registry.etdchain.net/${{ github.repository }}:${{ steps.prep.outputs.version }}
             ghcr.io/${{ github.repository }}:latest
-            
-            
+
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          channel-id: ${{ secrets.SLARK_CHANNEL_ID }}
+          slack-message: "A New Version Released <${{ github.repository }}>! ${{ github.event.release.tag_name }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
