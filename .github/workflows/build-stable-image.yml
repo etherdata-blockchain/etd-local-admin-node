@@ -70,7 +70,7 @@ jobs:
           elif [[ $GITHUB_REF == refs/pull/* ]]; then
             VERSION=pr-${{ github.event.number }}
           fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          TAGS="${DOCKER_IMAGE}:${VERSION},latestt"
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       - name: Build and push
@@ -83,7 +83,14 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          channel-id: ${{ secrets.SLARK_CHANNEL_ID }}
+          slack-message: "GitHub ${{ github.repository }} build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   release:
     runs-on: ubuntu-latest
     if: ${{ (github.event.pusher.name != 'github action') && (github.ref == 'refs/heads/main') }}
@@ -91,6 +98,7 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
