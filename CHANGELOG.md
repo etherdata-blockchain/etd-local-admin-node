@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.2 (2022-03-10)
+
+
+### Bug Fixes
+
+* update github action ([#19](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/19)) ([e15d8fe](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/e15d8fe0894bffa00f42deadbe601764a3b64d81))
+
 ## 1.12.1 (2022-03-09)
 
 

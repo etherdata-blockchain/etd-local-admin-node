@@ -1,6 +1,6 @@
 {
   "name": "node-iac",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "main": "src/app.ts'",
   "license": "MIT",
   "scripts": {
