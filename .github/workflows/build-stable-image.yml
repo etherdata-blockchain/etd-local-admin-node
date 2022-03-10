@@ -70,7 +70,7 @@ jobs:
           elif [[ $GITHUB_REF == refs/pull/* ]]; then
             VERSION=pr-${{ github.event.number }}
           fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          TAGS="${DOCKER_IMAGE}:${VERSION},latestt"
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       - name: Build and push
@@ -91,6 +91,7 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
