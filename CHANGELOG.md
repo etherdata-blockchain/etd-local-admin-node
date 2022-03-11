@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.3 (2022-03-11)
+
+
+### Bug Fixes
+
+* docker build action ([5e01147](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/5e01147c924c3a456e4babb56d3419cdbcbd423c))
+
 ## 1.12.2 (2022-03-10)
 
 
