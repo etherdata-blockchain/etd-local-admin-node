@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.4 (2022-03-29)
+
+
+### Bug Fixes
+
+* will push latest tag to private registry ([#20](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/20)) ([2a47ebe](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/2a47ebea9006f1de4795dcdeffa88d20b5f80657))
+
 ## 1.12.3 (2022-03-11)
 
 
