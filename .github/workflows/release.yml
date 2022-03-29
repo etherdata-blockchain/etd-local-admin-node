@@ -63,6 +63,7 @@ jobs:
           dst: |
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.version }}
             registry.etdchain.net/${{ github.repository }}:${{ steps.prep.outputs.version }}
+            registry.etdchain.net/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:latest
 
       - name: Post to a Slack channel
