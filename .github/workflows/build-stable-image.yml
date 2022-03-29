@@ -58,21 +58,6 @@ jobs:
         uses: docker/setup-buildx-action@v1
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=sirily11/etd-admin-node
-          VERSION=edge
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          elif [[ $GITHUB_REF == refs/heads/* ]]; then
-            VERSION=latest
-          elif [[ $GITHUB_REF == refs/pull/* ]]; then
-            VERSION=pr-${{ github.event.number }}
-          fi
-          TAGS="${DOCKER_IMAGE}:${VERSION},latestt"
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -80,7 +65,10 @@ jobs:
           file: ./Dockerfile
           platforms: linux/arm64,linux/amd64
           push: false
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: |
+            registry.etdchain.net/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:latest
+            sirily11/etd-admin-node:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Post to a Slack channel
