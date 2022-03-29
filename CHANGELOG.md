@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.5 (2022-03-29)
+
+
+### Bug Fixes
+
+* update push to multiple registries action ([#21](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/21)) ([ef17f09](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/ef17f095ef1e7949ee516a27999bec6f4a7fa682))
+
 ## 1.12.4 (2022-03-29)
 
 
