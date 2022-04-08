@@ -1,5 +1,12 @@
 # Changelog
 
+# 1.13.0 (2022-04-08)
+
+
+### Features
+
+* will send latest web3 data even block number is undefined ([#23](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/23)) ([c745e43](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/c745e43e059c0030a8c56d2113dfd4ee3d1f21b5))
+
 ## 1.12.5 (2022-03-29)
 
 
