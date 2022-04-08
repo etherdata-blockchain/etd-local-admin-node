@@ -32,7 +32,10 @@ export class StatusHandler extends BaseHandler {
       await this.startDockerConnection();
       await this.remoteAdminClient.emit(
         Channel.nodeInfo,
-        { nodeName: this.config.nodeName, key: this.web3StatusService.prevKey },
+        {
+          nodeName: this.config.nodeName,
+          key: this.web3StatusService.prevKey,
+        },
         this.config.nodeId
       );
     } catch (e) {
@@ -45,11 +48,9 @@ export class StatusHandler extends BaseHandler {
       Logger.info("Sending node info");
       const latestBlockNumber =
         await this.web3StatusService.getLatestBlockNumber();
-      // Only check latest web three info when latest block number is defined
-      const webThreeInfo =
-        latestBlockNumber !== undefined
-          ? await this.web3StatusService.prepareWebThreeInfo(latestBlockNumber)
-          : undefined;
+      const webThreeInfo = await this.web3StatusService.prepareWebThreeInfo(
+        latestBlockNumber ?? 0
+      );
       const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
 
       const data = await this.remoteAdminClient.emit(
