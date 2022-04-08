@@ -4,6 +4,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
+  "lib": [
+    "ES2020.Promise",
+  ],
   "include": ["src"],
   "exclude": [
     "node_modules",

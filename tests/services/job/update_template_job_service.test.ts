@@ -41,6 +41,7 @@ const MockUpdateTemplate: interfaces.db.UpdateTemplateWithDockerImageDBInterface
     from: "admin",
     imageStacks: [MockImageStack],
     containerStacks: [MockContainStack as any],
+    description: "",
   };
 
 describe("Given a update template job service", () => {

@@ -36,7 +36,8 @@ export class Web3StatusService {
   }
 
   /**
-   * Prepare Node Info
+   * Prepare Node Info. When block number is defined, then fetch the latest block
+   * and then update the avg block time.
    * @private
    */
   async prepareWebThreeInfo(
@@ -44,20 +45,28 @@ export class Web3StatusService {
   ): Promise<interfaces.Web3DataInfo | undefined> {
     if (this.web3 && this.web3Admin) {
       let coinbase: string | undefined;
-      let balance: string | undefined;
+      let blockTime: number | undefined;
+      let avgBlockTime: number | undefined;
+      let peerCount: number = 0;
+      let isMining: boolean = false;
+      let isSyncing: boolean = false;
+      let hashRate: number = 0;
+      let version: string;
+      let currentBlock: any = {};
 
       try {
         const sampleSize = 50;
         const [
-          currentBlock,
-          prevBlock,
-          prevSampleBlock,
-          version,
-          peerCount,
-          isMining,
-          isSyncing,
-          hashRate,
-        ] = await Promise.all([
+          currentBlockResult,
+          prevBlockResult,
+          prevSampleBlockResult,
+          versionResult,
+          peerCountResult,
+          isMiningResult,
+          isSyncingResult,
+          hashRateResult,
+          coinbaseResult,
+        ] = await Promise.allSettled([
           this.web3.eth.getBlock(blockNumber),
           this.web3.eth.getBlock(blockNumber - 1),
           this.web3.eth.getBlock(blockNumber - sampleSize),
@@ -66,31 +75,63 @@ export class Web3StatusService {
           this.web3.eth.isMining(),
           this.web3.eth.isSyncing(),
           this.web3.eth.getHashrate(),
+          this.web3.eth.getCoinbase(),
         ]);
 
-        const blockTime =
-          (currentBlock.timestamp as number) - (prevBlock.timestamp as number);
-        const avgBlockTime =
-          ((currentBlock.timestamp as number) -
-            (prevSampleBlock.timestamp as number)) /
-          sampleSize;
+        if (
+          currentBlockResult.status === "fulfilled" &&
+          prevBlockResult.status === "fulfilled" &&
+          prevSampleBlockResult.status === "fulfilled"
+        ) {
+          blockTime =
+            (currentBlockResult.value.timestamp as number) -
+            (prevBlockResult.value.timestamp as number);
 
-        try {
-          coinbase = await this.web3.eth.getCoinbase();
-          balance = await this.web3.eth.getBalance(coinbase);
-        } catch (err) {
-          Logger.error(`${err}`);
+          avgBlockTime =
+            ((currentBlockResult.value.timestamp as number) -
+              (prevSampleBlockResult.value.timestamp as number)) /
+            sampleSize;
+          currentBlock = currentBlockResult.value;
+        }
+
+        if (versionResult.status === "fulfilled") {
+          version = versionResult.value;
+        }
+
+        if (peerCountResult.status === "fulfilled") {
+          peerCount = peerCountResult.value;
+        }
+
+        if (isMiningResult.status === "fulfilled") {
+          isMining = isMiningResult.value;
+        }
+
+        if (isSyncingResult.status === "fulfilled") {
+          if (typeof isSyncingResult.value === "string") {
+            isSyncing = true;
+          }
+
+          if (typeof isSyncingResult.value === "boolean") {
+            isSyncing = isSyncingResult.value;
+          }
+        }
+
+        if (hashRateResult.status === "fulfilled") {
+          hashRate = hashRateResult.value;
+        }
+
+        if (coinbaseResult.status === "fulfilled") {
+          coinbase = coinbaseResult.value;
         }
 
         return {
           ...currentBlock,
-          balance,
           systemInfo: {
             // @ts-ignore
             name: this.config.nodeName,
             peerCount,
             isMining,
-            isSyncing: isSyncing as boolean,
+            isSyncing,
             coinbase,
             nodeVersion: version,
             hashRate,
@@ -101,7 +142,7 @@ export class Web3StatusService {
           peers: [],
         };
       } catch (err) {
-        Logger.error(`Cannot connect to the RPC Endpoint: ${err}`);
+        Logger.error(`Preparing web three result encountered error: ${err}`);
       }
     }
     return undefined;
