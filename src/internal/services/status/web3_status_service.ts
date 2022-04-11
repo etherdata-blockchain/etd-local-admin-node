@@ -3,18 +3,19 @@ import { Admin } from "web3-eth-admin";
 import Logger from "@etherdata-blockchain/logger";
 import { interfaces } from "@etherdata-blockchain/common";
 import { Config } from "../../../config";
+import { GeneralService, JobResult } from "../general_service";
+import { RegisteredService } from "../../enums/names";
 
-export class Web3StatusService {
+export class Web3StatusService extends GeneralService<any> {
   web3: Web3 | undefined;
 
   web3Admin: Admin | undefined;
 
-  // In MS
-  prevKey: string | undefined;
-
   config: Config = Config.fromEnvironment();
 
-  async connect() {
+  name = RegisteredService.web3StatusService;
+
+  async start(): Promise<any> {
     const web3 = new Web3(this.config.rpc);
     const admin = new Admin(this.config.rpc);
 
@@ -35,13 +36,19 @@ export class Web3StatusService {
     }
   }
 
+  async handle(): Promise<JobResult> {
+    const blockNumber = await this.getLatestBlockNumber();
+    const info = await this.prepareWebThreeInfo(blockNumber);
+    return info;
+  }
+
   /**
    * Prepare Node Info. When block number is defined, then fetch the latest block
    * and then update the avg block time.
    * @private
    */
-  async prepareWebThreeInfo(
-    blockNumber: number
+  private async prepareWebThreeInfo(
+    blockNumber?: number
   ): Promise<interfaces.Web3DataInfo | undefined> {
     if (this.web3 && this.web3Admin) {
       let coinbase: string | undefined;
@@ -53,6 +60,8 @@ export class Web3StatusService {
       let hashRate: number = 0;
       let version: string;
       let currentBlock: any = {};
+
+      const requestBlockNumber = blockNumber ?? 0;
 
       try {
         const sampleSize = 50;
@@ -67,9 +76,9 @@ export class Web3StatusService {
           hashRateResult,
           coinbaseResult,
         ] = await Promise.allSettled([
-          this.web3.eth.getBlock(blockNumber),
-          this.web3.eth.getBlock(blockNumber - 1),
-          this.web3.eth.getBlock(blockNumber - sampleSize),
+          this.web3.eth.getBlock(requestBlockNumber),
+          this.web3.eth.getBlock(requestBlockNumber - 1),
+          this.web3.eth.getBlock(requestBlockNumber - sampleSize),
           this.web3.eth.getNodeInfo(),
           this.web3.eth.net.getPeerCount(),
           this.web3.eth.isMining(),

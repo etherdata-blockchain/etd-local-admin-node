@@ -33,3 +33,13 @@ db=
 etd_node_id=
 etd_node_name=
 NODE_ENV=development
+
+## Development
+
+This project was split into following design pattern.
+
+1. Handler - When remote sends any command or any schedule jobs triggered, handler will be called.
+2. Service - When handler received jobs, it will be sent to the corresponding service to handle.
+3. Remote client - Handle every connection between client and server
+
+In general, services are contained by handler, and handler will decide how to use its services.

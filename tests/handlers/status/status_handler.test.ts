@@ -2,12 +2,19 @@ import Web3 from "web3";
 import { StatusHandler } from "../../../src/internal/handlers/status/status_handler";
 import { RemoteAdminClient } from "../../../src/internal/remote_client";
 import { Channel } from "../../../src/internal/enums/channels";
+import { DefaultSettings } from "../../../src/config";
+import { RegisteredService } from "../../../src/internal/enums/names";
+import { NodeInfoService } from "../../../src/internal/services/status/node_info_service";
 
 jest.mock("web3");
 jest.mock("web3-eth-admin");
 jest.mock("../../../src/internal/remote_client");
 
 describe("Given a status handler", () => {
+  beforeEach(() => {
+    DefaultSettings.jobInterval = 0;
+  });
+
   test("When calling send node info", async () => {
     (Web3 as any).mockImplementation(() => ({
       eth: {
@@ -29,8 +36,12 @@ describe("Given a status handler", () => {
     (RemoteAdminClient as any).mockImplementation(() => ({ emit: mockEmit }));
 
     const handler = new StatusHandler();
-    await handler.startPlugin();
-    await handler.sendNodeInfo();
+    await handler.startHandler();
+    const service: NodeInfoService = handler.findServiceByName(
+      RegisteredService.nodeInfoService
+    );
+    await service.handle();
+
     expect(mockEmit).toBeCalledTimes(2);
     expect(mockEmit.mock.calls[0][0]).toBe(Channel.nodeInfo);
     expect(mockEmit.mock.calls[1][0]).toBe(Channel.nodeInfo);

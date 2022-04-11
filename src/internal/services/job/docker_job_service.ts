@@ -3,8 +3,11 @@ import fs from "fs";
 import Logger from "@etherdata-blockchain/logger";
 import { enums } from "@etherdata-blockchain/common";
 import { GeneralService, JobResult } from "../general_service";
+import { RegisteredService } from "../../enums/names";
 
 export class DockerJobService extends GeneralService<enums.DockerValueType> {
+  name = RegisteredService.dockerJobService;
+
   docker?: Docker;
 
   targetJobTaskType = enums.JobTaskType.Docker;

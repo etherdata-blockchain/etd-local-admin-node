@@ -24,9 +24,9 @@ describe("Given a web3 status service", () => {
     }));
 
     service = new Web3StatusService();
-    await service.connect();
+    await service.start();
 
-    const data = await service.prepareWebThreeInfo(10);
+    const data = await service.handle();
     expect(data).toBeDefined();
     expect(data.number).toBe(10);
     expect(data.avgBlockTime).toBe(0);
@@ -53,9 +53,9 @@ describe("Given a web3 status service", () => {
     }));
 
     service = new Web3StatusService();
-    await service.connect();
+    await service.start();
 
-    const data = await service.prepareWebThreeInfo(10);
+    const data = await service.handle();
     expect(data).toBeDefined();
     expect(data.number).toBe(undefined);
     expect(data.avgBlockTime).toBe(undefined);
@@ -82,9 +82,9 @@ describe("Given a web3 status service", () => {
     }));
 
     service = new Web3StatusService();
-    await service.connect();
+    await service.start();
 
-    const data = await service.prepareWebThreeInfo(10);
+    const data = await service.handle();
     expect(data).toBeDefined();
     expect(data.number).toBe(undefined);
     expect(data.avgBlockTime).toBe(undefined);
@@ -102,7 +102,7 @@ describe("Given a web3 status service", () => {
     }));
 
     service = new Web3StatusService();
-    await service.connect();
+    await service.start();
 
     expect(await service.getLatestBlockNumber()).toBe(1000);
   });
@@ -115,7 +115,7 @@ describe("Given a web3 status service", () => {
     }));
 
     service = new Web3StatusService();
-    await service.connect();
+    await service.start();
 
     expect(await service.getLatestBlockNumber()).toBe(undefined);
   });

@@ -4,8 +4,11 @@ import { randomUUID } from "crypto";
 import { CoinbaseHandler } from "../../utils/command";
 import { Config } from "../../../config";
 import { GeneralService, JobResult } from "../general_service";
+import { RegisteredService } from "../../enums/names";
 
 export class Web3JobService extends GeneralService<enums.Web3ValueType> {
+  name: RegisteredService = RegisteredService.web3JobService;
+
   config = Config.fromEnvironment();
 
   targetJobTaskType = enums.JobTaskType.Web3;

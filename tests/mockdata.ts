@@ -19,4 +19,4 @@ export enum MockDockerLogs {
   simpleLog = "Simple log",
 }
 
-export const MockAdminURL = "https://localhost";
+export const MockAdminURL = "https://localhost:7000";

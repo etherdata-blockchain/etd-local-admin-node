@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
+          cache: 'yarn'
       - run: yarn
       - name: Run linters
         uses: wearerequired/lint-action@v1
@@ -33,6 +34,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
+          cache: 'yarn'
       - run: yarn install
       - run: yarn lint
       - run: yarn test --coverage
@@ -86,10 +88,10 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
-
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
+          cache: 'yarn'
       - run: yarn install
         name: Installing dependencies
       - name: Setup git identity

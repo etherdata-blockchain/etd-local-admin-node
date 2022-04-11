@@ -8,6 +8,9 @@ import { Web3JobService } from "../../../src/internal/services/job/web3_job_serv
 import { UpdateTemplateJobService } from "../../../src/internal/services/job/update_template_job_service";
 import { MockAdminURL, MockError, MockResult } from "../../mockdata";
 import { Urls } from "../../../src/internal/enums/urls";
+import { RegisteredService } from "../../../src/internal/enums/names";
+import { RequestJobService } from "../../../src/internal/services/job/request_job_service";
+import { DefaultSettings } from "../../../src/config";
 
 jest.mock("../../../src/internal/services/job/update_template_job_service");
 jest.mock("../../../src/internal/services/job/docker_job_service");
@@ -66,14 +69,35 @@ describe("Given a job handler", () => {
       remoteAdminURL: MockAdminURL,
       remoteAdminPassword: "test",
     };
+
+    DefaultSettings.jobInterval = 0;
   });
 
   beforeEach(() => {
+    nock(MockAdminURL).get(Urls.health).reply(StatusCodes.OK);
+    nock(MockAdminURL).post(Urls.result).reply(StatusCodes.OK);
+    (DockerJobService as any).mockImplementation(() => ({
+      name: RegisteredService.dockerJobService,
+      start: jest.fn(),
+    }));
+
+    (UpdateTemplateJobService as any).mockImplementation(() => ({
+      name: RegisteredService.updateTemplateJobService,
+      start: jest.fn(),
+    }));
+
+    (Web3JobService as any).mockImplementation(() => ({
+      name: RegisteredService.web3JobService,
+      start: jest.fn(),
+    }));
+
     jest.clearAllMocks();
   });
 
   test("When given a web3 job", async () => {
     (Web3JobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.web3JobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: MockResult.rpcResult,
@@ -85,7 +109,13 @@ describe("Given a job handler", () => {
       .get(Urls.job)
       .reply(StatusCodes.OK, { job: MockWeb3Job });
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
+
     expect(result).toBeDefined();
     expect(result.result).toBe(MockResult.rpcResult);
     expect(result.success).toBeTruthy();
@@ -93,6 +123,8 @@ describe("Given a job handler", () => {
 
   test("When given a web3 job with error", async () => {
     (Web3JobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.web3JobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: undefined,
@@ -105,7 +137,12 @@ describe("Given a job handler", () => {
       .reply(StatusCodes.OK, { job: MockWeb3Job });
 
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
     expect(result).toBeDefined();
     expect(result.result).toBe(MockError.rpcConnectionError);
     expect(result.success).toBeFalsy();
@@ -113,6 +150,8 @@ describe("Given a job handler", () => {
 
   test("When given a docker job", async () => {
     (DockerJobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.dockerJobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: MockResult.dockerResult,
@@ -125,7 +164,12 @@ describe("Given a job handler", () => {
       .reply(StatusCodes.OK, { job: MockDockerJob });
 
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
     expect(result).toBeDefined();
     expect(result.result).toBe(MockResult.dockerResult);
     expect(result.success).toBeTruthy();
@@ -133,6 +177,8 @@ describe("Given a job handler", () => {
 
   test("When given a docker job with error", async () => {
     (DockerJobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.dockerJobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: undefined,
@@ -145,7 +191,12 @@ describe("Given a job handler", () => {
       .reply(StatusCodes.OK, { job: MockDockerJob });
 
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
     expect(result).toBeDefined();
     expect(result.result).toBe(MockError.dockerError);
     expect(result.success).toBeFalsy();
@@ -153,6 +204,8 @@ describe("Given a job handler", () => {
 
   test("When given a update template job", async () => {
     (UpdateTemplateJobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.updateTemplateJobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: MockResult.updateResult,
@@ -164,7 +217,12 @@ describe("Given a job handler", () => {
       .get(Urls.job)
       .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
     expect(result).toBeDefined();
     expect(result.result).toBe(MockResult.updateResult);
     expect(result.success).toBeTruthy();
@@ -172,6 +230,8 @@ describe("Given a job handler", () => {
 
   test("When given a update template job with error", async () => {
     (UpdateTemplateJobService as any).mockImplementationOnce(() => ({
+      name: RegisteredService.updateTemplateJobService,
+      start: jest.fn(),
       canHandle: jest.fn().mockResolvedValueOnce(true),
       handle: jest.fn().mockResolvedValueOnce({
         result: undefined,
@@ -183,15 +243,14 @@ describe("Given a job handler", () => {
       .get(Urls.job)
       .reply(StatusCodes.OK, { job: MockUpdateTemplateJob });
     const handler = new JobHandler();
-    const result = await handler.requestJob();
+    await handler.startHandler();
+    const jobService: RequestJobService = handler.findServiceByName(
+      RegisteredService.requestJobService
+    );
+    const result =
+      (await jobService.handle()) as any as interfaces.db.JobResultDBInterface;
     expect(result).toBeDefined();
     expect(result.result).toBe(MockError.updateError);
     expect(result.success).toBeFalsy();
-  });
-
-  test("When starting plugin", async () => {
-    nock(MockAdminURL).get(Urls.health).reply(StatusCodes.OK);
-    const handler = new JobHandler();
-    await handler.startPlugin();
   });
 });

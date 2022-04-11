@@ -1,99 +1,50 @@
 import Logger from "@etherdata-blockchain/logger";
-import { BaseHandler, RegisteredPlugin } from "../base_handler";
+import { BaseHandler } from "../base_handler";
 import { Web3StatusService } from "../../services/status/web3_status_service";
 import { DockerStatusService } from "../../services/status/docker_status_service";
-import { DefaultSettings } from "../../../config";
 import { Channel } from "../../enums/channels";
+import { RegisteredHandler, RegisteredService } from "../../enums/names";
+import { JobResult } from "../../services/general_service";
+import { NodeInfoService } from "../../services/status/node_info_service";
+
+export type StatusJob =
+  | RegisteredService.dockerStatusService
+  | RegisteredService.web3StatusService;
 
 export class StatusHandler extends BaseHandler {
-  web3StatusService: Web3StatusService;
-
-  dockerStatusService: DockerStatusService;
-
-  protected pluginName: RegisteredPlugin = RegisteredPlugin.statusPlugin;
+  protected handlerName: RegisteredHandler = RegisteredHandler.statusHandler;
 
   constructor() {
     super();
-    this.web3StatusService = new Web3StatusService();
-    this.dockerStatusService = new DockerStatusService();
-    this.periodicTasks = [
-      {
-        name: "latest-node-info",
-        interval: DefaultSettings.statusInterval,
-        job: this.sendNodeInfo.bind(this),
-      },
-    ];
+
+    this.addService(new Web3StatusService())
+      .addService(new DockerStatusService())
+      .addService(new NodeInfoService());
   }
 
-  override async startPlugin(): Promise<void> {
-    await super.startPlugin();
+  async handleJob(serviceName: StatusJob): Promise<JobResult | undefined> {
     try {
-      await this.startWeb3Connection();
-      await this.startDockerConnection();
-      await this.remoteAdminClient.emit(
+      await super.handleJob(serviceName);
+      const handler = this.findServiceByName(serviceName);
+      return await handler.handle();
+    } catch (err) {
+      Logger.error(`Status Handler: ${err}`);
+      return undefined;
+    }
+  }
+
+  override async startHandler(): Promise<void> {
+    try {
+      await this.remoteClient.emit(
         Channel.nodeInfo,
         {
           nodeName: this.config.nodeName,
-          key: this.web3StatusService.prevKey,
         },
         this.config.nodeId
       );
     } catch (e) {
       Logger.error(e);
     }
-  }
-
-  async sendNodeInfo(): Promise<void> {
-    try {
-      Logger.info("Sending node info");
-      const latestBlockNumber =
-        await this.web3StatusService.getLatestBlockNumber();
-      const webThreeInfo = await this.web3StatusService.prepareWebThreeInfo(
-        latestBlockNumber ?? 0
-      );
-      const dockerInfo = await this.dockerStatusService.prepareDockerInfo();
-
-      const data = await this.remoteAdminClient.emit(
-        Channel.nodeInfo,
-        {
-          key: this.web3StatusService.prevKey,
-          data: webThreeInfo,
-          nodeName: this.config.nodeName,
-          adminVersion: global.version,
-          docker: { ...dockerInfo },
-        },
-        this.config.nodeId
-      );
-
-      if (data) {
-        this.web3StatusService.prevKey = data.key;
-      }
-    } catch (e) {
-      Logger.error(e);
-    }
-  }
-
-  private async startDockerConnection(): Promise<void> {
-    return this.dockerStatusService.connect();
-  }
-
-  /**
-   * Check connection between node and geth
-   * @private
-   */
-  private async startWeb3Connection(): Promise<void> {
-    await this.tryConnect(
-      async () => this.web3StatusService.connect(),
-      async (err) => {
-        Logger.error(
-          `Cannot connect to geth network. Sleep 3 seconds! ${err.toString()}`
-        );
-        await this.wait(3000);
-      }
-    );
-
-    Logger.info(
-      `Latest Block: ${await this.web3StatusService.getLatestBlockNumber()}`
-    );
+    await super.startHandler();
   }
 }

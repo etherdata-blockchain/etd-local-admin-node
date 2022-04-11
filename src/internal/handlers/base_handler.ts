@@ -1,7 +1,9 @@
 import Logger from "@etherdata-blockchain/logger";
 import cron from "node-cron";
-import { Config } from "../../config";
+import { Config, DefaultSettings } from "../../config";
 import { RemoteAdminClient } from "../remote_client";
+import { GeneralService, JobResult } from "../services/general_service";
+import { RegisteredHandler, RegisteredService } from "../enums/names";
 
 export interface PeriodicTask {
   name: string;
@@ -11,41 +13,66 @@ export interface PeriodicTask {
   job(): Promise<void>;
 }
 
-// eslint-disable-next-line no-shadow
-export enum RegisteredPlugin {
-  jobPlugin = "job-plugin",
-  statusPlugin = "status-plugin",
-  testPlugin = "test-plugin",
-}
-
 export abstract class BaseHandler {
   // eslint-disable-next-line no-use-before-define
   otherPlugin: { [key: string]: BaseHandler } = {};
 
-  periodicTasks: PeriodicTask[];
+  periodicTasks: PeriodicTask[] = [];
 
   config: Config = Config.fromEnvironment();
 
-  remoteAdminClient = new RemoteAdminClient();
+  remoteClient = new RemoteAdminClient();
 
   isRunning: boolean = false;
 
-  protected abstract pluginName: RegisteredPlugin;
+  protected abstract handlerName: RegisteredHandler;
 
-  async startPlugin(): Promise<void> {
-    Logger.info(`Starting services: ${this.pluginName}`);
+  private services: GeneralService<any>[] = [];
+
+  private servicesMap: { [key: string]: GeneralService<any> } = {};
+
+  addService(service: GeneralService<any>) {
+    if (service.name === undefined) {
+      throw new Error("Service name must be defined");
+    }
+    this.servicesMap[service.name] = service;
+    this.services = Object.values(this.servicesMap);
+    return this;
+  }
+
+  async startHandler(): Promise<void> {
+    Logger.info(`Starting services: ${this.handlerName}`);
+    // add periodic tasks from services
+    for (const service of this.services) {
+      Logger.info(`Initialize service ${service.name}`);
+      service.handler = this;
+      if (service.isPeriodicTask) {
+        this.periodicTasks.push({
+          interval: DefaultSettings.jobInterval,
+          job: service.handle.bind(service),
+          name: service.name,
+        });
+      }
+      await service.start();
+    }
+  }
+
+  findServiceByName<T extends GeneralService<any>>(
+    serviceName: RegisteredService
+  ): T | undefined {
+    return this.servicesMap[serviceName] as T;
   }
 
   addPlugins(plugins: BaseHandler[]) {
     for (const plugin of plugins) {
-      if (plugin.pluginName !== this.pluginName) {
-        this.otherPlugin[plugin.pluginName] = plugin;
+      if (plugin.handlerName !== this.handlerName) {
+        this.otherPlugin[plugin.handlerName] = plugin;
       }
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  protected async tryConnect(
+  async tryConnect(
     job: () => Promise<boolean>,
     onError: (e: any) => Promise<void>
   ) {
@@ -60,12 +87,22 @@ export abstract class BaseHandler {
     }
   }
 
-  protected wait(time: number): Promise<void> {
+  wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
       }, time);
     });
+  }
+
+  /**
+   * Handle job based on different job task type
+   * @param job
+   * @private
+   */
+  async handleJob(job: any): Promise<JobResult | undefined> {
+    Logger.info(`Handling job by handler: ${this.handlerName}`);
+    return undefined;
   }
 }
 
@@ -78,7 +115,7 @@ export abstract class PluginApp {
     }
 
     for (const plugin of this.handlers) {
-      await plugin.startPlugin();
+      await plugin.startHandler();
     }
 
     for (const plugin of this.handlers) {
