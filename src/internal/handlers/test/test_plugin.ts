@@ -1,10 +1,11 @@
 import Logger from "@etherdata-blockchain/logger";
 import { utils } from "@etherdata-blockchain/common";
 import moment from "moment";
-import { BaseHandler, RegisteredPlugin } from "../base_handler";
+import { BaseHandler } from "../base_handler";
+import { RegisteredHandler } from "../../enums/names";
 
 export class TestHandler extends BaseHandler {
-  protected pluginName: RegisteredPlugin = RegisteredPlugin.testPlugin;
+  protected handlerName: RegisteredHandler = RegisteredHandler.testHandler;
 
   constructor() {
     super();

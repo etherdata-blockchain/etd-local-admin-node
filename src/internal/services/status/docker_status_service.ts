@@ -1,24 +1,20 @@
 import fs from "fs";
 import Docker, { ContainerInfo, ImageInfo } from "dockerode";
 import Logger from "@etherdata-blockchain/logger";
+import { GeneralService, JobResult } from "../general_service";
+import { RegisteredService } from "../../enums/names";
 
-export class DockerStatusService {
+interface DockerStatusResult extends JobResult {
+  images: ImageInfo[];
+  containers: ContainerInfo[];
+}
+
+export class DockerStatusService extends GeneralService<any> {
+  name: RegisteredService = RegisteredService.dockerStatusService;
+
   dockerClient?: Docker;
 
-  async connect() {
-    const dockerPath = "/var/run/docker.sock";
-
-    if (fs.existsSync(dockerPath)) {
-      this.dockerClient = new Docker({ socketPath: dockerPath });
-    } else {
-      Logger.error("Docker is not found on this system");
-    }
-  }
-
-  async prepareDockerInfo(): Promise<{
-    images: ImageInfo[];
-    containers: ContainerInfo[];
-  }> {
+  async handle(): Promise<DockerStatusResult> {
     try {
       const images = await this.dockerClient?.listImages();
       const containers = await this.dockerClient?.listContainers();
@@ -29,6 +25,16 @@ export class DockerStatusService {
       };
     } catch (e) {
       return undefined;
+    }
+  }
+
+  async start(): Promise<any> {
+    const dockerPath = "/var/run/docker.sock";
+
+    if (fs.existsSync(dockerPath)) {
+      this.dockerClient = new Docker({ socketPath: dockerPath });
+    } else {
+      Logger.error("Docker is not found on this system");
     }
   }
 }

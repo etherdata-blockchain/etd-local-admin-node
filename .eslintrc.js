@@ -29,7 +29,7 @@ module.exports = {
     "no-case-declarations": "off",
     "no-unused-vars": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-shadow": ["off"],
     "no-template-curly-in-string": "off",
     indent: "off",
   },

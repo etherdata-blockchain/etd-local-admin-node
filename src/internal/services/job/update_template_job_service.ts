@@ -10,6 +10,7 @@ import { JobTaskType } from "@etherdata-blockchain/common/dist/enums";
 import Docker from "dockerode";
 import Logger from "@etherdata-blockchain/logger";
 import { GeneralService, JobResult } from "../general_service";
+import { RegisteredService } from "../../enums/names";
 
 function cleanString(input: string | undefined) {
   const output = input?.replace(/[^\w\s]/gi, "");
@@ -33,6 +34,8 @@ function assembleString(inputs: string[]) {
  */
 // eslint-disable-next-line max-len
 export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplateValueType> {
+  name: RegisteredService = RegisteredService.updateTemplateJobService;
+
   targetJobTaskType = JobTaskType.UpdateTemplate;
 
   dockerService: DockerService | undefined;

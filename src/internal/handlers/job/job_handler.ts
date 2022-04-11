@@ -1,109 +1,53 @@
 import Logger from "@etherdata-blockchain/logger";
-import { interfaces } from "@etherdata-blockchain/common";
-import { BaseHandler, RegisteredPlugin } from "../base_handler";
+import { enums, interfaces } from "@etherdata-blockchain/common";
+import { BaseHandler } from "../base_handler";
 import { DockerJobService } from "../../services/job/docker_job_service";
 import { Web3JobService } from "../../services/job/web3_job_service";
-import { DefaultSettings } from "../../../config";
 import { Channel } from "../../enums/channels";
 import { UpdateTemplateJobService } from "../../services/job/update_template_job_service";
+import { RequestJobService } from "../../services/job/request_job_service";
+import { RegisteredHandler, RegisteredService } from "../../enums/names";
 import { GeneralService, JobResult } from "../../services/general_service";
 
 export class JobHandler extends BaseHandler {
-  prevKey: string | undefined;
+  protected handlerName: RegisteredHandler = RegisteredHandler.jobHandler;
 
-  services: GeneralService<any>[];
-
-  protected pluginName: RegisteredPlugin = RegisteredPlugin.jobPlugin;
+  private serviceJobTypeMapping: { [key: string]: GeneralService<any> } = {};
 
   constructor() {
     super();
-    this.services = [
-      new DockerJobService(),
-      new Web3JobService(),
-      new UpdateTemplateJobService(),
-    ];
 
-    this.periodicTasks = [
-      {
-        name: "Get pending job",
-        interval: DefaultSettings.jobInterval,
-        job: this.requestJob.bind(this),
-      },
-    ];
-  }
+    this.addService(new DockerJobService())
+      .addService(new Web3JobService())
+      .addService(new UpdateTemplateJobService())
+      .addService(new RequestJobService());
 
-  async startPlugin(): Promise<void> {
-    await super.startPlugin();
-    await this.startJobSystemConnection();
-    for (const service of this.services) {
-      await service.start();
-    }
-  }
-
-  async requestJob(): Promise<interfaces.db.JobResultDBInterface | undefined> {
-    const result = await this.remoteAdminClient.emit(
-      Channel.requestJob,
-      { nodeName: this.config.nodeName, key: this.prevKey },
-      this.config.nodeId
+    this.serviceJobTypeMapping[enums.JobTaskType.Docker] =
+      this.findServiceByName(RegisteredService.dockerJobService);
+    this.serviceJobTypeMapping[enums.JobTaskType.Web3] = this.findServiceByName(
+      RegisteredService.web3JobService
     );
-
-    if (result) {
-      this.prevKey = result.key;
-    }
-
-    const job: interfaces.db.PendingJobDBInterface<any> | undefined =
-      result?.job;
-    let jobResult: JobResult;
-
-    if (job && job.task) {
-      Logger.info(`Getting job: ${job.task.type}`);
-      jobResult = await this.handleJob(job);
-
-      const data: interfaces.db.JobResultDBInterface = {
-        // eslint-disable-next-line no-underscore-dangle
-        jobId: (job as any)._id,
-        commandType: job.task.type,
-        command: job.task.value,
-        deviceID: this.config.nodeId,
-        from: job.from,
-        result: jobResult.result ?? jobResult.error,
-        success: jobResult.error === undefined,
-        time: new Date(),
-        // @ts-ignore
-        key: this.prevKey,
-      };
-
-      await this.remoteAdminClient.emit(
-        Channel.submitResult,
-        data,
-        this.config.nodeId
-      );
-
-      return data;
-    }
-    return undefined;
+    this.serviceJobTypeMapping[enums.JobTaskType.UpdateTemplate] =
+      this.findServiceByName(RegisteredService.updateTemplateJobService);
   }
 
-  /**
-   * Handle job based on different job task type
-   * @param job
-   * @private
-   */
-  private async handleJob(job: interfaces.db.PendingJobDBInterface<any>) {
-    let jobResult: JobResult;
-    for (const service of this.services) {
-      if (service.canHandle(job.task.type)) {
-        jobResult = await service.handle(job.task.value);
-        break;
-      }
-    }
-    return jobResult;
+  async startHandler(): Promise<void> {
+    await super.startHandler();
+    await this.startJobSystemConnection();
+  }
+
+  async handleJob(
+    job: interfaces.db.PendingJobDBInterface<any>
+  ): Promise<JobResult> {
+    await super.handleJob(job);
+    const service = this.serviceJobTypeMapping[job.task.type];
+    return service.handle(job.task.value);
   }
 
   private async startJobSystemConnection() {
     await this.tryConnect(
       async () => {
-        await this.remoteAdminClient.emit(Channel.health, "", "");
+        await this.remoteClient.emit(Channel.health, "", "");
         return true;
       },
       async () => {
