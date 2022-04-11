@@ -1,5 +1,17 @@
 # Changelog
 
+# 2.0.0 (2022-04-11)
+
+
+### Features
+
+* refactor code structure ([#25](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/25)) ([ca41bc4](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/ca41bc4a3f7aa0b7a6fec20104018732434233e8))
+
+
+### BREAKING CHANGES
+
+* refactor code
+
 # 1.13.0 (2022-04-08)
 
 
