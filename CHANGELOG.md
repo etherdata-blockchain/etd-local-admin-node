@@ -1,5 +1,12 @@
 # Changelog
 
+# 2.1.0 (2022-04-12)
+
+
+### Features
+
+* will send docker logs with status ([#29](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/29)) ([25baca5](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/25baca5458986ddb97ae999b8d1f29c0800f227d))
+
 # 2.0.0 (2022-04-11)
 
 
