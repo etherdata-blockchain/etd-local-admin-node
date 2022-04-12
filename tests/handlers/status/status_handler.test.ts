@@ -46,5 +46,7 @@ describe("Given a status handler", () => {
     expect(mockEmit.mock.calls[0][0]).toBe(Channel.nodeInfo);
     expect(mockEmit.mock.calls[1][0]).toBe(Channel.nodeInfo);
     expect(mockEmit.mock.calls[1][1].data).toBeDefined();
+    expect(mockEmit.mock.calls[1][1].docker.images).toBeDefined();
+    expect(mockEmit.mock.calls[1][1].docker.containers).toBeDefined();
   });
 });

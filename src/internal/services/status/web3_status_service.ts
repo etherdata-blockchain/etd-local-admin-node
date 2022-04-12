@@ -49,7 +49,7 @@ export class Web3StatusService extends GeneralService<any> {
    */
   private async prepareWebThreeInfo(
     blockNumber?: number
-  ): Promise<interfaces.Web3DataInfo | undefined> {
+  ): Promise<interfaces.Web3DataInfoInterface | undefined> {
     if (this.web3 && this.web3Admin) {
       let coinbase: string | undefined;
       let blockTime: number | undefined;

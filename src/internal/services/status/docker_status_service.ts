@@ -1,23 +1,47 @@
 import fs from "fs";
-import Docker, { ContainerInfo, ImageInfo } from "dockerode";
+import Docker from "dockerode";
 import Logger from "@etherdata-blockchain/logger";
-import { GeneralService, JobResult } from "../general_service";
+import { interfaces } from "@etherdata-blockchain/common";
+import { GeneralService } from "../general_service";
 import { RegisteredService } from "../../enums/names";
 
-interface DockerStatusResult extends JobResult {
-  images: ImageInfo[];
-  containers: ContainerInfo[];
-}
+type DockerStatusResult = interfaces.db.DockerDataInterface;
 
-export class DockerStatusService extends GeneralService<any> {
+export class DockerStatusService extends GeneralService<DockerStatusResult> {
   name: RegisteredService = RegisteredService.dockerStatusService;
 
   dockerClient?: Docker;
 
-  async handle(): Promise<DockerStatusResult> {
+  async handle() {
     try {
       const images = await this.dockerClient?.listImages();
-      const containers = await this.dockerClient?.listContainers();
+      const containers =
+        (await this.dockerClient?.listContainers()) as interfaces.db.ContainerInfoWithLog[];
+
+      // get list of logs
+      const promises = containers.map<
+        Promise<interfaces.db.ContainerInfoWithLog>
+      >(async (c) => {
+        const container = this.dockerClient?.getContainer(c.Id);
+        const logs = (await container?.logs({
+          tail: 100,
+          stderr: true,
+          stdout: true,
+        })) as unknown as Buffer;
+        return {
+          ...c,
+          logs: logs.toString(),
+        };
+      });
+
+      const promiseResults = await Promise.allSettled(promises);
+      promiseResults.forEach((p, i) => {
+        if (p.status === "fulfilled") {
+          containers[i] = p.value;
+        } else {
+          containers[i].logs = `${p.reason}`;
+        }
+      });
 
       return {
         images: images ?? [],
