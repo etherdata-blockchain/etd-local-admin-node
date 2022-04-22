@@ -6,6 +6,7 @@ import { Channel } from "../../enums/channels";
 import { RegisteredHandler, RegisteredService } from "../../enums/names";
 import { JobResult } from "../../services/general_service";
 import { NodeInfoService } from "../../services/status/node_info_service";
+import { NetworkStatusService } from "../../services/status/network_status_service";
 
 export type StatusJob =
   | RegisteredService.dockerStatusService
@@ -19,7 +20,8 @@ export class StatusHandler extends BaseHandler {
 
     this.addService(new Web3StatusService())
       .addService(new DockerStatusService())
-      .addService(new NodeInfoService());
+      .addService(new NodeInfoService())
+      .addService(new NetworkStatusService());
   }
 
   async handleJob(serviceName: StatusJob): Promise<JobResult | undefined> {

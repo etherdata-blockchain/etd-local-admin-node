@@ -1,5 +1,5 @@
-import Docker from "dockerode";
-import fs from "fs";
+import * as Docker from "dockerode";
+import * as fs from "fs";
 import { DockerStatusService } from "../../../src/internal/services/status/docker_status_service";
 
 jest.mock("dockerode");

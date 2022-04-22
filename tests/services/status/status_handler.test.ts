@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { utils } from "@etherdata-blockchain/common";
 import Web3 from "web3";
 import { StatusHandler } from "../../../src/internal/handlers/status/status_handler";
 import { RemoteAdminClient } from "../../../src/internal/remote_client";
@@ -12,6 +11,11 @@ jest.mock("fs");
 jest.mock("dockerode");
 jest.mock("web3-eth-admin");
 jest.mock("web3");
+jest.mock("@etherdata-blockchain/ip", () => ({
+  getLocalIpAddress: jest.fn().mockReturnValue({
+    eth0: ["192.168.0.1"],
+  }),
+}));
 
 describe("Given a status plugin", () => {
   const mockEmit = jest.fn().mockReturnValue({ key: "abcde" });
@@ -76,5 +80,8 @@ describe("Given a status plugin", () => {
     await service.handle();
     // Expect key returned from send info and use that key
     expect(mockEmit.mock.calls[2][1].key).toBe("abcde");
+    expect(mockEmit.mock.calls[2][1].networkSettings.localIpAddress).toBe(
+      "192.168.0.1"
+    );
   });
 });

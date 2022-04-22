@@ -13,4 +13,5 @@ export enum RegisteredService {
   dockerStatusService = "docker-status-service",
   web3StatusService = "web-3-status-service",
   nodeInfoService = "node-info-service",
+  networkStatusService = "network-status-service",
 }
