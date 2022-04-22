@@ -9,9 +9,9 @@ export class RemoteAdminClient {
   config = Config.fromEnvironment();
 
   // eslint-disable-next-line consistent-return
-  async emit(
+  async emit<T>(
     channel: Channel,
-    data: any,
+    data: T,
     authData: string,
     throwError?: boolean
   ) {

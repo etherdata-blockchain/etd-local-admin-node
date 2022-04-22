@@ -1,4 +1,5 @@
 import Logger from "@etherdata-blockchain/logger";
+import { interfaces } from "@etherdata-blockchain/common";
 import { GeneralService } from "../general_service";
 import { RegisteredService } from "../../enums/names";
 import { Channel } from "../../enums/channels";
@@ -21,17 +22,24 @@ export class NodeInfoService extends GeneralService<any> {
         RegisteredService.dockerStatusService
       );
 
-      const data = await this.remoteClient.emit(
-        Channel.nodeInfo,
-        {
-          key: this.prevKey,
-          data: webThreeInfo,
-          nodeName: this.config.nodeName,
-          adminVersion: global.version,
-          docker: { ...dockerInfo },
-        },
-        this.config.nodeId
+      const networkInfo = await this.handler.handleJob(
+        RegisteredService.networkStatusService
       );
+
+      const data =
+        await this.remoteClient.emit<interfaces.db.DeviceDBInterface>(
+          Channel.nodeInfo,
+          {
+            // @ts-ignore
+            key: this.prevKey,
+            data: webThreeInfo,
+            nodeName: this.config.nodeName,
+            adminVersion: global.version,
+            docker: { ...dockerInfo },
+            networkSettings: networkInfo,
+          },
+          this.config.nodeId
+        );
 
       if (data) {
         this.prevKey = data.key;
