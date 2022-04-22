@@ -1,5 +1,12 @@
 # Changelog
 
+# 2.2.0 (2022-04-22)
+
+
+### Features
+
+* add sending local ip address to admin ([#32](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/32)) ([c9dd322](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/c9dd32268879bdf1884820ac4a1d9e18f5942437))
+
 ## 2.1.1 (2022-04-13)
 
 
