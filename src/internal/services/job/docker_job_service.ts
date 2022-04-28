@@ -22,16 +22,53 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
 
     switch (method) {
       case "logs":
-        const container = this.docker?.getContainer(value);
-        const logs = (await container?.logs({
-          tail: 100,
-          stderr: true,
-          stdout: true,
-        })) as unknown as Buffer;
-        return { result: logs?.toString(), error: undefined };
+        return this.handleLogs(value);
+      case "removeVolume":
+        return this.handleRemoveVolume(value);
+      case "removeContainer":
+        return this.handleRemoveContainer(value);
+      case "removeImage":
+        return this.handleRemoveImage(value);
+      case "stopContainer":
+        return this.handleStopContainer(value);
       default:
         return { error: "Command is not supported", result: undefined };
     }
+  }
+
+  async handleStopContainer(value: string) {
+    const container = this.docker.getContainer(value);
+    const result = await container.stop();
+    return { result: `${result}` };
+  }
+
+  async handleRemoveImage(value: string) {
+    const image = this.docker.getImage(value);
+    const result = await image.remove();
+    return { result: `${result}` };
+  }
+
+  async handleRemoveContainer(value: string) {
+    const container = this.docker.getContainer(value);
+    await container.stop();
+    const result = await container.remove();
+    return { result: `${result}` };
+  }
+
+  async handleRemoveVolume(value: string) {
+    const volume = this.docker.getVolume(value);
+    const result = await volume.remove();
+    return { result: `${result}` };
+  }
+
+  async handleLogs(value: string) {
+    const container = this.docker?.getContainer(value);
+    const logs = (await container?.logs({
+      tail: 100,
+      stderr: true,
+      stdout: true,
+    })) as unknown as Buffer;
+    return { result: logs?.toString(), error: undefined };
   }
 
   async start(): Promise<void> {

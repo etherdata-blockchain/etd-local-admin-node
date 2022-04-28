@@ -13,7 +13,7 @@ export class NetworkStatusService extends GeneralService<DockerStatusResult> {
 
   dockerClient?: Docker;
 
-  async handle(): Promise<interfaces.db.NetworkInfo> {
+  async handle(): Promise<interfaces.db.NetworkSettings> {
     const ips = getLocalIpAddress();
     return {
       localIpAddress: ips.eth0[0],

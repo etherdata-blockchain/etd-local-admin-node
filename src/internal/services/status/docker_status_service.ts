@@ -1,5 +1,5 @@
 import fs from "fs";
-import Docker from "dockerode";
+import Docker, { ImageInfo, VolumeInspectInfo } from "dockerode";
 import Logger from "@etherdata-blockchain/logger";
 import { interfaces } from "@etherdata-blockchain/common";
 import { GeneralService } from "../general_service";
@@ -12,11 +12,29 @@ export class DockerStatusService extends GeneralService<DockerStatusResult> {
 
   dockerClient?: Docker;
 
-  async handle() {
+  async handle(): Promise<interfaces.db.DockerDataInterface> {
     try {
-      const images = await this.dockerClient?.listImages();
-      const containers =
-        (await this.dockerClient?.listContainers()) as interfaces.db.ContainerInfoWithLog[];
+      let containers: interfaces.db.ContainerInfoWithLog[] = [];
+      let images: ImageInfo[] = [];
+      let volumes: VolumeInspectInfo[] = [];
+
+      const dockerResults = await Promise.allSettled([
+        this.dockerClient?.listImages(),
+        this.dockerClient?.listContainers(),
+        this.dockerClient?.listVolumes(),
+      ]);
+
+      if (dockerResults[0].status === "fulfilled") {
+        images = dockerResults[0].value;
+      }
+
+      if (dockerResults[1].status === "fulfilled") {
+        containers = dockerResults[1].value;
+      }
+
+      if (dockerResults[2].status === "fulfilled") {
+        volumes = dockerResults[2].value.Volumes;
+      }
 
       // get list of logs
       const promises = containers.map<
@@ -44,8 +62,9 @@ export class DockerStatusService extends GeneralService<DockerStatusResult> {
       });
 
       return {
-        images: images ?? [],
-        containers: containers ?? [],
+        images,
+        containers,
+        volumes,
       };
     } catch (e) {
       return undefined;
