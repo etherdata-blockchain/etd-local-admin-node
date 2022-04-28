@@ -1,5 +1,17 @@
 # Changelog
 
+# 3.0.0 (2022-04-28)
+
+
+### Features
+
+* add volume support for admin node ([#33](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/33)) ([c7cc5c7](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/c7cc5c77fe7aaef73106944ae2a1be470930c111))
+
+
+### BREAKING CHANGES
+
+* add volume support for admin node
+
 # 2.2.0 (2022-04-22)
 
 
