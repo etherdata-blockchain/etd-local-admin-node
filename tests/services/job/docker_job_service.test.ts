@@ -7,11 +7,15 @@ import { DockerJobService } from "../../../src/internal/services/job/docker_job_
 const container = {
   id: "1",
   logs: jest.fn().mockResolvedValueOnce(Buffer.from(MockDockerLogs.simpleLog)),
+  stop: jest.fn(),
+  remove: jest.fn(),
 };
 
 jest.mock("dockerode", () =>
   jest.fn().mockImplementation(() => ({
     getContainer: jest.fn().mockReturnValue(container),
+    getImage: jest.fn().mockReturnValue({ remove: jest.fn() }),
+    getVolume: jest.fn().mockReturnValue({ remove: jest.fn() }),
   }))
 );
 
@@ -38,6 +42,54 @@ describe("Given a docker job service and docker exists", () => {
 
     const result = await service.handle(MockDataDockerCalling);
     expect(result.result).toBe(MockDockerLogs.simpleLog);
+    expect(result.error).toBeUndefined();
+  });
+
+  test("When calling without any error", async () => {
+    const service = new DockerJobService();
+    await service.start();
+
+    const result = await service.handle({
+      method: "removeVolume",
+      value: "mock_id",
+    });
+    expect(result.result).toBe("undefined");
+    expect(result.error).toBeUndefined();
+  });
+
+  test("When calling without any error", async () => {
+    const service = new DockerJobService();
+    await service.start();
+
+    const result = await service.handle({
+      method: "removeImage",
+      value: "mock_id",
+    });
+    expect(result.result).toBe("undefined");
+    expect(result.error).toBeUndefined();
+  });
+
+  test("When calling without any error", async () => {
+    const service = new DockerJobService();
+    await service.start();
+
+    const result = await service.handle({
+      method: "removeContainer",
+      value: "mock_id",
+    });
+    expect(result.result).toBe("undefined");
+    expect(result.error).toBeUndefined();
+  });
+
+  test("When calling without any error", async () => {
+    const service = new DockerJobService();
+    await service.start();
+
+    const result = await service.handle({
+      method: "stopContainer",
+      value: "mock_id",
+    });
+    expect(result.result).toBe("undefined");
     expect(result.error).toBeUndefined();
   });
 

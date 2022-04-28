@@ -7,6 +7,8 @@ module.exports = {
     "src/**/*.{ts,tsx}",
     "!<rootDir>/node_modules/",
     "!index.ts",
+    "app.ts",
+    "test_plugin.ts",
   ],
   testTimeout: 20000,
 };
