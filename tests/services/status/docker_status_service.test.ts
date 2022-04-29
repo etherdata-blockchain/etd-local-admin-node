@@ -18,18 +18,25 @@ describe("Given a docker status service", () => {
     mockContainerLog?.mockClear();
   });
 
-  test("When calling function without any problem", async () => {
+  test("When calling function without any problem 1", async () => {
     mockContainerLog.mockReturnValue(Buffer.from("hello world"));
 
     const mockContainer = {
       logs: mockContainerLog,
+      Id: "mock_id",
     };
+
+    const mockContainer2 = {
+      logs: mockContainerLog,
+      Id: "mock_id_2",
+    };
+
     (Docker as any).mockImplementation(() => ({
       getContainer: jest.fn().mockReturnValue(mockContainer),
       listImages: jest.fn().mockReturnValue([]),
       listContainers: jest
         .fn()
-        .mockResolvedValue([mockContainer, mockContainer]),
+        .mockResolvedValue([mockContainer, mockContainer2]),
       listVolumes: jest
         .fn()
         .mockResolvedValue({ Volumes: [{ Name: "mock_volume_1" }] }),
@@ -40,8 +47,11 @@ describe("Given a docker status service", () => {
     const result = await service.handle();
     expect(result.containers).toHaveLength(2);
     expect(result.containers[0].logs).toBe("hello world");
+
     expect(result.containers[1].logs).toBe("hello world");
     expect(result.volumes[0].Name).toBe("mock_volume_1");
+    expect(result.containers[0].Id).toBe("mock_id");
+    expect(result.containers[1].Id).toBe("mock_id_2");
   });
 
   test("When calling function with problems", async () => {
@@ -51,6 +61,7 @@ describe("Given a docker status service", () => {
 
     const mockContainer = {
       logs: mockContainerLog,
+      Id: "mock_id_2",
     };
     (Docker as any).mockImplementation(() => ({
       getContainer: jest.fn().mockReturnValue(mockContainer),
@@ -66,6 +77,7 @@ describe("Given a docker status service", () => {
     const service = new DockerStatusService();
     await service.start();
     const result = await service.handle();
+    console.log(result);
     expect(result.containers).toHaveLength(2);
     expect(
       result.containers.filter((c) => typeof c.logs === "string")
@@ -78,6 +90,7 @@ describe("Given a docker status service", () => {
 
     const mockContainer = {
       logs: mockContainerLog,
+      Id: "mock_id_2",
     };
     (Docker as any).mockImplementation(() => ({
       getContainer: jest.fn().mockReturnValue(mockContainer),

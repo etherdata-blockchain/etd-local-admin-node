@@ -3,7 +3,7 @@ import fs from "fs";
 import Logger from "@etherdata-blockchain/logger";
 import { enums } from "@etherdata-blockchain/common";
 import { GeneralService, JobResult } from "../general_service";
-import { RegisteredService } from "../../enums/names";
+import { JobName, RegisteredService } from "../../enums/names";
 
 export class DockerJobService extends GeneralService<enums.DockerValueType> {
   name = RegisteredService.dockerJobService;
@@ -20,20 +20,33 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
       };
     }
 
+    let result: any | undefined;
+
     switch (method) {
       case "logs":
-        return this.handleLogs(value);
+        result = await this.handleLogs(value);
+        break;
       case "removeVolume":
-        return this.handleRemoveVolume(value);
+        result = await this.handleRemoveVolume(value);
+        break;
       case "removeContainer":
-        return this.handleRemoveContainer(value);
+        result = await this.handleRemoveContainer(value);
+        break;
       case "removeImage":
-        return this.handleRemoveImage(value);
+        result = await this.handleRemoveImage(value);
+        break;
       case "stopContainer":
-        return this.handleStopContainer(value);
+        result = await this.handleStopContainer(value);
+        break;
       default:
-        return { error: "Command is not supported", result: undefined };
+        result = { error: "Command is not supported", result: undefined };
+        break;
     }
+    // determine whether error occurs. If not, then request handler to send a new status to server
+    if (result.error === undefined) {
+      await this.handler?.handleJob(JobName.updateStatus);
+    }
+    return result;
   }
 
   async handleStopContainer(value: string) {

@@ -6,7 +6,11 @@ import { Web3JobService } from "../../services/job/web3_job_service";
 import { Channel } from "../../enums/channels";
 import { UpdateTemplateJobService } from "../../services/job/update_template_job_service";
 import { RequestJobService } from "../../services/job/request_job_service";
-import { RegisteredHandler, RegisteredService } from "../../enums/names";
+import {
+  JobName,
+  RegisteredHandler,
+  RegisteredService,
+} from "../../enums/names";
 import { GeneralService, JobResult } from "../../services/general_service";
 
 export class JobHandler extends BaseHandler {
@@ -37,8 +41,12 @@ export class JobHandler extends BaseHandler {
   }
 
   async handleJob(
-    job: interfaces.db.PendingJobDBInterface<any>
-  ): Promise<JobResult> {
+    job: interfaces.db.PendingJobDBInterface<any> | JobName.updateStatus
+  ): Promise<JobResult | undefined> {
+    if (job === JobName.updateStatus) {
+      const handler = this.findHandlerByName(RegisteredHandler.statusHandler);
+      return handler?.handleJob(undefined);
+    }
     await super.handleJob(job);
     const service = this.serviceJobTypeMapping[job.task.type];
     return service.handle(job.task.value);

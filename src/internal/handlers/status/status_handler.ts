@@ -27,8 +27,8 @@ export class StatusHandler extends BaseHandler {
   async handleJob(serviceName: StatusJob): Promise<JobResult | undefined> {
     try {
       await super.handleJob(serviceName);
-      const handler = this.findServiceByName(serviceName);
-      return await handler.handle();
+      const service = this.findServiceByName(serviceName);
+      return await service.handle();
     } catch (err) {
       Logger.error(`Status Handler: ${err}`);
       return undefined;
