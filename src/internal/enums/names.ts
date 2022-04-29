@@ -15,3 +15,7 @@ export enum RegisteredService {
   nodeInfoService = "node-info-service",
   networkStatusService = "network-status-service",
 }
+
+export enum JobName {
+  updateStatus = "updateStatus",
+}

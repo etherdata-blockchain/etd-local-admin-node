@@ -25,15 +25,21 @@ export class DockerStatusService extends GeneralService<DockerStatusResult> {
       ]);
 
       if (dockerResults[0].status === "fulfilled") {
-        images = dockerResults[0].value;
+        images = dockerResults[0].value.sort((a, b) =>
+          a.Id.localeCompare(b.Id)
+        );
       }
 
       if (dockerResults[1].status === "fulfilled") {
-        containers = dockerResults[1].value;
+        containers = dockerResults[1].value.sort((a, b) =>
+          a.Id.localeCompare(b.Id)
+        );
       }
 
       if (dockerResults[2].status === "fulfilled") {
-        volumes = dockerResults[2].value.Volumes;
+        volumes = dockerResults[2].value.Volumes.sort((a, b) =>
+          a.Name.localeCompare(b.Name)
+        );
       }
 
       // get list of logs

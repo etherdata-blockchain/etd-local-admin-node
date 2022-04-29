@@ -11,6 +11,7 @@ import { Urls } from "../../../src/internal/enums/urls";
 import { RegisteredService } from "../../../src/internal/enums/names";
 import { RequestJobService } from "../../../src/internal/services/job/request_job_service";
 import { DefaultSettings } from "../../../src/config";
+import { StatusHandler } from "../../../src/internal/handlers/status/status_handler";
 
 jest.mock("../../../src/internal/services/job/update_template_job_service");
 jest.mock("../../../src/internal/services/job/docker_job_service");
@@ -164,6 +165,7 @@ describe("Given a job handler", () => {
       .reply(StatusCodes.OK, { job: MockDockerJob });
 
     const handler = new JobHandler();
+
     await handler.startHandler();
     const jobService: RequestJobService = handler.findServiceByName(
       RegisteredService.requestJobService

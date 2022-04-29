@@ -15,7 +15,7 @@ export interface PeriodicTask {
 
 export abstract class BaseHandler {
   // eslint-disable-next-line no-use-before-define
-  otherPlugin: { [key: string]: BaseHandler } = {};
+  otherHandlers: { [key: string]: BaseHandler } = {};
 
   periodicTasks: PeriodicTask[] = [];
 
@@ -57,18 +57,26 @@ export abstract class BaseHandler {
     }
   }
 
+  /**
+   * Get service by name
+   * @param serviceName requested service name
+   */
   findServiceByName<T extends GeneralService<any>>(
     serviceName: RegisteredService
   ): T | undefined {
     return this.servicesMap[serviceName] as T;
   }
 
-  addPlugins(plugins: BaseHandler[]) {
-    for (const plugin of plugins) {
-      if (plugin.handlerName !== this.handlerName) {
-        this.otherPlugin[plugin.handlerName] = plugin;
+  addHandlers(handlers: BaseHandler[]) {
+    for (const handler of handlers) {
+      if (handler.handlerName !== this.handlerName) {
+        this.otherHandlers[handler.handlerName] = handler;
       }
     }
+  }
+
+  findHandlerByName(handlerName: string) {
+    return this.otherHandlers[handlerName];
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -87,6 +95,10 @@ export abstract class BaseHandler {
     }
   }
 
+  /**
+   * Util function. Promise based set timeout function
+   * @param time
+   */
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -111,7 +123,7 @@ export abstract class PluginApp {
 
   async startApp() {
     for (const plugin of this.handlers) {
-      plugin.addPlugins(this.handlers);
+      plugin.addHandlers(this.handlers);
     }
 
     for (const plugin of this.handlers) {
