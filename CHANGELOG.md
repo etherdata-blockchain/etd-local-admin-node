@@ -1,5 +1,12 @@
 # Changelog
 
+# 3.1.0 (2022-04-29)
+
+
+### Features
+
+* will send status when docker job finished ([#34](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/34)) ([d60f64e](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/d60f64e886789e7da14087dbb667f5dd91f470b6))
+
 # 3.0.0 (2022-04-28)
 
 
