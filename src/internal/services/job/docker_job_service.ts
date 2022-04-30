@@ -55,33 +55,50 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
     return { result: `${result}` };
   }
 
+  // eslint-disable-next-line consistent-return
   async handleRemoveImage(value: string) {
-    const image = this.docker.getImage(value);
-    const result = await image.remove();
-    return { result: `${result}` };
+    try {
+      const image = this.docker.getImage(value);
+      const result = await image.remove({ force: true });
+      return { result: `${result}` };
+    } catch (e) {
+      return { error: `${e}` };
+    }
   }
 
   async handleRemoveContainer(value: string) {
-    const container = this.docker.getContainer(value);
-    await container.stop();
-    const result = await container.remove();
-    return { result: `${result}` };
+    try {
+      const container = this.docker.getContainer(value);
+      await container.stop();
+      const result = await container.remove();
+      return { result: `${result}` };
+    } catch (e) {
+      return { error: `${e}` };
+    }
   }
 
   async handleRemoveVolume(value: string) {
-    const volume = this.docker.getVolume(value);
-    const result = await volume.remove();
-    return { result: `${result}` };
+    try {
+      const volume = this.docker.getVolume(value);
+      const result = await volume.remove();
+      return { result: `${result}` };
+    } catch (e) {
+      return { error: `${e}` };
+    }
   }
 
   async handleLogs(value: string) {
-    const container = this.docker?.getContainer(value);
-    const logs = (await container?.logs({
-      tail: 100,
-      stderr: true,
-      stdout: true,
-    })) as unknown as Buffer;
-    return { result: logs?.toString(), error: undefined };
+    try {
+      const container = this.docker?.getContainer(value);
+      const logs = (await container?.logs({
+        tail: 100,
+        stderr: true,
+        stdout: true,
+      })) as unknown as Buffer;
+      return { result: logs?.toString(), error: undefined };
+    } catch (e) {
+      return { error: `${e}` };
+    }
   }
 
   async start(): Promise<void> {

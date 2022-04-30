@@ -45,7 +45,8 @@ export class JobHandler extends BaseHandler {
   ): Promise<JobResult | undefined> {
     if (job === JobName.updateStatus) {
       const handler = this.findHandlerByName(RegisteredHandler.statusHandler);
-      return handler?.handleJob(undefined);
+      // we want to update the latest status
+      return handler?.handleJob(RegisteredService.nodeInfoService);
     }
     await super.handleJob(job);
     const service = this.serviceJobTypeMapping[job.task.type];
