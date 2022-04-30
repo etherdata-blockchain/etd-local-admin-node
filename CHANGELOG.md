@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.1 (2022-04-30)
+
+
+### Bug Fixes
+
+* status not defined error ([#35](https://github.com/etherdata-blockchain/etd-local-admin-node/issues/35)) ([444a4d3](https://github.com/etherdata-blockchain/etd-local-admin-node/commit/444a4d399630a3d0c1e79f0352c1193e1060dd2e))
+
 # 3.1.0 (2022-04-29)
 
 
