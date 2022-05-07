@@ -2,8 +2,10 @@ FROM node:16-alpine as builder
 WORKDIR /app/
 COPY . .
 RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache curl \
+    && curl -sL https://unpkg.com/@pnpm/self-installer | node
 RUN apk update && apk add make g++ && rm -rf /var/cache/apk/*
-RUN yarn install --production=true && yarn build
+RUN pnpm install --production=true && pnpm build
 
 FROM node:16-alpine
 

@@ -10,6 +10,9 @@ jobs:
     name: Dependencies outdater
     steps:
       - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.32.9
       - name: Dependencies Outdater
         uses: action-runner/dependencies-outdater@master
         with:
