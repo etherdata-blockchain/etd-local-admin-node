@@ -73,9 +73,6 @@ describe("Given a update template job service", () => {
     const result = await service.handle({ templateId: "1", coinbase: "123" });
     expect(result.error).toBeUndefined();
     expect(result.result).toBe("Output 1\n\n");
-    expect(mockCreate.mock.calls[0][0].containers[0].config.Env[0]).toBe(
-      "coinbase=123"
-    );
     expect(
       mockCreate.mock.calls[0][0].containers[0].config.HostConfig.Binds[0]
     ).toBe("a:b");

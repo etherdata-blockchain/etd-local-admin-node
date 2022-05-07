@@ -50,10 +50,8 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
         value.templateId
       );
 
-      const { coinbase } = value;
-
       const docker = new Docker();
-      const dockerService = new DockerService(docker);
+      const dockerService = new DockerService(docker as any);
       const plan = new DockerPlan(dockerService);
 
       const images: ImageStack[] = updateTemplate.imageStacks.map((i) => ({
@@ -70,9 +68,7 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
           },
           config: {
             ...c.config,
-            Env: c?.config?.Env.map((e) =>
-              e.replace("${etd_coinbase}", coinbase)
-            ),
+            Env: c?.config?.Env,
           },
         })
       );
@@ -103,6 +99,6 @@ export class UpdateTemplateJobService extends GeneralService<enums.UpdateTemplat
 
   async start(): Promise<any> {
     const docker = new Docker();
-    this.dockerService = new DockerService(docker);
+    this.dockerService = new DockerService(docker as any);
   }
 }
