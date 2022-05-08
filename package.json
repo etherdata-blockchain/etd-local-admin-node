@@ -20,17 +20,19 @@
     },
     "build": {
       "command": "ncc build build/app.js -o dist",
-      "dependencies": ["compile"]
+      "dependencies": [
+        "compile"
+      ]
     },
     "test": {
       "command": "jest --forceExit --coverage"
     }
   },
   "dependencies": {
-    "@etherdata-blockchain/common": "^4.2.2",
-    "@etherdata-blockchain/docker-plan": "^4.2.2",
-    "@etherdata-blockchain/ip": "^4.2.2",
-    "@etherdata-blockchain/logger": "^4.2.2",
+    "@etherdata-blockchain/common": "^4.3.0",
+    "@etherdata-blockchain/docker-plan": "^4.3.0",
+    "@etherdata-blockchain/ip": "^4.3.0",
+    "@etherdata-blockchain/logger": "^4.3.0",
     "@types/dockerode": "^3.3.9",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.31",
