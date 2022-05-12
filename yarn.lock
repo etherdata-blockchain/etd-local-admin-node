@@ -486,40 +486,40 @@
     web3-eth "^1.7.3"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/common@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-4.3.1.tgz#274601d374c7b2fbd5fa4204229a0bafc5339519"
-  integrity sha512-Io7E4NgnwX9IW3JTXdrxaJFW39HcLEMlykEczfI8Kut36bz3Upso0gAYqRkcP6IOo3YYTcWnn0j8v3GgKcqqvA==
+"@etherdata-blockchain/common@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-4.3.4.tgz#49b11e1780b7daa8eb9f0792ae2136a18b35d354"
+  integrity sha512-rak5xN3anLud8QLlhMTWfbnmLvuxs7BljK/VOnZCk4cf5GEEb71wz+Ntpl8QC45vqXUBnByVDYqRYdjk3HnM6g==
   dependencies:
-    "@types/dockerode" "^3.3.8"
+    "@types/dockerode" "^3.3.9"
     "@types/json-schema" "^7.0.11"
     bson "^4.6.3"
     json-schema "^0.4.0"
     moment "^2.29.3"
-    typescript "^4.6.3"
+    typescript "^4.6.4"
     web3 "^1.7.3"
     web3-eth "^1.7.3"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/docker-plan@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-4.3.1.tgz#83890b8be75b8a553b94c396b3c6dcbd99f37690"
-  integrity sha512-4Tiu5lr1KZlFf3Xg44F7liAYHB+AS5b+PFTusurg1pCpRg9viPxOT4hupyRCEkRuATMNr3yNdGBzacrvRh3uGA==
+"@etherdata-blockchain/docker-plan@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-4.3.4.tgz#9d902ebd539242162e8576160129bdc13bf7af5e"
+  integrity sha512-sTU5YEn605iTuHez8OUqFm12eOeUXMfXAAzpmp9djQ28PJ+PgxkIqZjbp35qJGT1Y/tVz8O5Gz5CZE55BHzBLg==
   dependencies:
     "@etherdata-blockchain/common" "*"
     "@etherdata-blockchain/logger" "*"
-    "@types/cli-progress" "^3.9.2"
-    "@types/dockerode" "^3.3.8"
+    "@types/cli-progress" "^3.11.0"
+    "@types/dockerode" "^3.3.9"
     "@types/jest-when" "^3.5.0"
-    cli-progress "^3.10.0"
+    cli-progress "^3.11.0"
     dockerode "^3.3.1"
-    typescript "^4.6.3"
+    typescript "^4.6.4"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/ip@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-4.3.1.tgz#a58e836e1c61f642e664610eb8d4f16c747318fc"
-  integrity sha512-CV7HhKujNlSsOCXD7VC5/9ZuqANbXjdtyXiz9XIcRj0E0fI+hbAwP4qV69scJtMDlzvYI8TnW0VKSf7v1+YIVg==
+"@etherdata-blockchain/ip@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-4.3.4.tgz#5921ce1c422a003cc0e31c8481bc96548aff34e1"
+  integrity sha512-okKq4k7LnAgqks39gzoGTTM6kdD00vcS9LBDMcNOS1GnYHzJEzbxfylVAOJYGNU2dE7OrOzRKxGkV9Ri4VxV1Q==
 
 "@etherdata-blockchain/logger@*":
   version "4.3.0"
@@ -530,14 +530,14 @@
     moment "^2.29.3"
     typescript "^4.6.3"
 
-"@etherdata-blockchain/logger@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-4.3.1.tgz#bb0d0549187753ce16dd0fa948595b71ee4b27a2"
-  integrity sha512-npTAKzqfwF0iMaTCziRFM1XWC2NaYmSwB6b3HnsAjYuNF/W2+sp1UdFFOUY+bwprY2c8xrHGb6sQLQ68Iuf3GQ==
+"@etherdata-blockchain/logger@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-4.3.4.tgz#5003bceb3c90f4b6aaa4c2340a8b4cf974669916"
+  integrity sha512-wdW/zC70gCwG+anoyyueWa3KVi4Qrah+OfW4jSXMKAbRDXB2jtP52cH42bPs0RZeOxO+WlNCYdKVbP9ag/mPYg==
   dependencies:
     chalk "^5.0.1"
     moment "^2.29.3"
-    typescript "^4.6.3"
+    typescript "^4.6.4"
 
 "@ethereumjs/common@^2.5.0", "@ethereumjs/common@^2.6.3":
   version "2.6.4"
@@ -1260,10 +1260,10 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.3.1.tgz#e2c6e73e0bdeb2521d00756d099218e9f5d90a04"
   integrity sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==
 
-"@types/cli-progress@^3.9.2":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@types/cli-progress/-/cli-progress-3.9.2.tgz#6ca355f96268af39bee9f9307f0ac96145639c26"
-  integrity sha512-VO5/X5Ij+oVgEVjg5u0IXVe3JQSKJX+Ev8C5x+0hPy0AuWyW+bF8tbajR7cPFnDGhs7pidztcac+ccrDtk5teA==
+"@types/cli-progress@^3.11.0":
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/@types/cli-progress/-/cli-progress-3.11.0.tgz#ec79df99b26757c3d1c7170af8422e0fc95eef7e"
+  integrity sha512-XhXhBv1R/q2ahF3BM7qT5HLzJNlIL0wbcGyZVjqOTqAybAnsLisd7gy1UCyIqpL+5Iv6XhlSyzjLCnI2sIdbCg==
   dependencies:
     "@types/node" "*"
 
@@ -1321,10 +1321,18 @@
   dependencies:
     "@types/jest" "*"
 
-"@types/jest@*", "@types/jest@^27.5.0":
+"@types/jest@*":
   version "27.5.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.5.0.tgz#e04ed1824ca6b1dd0438997ba60f99a7405d4c7b"
   integrity sha512-9RBFx7r4k+msyj/arpfaa0WOOEcaAZNmN+j80KFbFCoSqCJGHTz7YMAMGQW9Xmqm5w6l5c25vbSjMwlikJi5+g==
+  dependencies:
+    jest-matcher-utils "^27.0.0"
+    pretty-format "^27.0.0"
+
+"@types/jest@^27.5.1":
+  version "27.5.1"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.5.1.tgz#2c8b6dc6ff85c33bcd07d0b62cb3d19ddfdb3ab9"
+  integrity sha512-fUy7YRpT+rHXto1YlL+J9rs0uLGyiqVt3ZOTQR+4ROc47yNl8WLdVLgUloBRhOxP1PZvguHl44T3H0wAWxahYQ==
   dependencies:
     jest-matcher-utils "^27.0.0"
     pretty-format "^27.0.0"
@@ -2373,7 +2381,7 @@ cli-cursor@^4.0.0:
   dependencies:
     restore-cursor "^4.0.0"
 
-cli-progress@^3.10.0:
+cli-progress@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/cli-progress/-/cli-progress-3.11.0.tgz#03651defd06182a5396ddc2a41da17c2f257ecdf"
   integrity sha512-ug+V4/Qy3+0jX9XkWPV/AwHD98RxKXqDpL37vJBOxQhD90qQ3rDqDKoFpef9se91iTUuOXKlyg2HUyHBo5lHsQ==
