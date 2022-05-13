@@ -486,10 +486,10 @@
     web3-eth "^1.7.3"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/common@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-4.3.4.tgz#49b11e1780b7daa8eb9f0792ae2136a18b35d354"
-  integrity sha512-rak5xN3anLud8QLlhMTWfbnmLvuxs7BljK/VOnZCk4cf5GEEb71wz+Ntpl8QC45vqXUBnByVDYqRYdjk3HnM6g==
+"@etherdata-blockchain/common@^4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-4.3.5.tgz#dbb08ce5d9b3bba1e990a96a83f1f52c37f5667b"
+  integrity sha512-qAFrUUVtX2DLjItm5CphUflxYEPMBsnOODpAZmTgxgGTRauhV74XPg6fX+Y9iEdDdjcoYL8VtbwOk7Hil/ky7Q==
   dependencies:
     "@types/dockerode" "^3.3.9"
     "@types/json-schema" "^7.0.11"
@@ -501,10 +501,10 @@
     web3-eth "^1.7.3"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/docker-plan@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-4.3.4.tgz#9d902ebd539242162e8576160129bdc13bf7af5e"
-  integrity sha512-sTU5YEn605iTuHez8OUqFm12eOeUXMfXAAzpmp9djQ28PJ+PgxkIqZjbp35qJGT1Y/tVz8O5Gz5CZE55BHzBLg==
+"@etherdata-blockchain/docker-plan@^4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-4.3.5.tgz#289911a0c6b8daf1b6e8a608ab03f95f85a92c0f"
+  integrity sha512-+XsVXdZIFo9n2ZKj0whnXOGdEqZNkuSXn262G/73rflJZZynrz124a6meyoC+kXAFhocUrYoBtFebG52R2Bpsg==
   dependencies:
     "@etherdata-blockchain/common" "*"
     "@etherdata-blockchain/logger" "*"
@@ -516,10 +516,10 @@
     typescript "^4.6.4"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/ip@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-4.3.4.tgz#5921ce1c422a003cc0e31c8481bc96548aff34e1"
-  integrity sha512-okKq4k7LnAgqks39gzoGTTM6kdD00vcS9LBDMcNOS1GnYHzJEzbxfylVAOJYGNU2dE7OrOzRKxGkV9Ri4VxV1Q==
+"@etherdata-blockchain/ip@^4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-4.3.5.tgz#326dba6fbc9fc2a2b832f830825fa244cc502b59"
+  integrity sha512-fEisA7jsZSyejmjzQK2SJZvBq625bYeywsWQoS3l6J9qE6YCwOpIUOH9vcqTQH5k0yLEgfJosaP12GMPa7GNBA==
 
 "@etherdata-blockchain/logger@*":
   version "4.3.0"
@@ -530,10 +530,10 @@
     moment "^2.29.3"
     typescript "^4.6.3"
 
-"@etherdata-blockchain/logger@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-4.3.4.tgz#5003bceb3c90f4b6aaa4c2340a8b4cf974669916"
-  integrity sha512-wdW/zC70gCwG+anoyyueWa3KVi4Qrah+OfW4jSXMKAbRDXB2jtP52cH42bPs0RZeOxO+WlNCYdKVbP9ag/mPYg==
+"@etherdata-blockchain/logger@^4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-4.3.5.tgz#902fd335804ae6dac53e078d26e036611499ebde"
+  integrity sha512-AoS5WFPPGPnwrcIxogou7di4yv6GYKL3Jsxa9OkQItxFtoA9RsEgcxPTvNk1Ydyr4r3bZ+be5GsMjaMXm0riVg==
   dependencies:
     chalk "^5.0.1"
     moment "^2.29.3"
@@ -1399,10 +1399,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.50.tgz#14ba5198f1754ffd0472a2f84ab433b45ee0b65e"
   integrity sha512-+9axpWx2b2JCVovr7Ilgt96uc6C1zBKOQMpGtRbWT9IoR/8ue32GGMfGA4woP8QyP2gBs6GQWEVM3tCybGCxDA==
 
-"@types/node@^17.0.32":
-  version "17.0.32"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.32.tgz#51d59d7a90ef2d0ae961791e0900cad2393a0149"
-  integrity sha512-eAIcfAvhf/BkHcf4pkLJ7ECpBAhh9kcxRBpip9cTiO+hf+aJrsxYxBeS6OXvOd9WqNAJmavXVpZvY1rBjNsXmw==
+"@types/node@^17.0.33":
+  version "17.0.33"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.33.tgz#3c1879b276dc63e73030bb91165e62a4509cd506"
+  integrity sha512-miWq2m2FiQZmaHfdZNcbpp9PuXg34W5JZ5CrJ/BaS70VuhoJENBEQybeiYSaPBRNq6KQGnjfEnc/F3PN++D+XQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
