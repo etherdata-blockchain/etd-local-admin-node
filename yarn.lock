@@ -8615,10 +8615,10 @@ windows-release@^5.0.1:
   dependencies:
     execa "^5.1.1"
 
-wireit@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.4.1.tgz#33415fb6f526d970ae5268a3df756e91ae1acaa8"
-  integrity sha512-2uCuCcZtxVG0VQ8rbGGmGQQA/XY6pBy7QBRvdtoLmq8SfMlYLaR+fCCWJKY3IhSnhA8pR9/hLA1j0CunF7/Zrw==
+wireit@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.4.2.tgz#80094f1eaeb9d48915d726d1ff19ec7a89556ccf"
+  integrity sha512-zzrlhLgDPMLC+NQGur7lmMfDzTT+DCOkTg6i8nJaX3LLcgb9J9APiychNaMZqdwZ1VNDWPIxdmO5Zz0RlE2U1A==
   dependencies:
     "@actions/cache" "=2.0.2"
     braces "^3.0.2"
