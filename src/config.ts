@@ -14,15 +14,15 @@ export const DefaultSettings = {
   /**
    * Axios timeout in seconds
    */
-  axiosTimeout: 10,
+  axiosTimeout: 8,
   /**
    * Status checking interval in seconds
    */
-  statusInterval: 15,
+  statusInterval: 10,
   /**
    * Job checking interval in seconds
    */
-  jobInterval: 15,
+  jobInterval: 10,
   /**
    * Number of axios request times
    */
