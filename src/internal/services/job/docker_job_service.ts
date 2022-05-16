@@ -2,6 +2,7 @@ import Docker from "dockerode";
 import fs from "fs";
 import Logger from "@etherdata-blockchain/logger";
 import { enums } from "@etherdata-blockchain/common";
+import os from "os";
 import { GeneralService, JobResult } from "../general_service";
 import { JobName, RegisteredService } from "../../enums/names";
 
@@ -68,6 +69,10 @@ export class DockerJobService extends GeneralService<enums.DockerValueType> {
 
   async handleRemoveContainer(value: string) {
     try {
+      const hostname = os.hostname();
+      if (value.includes(hostname)) {
+        return { error: "Error: Cannot remove admin-node itself" };
+      }
       const container = this.docker.getContainer(value);
       await container.stop();
       const result = await container.remove();

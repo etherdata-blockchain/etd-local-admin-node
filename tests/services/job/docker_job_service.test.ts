@@ -2,6 +2,7 @@ import { enums } from "@etherdata-blockchain/common";
 import { Buffer } from "buffer";
 import * as fs from "fs";
 import Dockerode from "dockerode";
+import os from "os";
 import { MockDockerLogs } from "../../mockdata";
 import { DockerJobService } from "../../../src/internal/services/job/docker_job_service";
 import { JobHandler } from "../../../src/internal/handlers/job/job_handler";
@@ -13,6 +14,7 @@ import {
 jest.mock("dockerode");
 
 jest.mock("fs");
+jest.mock("os");
 
 const MockDataDockerCalling: enums.DockerValueType = {
   method: "logs",
@@ -143,6 +145,7 @@ describe("Given a docker job service and docker not exist", () => {
       getVolume: jest.fn().mockReturnValue({ remove: jest.fn() }),
       getImage: jest.fn().mockReturnValue({ remove: jest.fn() }),
     }));
+    (os.hostname as jest.Mock).mockReturnValue("hostname");
   });
 
   test("When calling with error", async () => {
@@ -193,6 +196,28 @@ describe("Given a docker job service and docker not exist", () => {
 
   test("When calling remove container with error", async () => {
     const container = {
+      id: "abcdefghijklmn",
+      stop: jest.fn(),
+      remove: jest.fn().mockRejectedValue(new Error("mock error")),
+    };
+    (Dockerode as any as jest.Mock).mockImplementation(() => ({
+      getContainer: jest.fn().mockReturnValue(container),
+    }));
+    (os.hostname as jest.Mock).mockReturnValue("abcde");
+
+    const service = new DockerJobService();
+    await service.start();
+
+    const result = await service.handle({
+      method: "removeContainer",
+      value: container.id,
+    });
+    expect(result.result).toBeUndefined();
+    expect(result.error).toBe("Error: Cannot remove admin-node itself");
+  });
+
+  test("When calling remove container with error", async () => {
+    const container = {
       id: "1",
       stop: jest.fn().mockRejectedValue(new Error("mock error")),
       remove: jest.fn(),
@@ -230,7 +255,7 @@ describe("Given a docker job service and docker not exist", () => {
     expect(result.error).toBe("Error: mock error");
   });
 
-  test("When calling remove volume with error", async () => {
+  test("When calling remove volume with error 5", async () => {
     (Dockerode as any as jest.Mock).mockImplementation(() => ({
       getVolume: jest.fn().mockReturnValue({
         remove: jest.fn().mockRejectedValue(new Error("mock error")),
