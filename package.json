@@ -69,7 +69,7 @@
     "prettier": "^2.6.2",
     "release-it": "^15.0.0",
     "ts-jest": "^28.0.2",
-    "ts-node": "^10.7.0"
+    "ts-node": "^10.8.0"
   },
   "repository": "https://github.com/etherdata-blockchain/etd-local-admin-node.git",
   "author": "sirily11 <sirily1997@gmail.com>"
