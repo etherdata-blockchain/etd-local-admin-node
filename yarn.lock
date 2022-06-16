@@ -1236,10 +1236,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.52.tgz#2fd2dc6bfa185601b15457398d4ba1ef27f81251"
   integrity sha512-cfkwWw72849SNYp3Zx0IcIs25vABmFh73xicxhCkTcvtZQeIez15PpwQN8fY3RD7gv1Wrxlc9MEtfMORZDEsGw==
 
-"@types/node@^17.0.43":
-  version "17.0.43"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.43.tgz#7f16898cdd791c9d64069000ad448b47b3ca8353"
-  integrity sha512-jnUpgw8fL9kP2iszfIDyBQtw5Mf4/XSqy0Loc1J9pI14ejL83XcCEvSf50Gs/4ET0I9VCCDoOfufQysj0S66xA==
+"@types/node@^18.0.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.0.tgz#67c7b724e1bcdd7a8821ce0d5ee184d3b4dd525a"
+  integrity sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -8386,10 +8386,10 @@ windows-release@^5.0.1:
   dependencies:
     execa "^5.1.1"
 
-wireit@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.5.0.tgz#89a5c18bef6408a7a6899c124d0ed700ded99f0c"
-  integrity sha512-WaUBjf6Uglipf3q5vNoLsryofZcGq6CxG5vbZsyaqcL2j+/T3+lc/NlEjXMTAWmb8a3MvpVhX3NUk8S04clpRw==
+wireit@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.6.1.tgz#d3f5e0d6765941641376d7760438b1f75d900fae"
+  integrity sha512-UmrAzFd2w6ioyHluPwXr3TxUIo5CIbklTbTTgubN81jQxiPkAHXTjzkfTOjeAdeEzZ5OpsbYCQW5obCrFMlTdw==
   dependencies:
     braces "^3.0.2"
     chokidar "^3.5.3"
