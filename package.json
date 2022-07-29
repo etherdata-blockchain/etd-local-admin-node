@@ -35,7 +35,7 @@
     "@etherdata-blockchain/logger": "^4.3.5",
     "@types/dockerode": "^3.3.9",
     "@types/jsonwebtoken": "^8.5.8",
-    "@types/node": "^18.6.1",
+    "@types/node": "^18.6.2",
     "@types/node-cron": "^3.0.2",
     "@vercel/ncc": "^0.34.0",
     "axios": "^0.27.2",
