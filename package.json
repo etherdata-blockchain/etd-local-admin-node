@@ -55,7 +55,7 @@
     "wireit": "^0.7.1"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "^5.0.0",
+    "@release-it/conventional-changelog": "^5.1.0",
     "@types/chai": "^4.3.3",
     "@types/jest": "^28.1.7",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
