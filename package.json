@@ -35,7 +35,7 @@
     "@etherdata-blockchain/logger": "^5.0.2",
     "@types/dockerode": "^3.3.9",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^18.7.19",
+    "@types/node": "^18.7.20",
     "@types/node-cron": "^3.0.4",
     "@vercel/ncc": "^0.34.0",
     "axios": "^0.27.2",
@@ -68,7 +68,7 @@
     "nock": "^13.2.9",
     "prettier": "^2.7.1",
     "release-it": "^15.4.2",
-    "ts-jest": "^29.0.1",
+    "ts-jest": "^29.0.2",
     "ts-node": "^10.9.1"
   },
   "repository": "https://github.com/etherdata-blockchain/etd-local-admin-node.git",
