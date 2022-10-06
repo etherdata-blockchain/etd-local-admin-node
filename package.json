@@ -40,7 +40,7 @@
     "@vercel/ncc": "^0.34.0",
     "axios": "^1.0.0",
     "axios-retry": "^3.3.1",
-    "chalk": "^5.0.1",
+    "chalk": "^5.1.0",
     "dockerode": "^3.3.4",
     "dotenv": "^16.0.3",
     "http-method-enum": "^1.0.0",
