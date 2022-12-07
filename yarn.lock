@@ -9475,10 +9475,10 @@ windows-release@^5.0.1:
   dependencies:
     execa "^5.1.1"
 
-wireit@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.9.0.tgz#4dd6ea4d9bec5563e1c4e3e17feb7d9f171d6255"
-  integrity sha512-O3DpiOUM7RSMHW4mehXUqcunPCX3djHchnCKMLhQsykdO8LoLvx3jCJQKVbC0XtPZI2ovIkAJok9iKbvvZ7AeQ==
+wireit@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/wireit/-/wireit-0.9.1.tgz#f6a87ede0d58551bf5a7d19528fc8fb2a5808850"
+  integrity sha512-QqDzpy0CkePmyN9h3xk8fcSABUfcNky9m8mvszHN/oZAzXKQiy3BpdKqORI00W1r+Wc+r0M/tYKMyIM+4Se3TQ==
   dependencies:
     braces "^3.0.2"
     chokidar "^3.5.3"
