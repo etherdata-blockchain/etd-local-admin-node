@@ -36,7 +36,7 @@
     "@types/dockerode": "^3.3.14",
     "@types/jsonwebtoken": "^9.0.0",
     "@types/node": "^18.11.18",
-    "@types/node-cron": "^3.0.6",
+    "@types/node-cron": "^3.0.7",
     "@vercel/ncc": "^0.36.0",
     "axios": "^1.2.1",
     "axios-retry": "^3.3.1",
