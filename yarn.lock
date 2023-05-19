@@ -1578,10 +1578,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.52.tgz#2fd2dc6bfa185601b15457398d4ba1ef27f81251"
   integrity sha512-cfkwWw72849SNYp3Zx0IcIs25vABmFh73xicxhCkTcvtZQeIez15PpwQN8fY3RD7gv1Wrxlc9MEtfMORZDEsGw==
 
-"@types/node@^20.2.0":
-  version "20.2.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.0.tgz#e33da33171ac4eba79b9cfe30b68a4f1561e74ec"
-  integrity sha512-3iD2jaCCziTx04uudpJKwe39QxXgSUnpxXSvRQjRvHPxFQfmfP4NXIm/NURVeNlTCc+ru4WqjYGTmpXrW9uMlw==
+"@types/node@^20.2.1":
+  version "20.2.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.1.tgz#de559d4b33be9a808fd43372ccee822c70f39704"
+  integrity sha512-DqJociPbZP1lbZ5SQPk4oag6W7AyaGMO6gSfRwq3PWl4PXTwJpRQJhDq4W0kzrg3w6tJ1SwlvGZ5uKFHY13LIg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -2011,10 +2011,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios-retry@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/axios-retry/-/axios-retry-3.4.0.tgz#f464dbe9408e5aa78fa319afd38bb69b533d8854"
-  integrity sha512-VdgaP+gHH4iQYCCNUWF2pcqeciVOdGrBBAYUfTY+wPcO5Ltvp/37MLFNCmJKo7Gj3SHvCSdL8ouI1qLYJN3liA==
+axios-retry@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/axios-retry/-/axios-retry-3.5.0.tgz#32206b3e6555169488eded232527e36c8ce6e545"
+  integrity sha512-g48qNrLX30VU6ECWltpFCPegKK6dWzMDYv2o83W2zUL/Zh/SLXbT6ksGoKqYZHtghzqeeXhZBcSXJkO1fPbCcw==
   dependencies:
     "@babel/runtime" "^7.15.4"
     is-retry-allowed "^2.2.0"
