@@ -364,10 +364,10 @@
     web3-eth "^1.7.3"
     yaml "^2.0.1"
 
-"@etherdata-blockchain/common@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-5.0.2.tgz#22bef17788031d2c34201961f0da62879017824a"
-  integrity sha512-4WBop1ly4wDkCFuNvXjFRuQrI4/hhUyrcZgv+Z8DqBbwutxMCR2wa0FtTuhIBfotJOGXFcJHbm68BTc04lPY8A==
+"@etherdata-blockchain/common@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/common/-/common-5.0.3.tgz#cbd08c0116910bae18fc64c33756f6567fadf792"
+  integrity sha512-Rf3+sir+Rq+SXCYCPk2qZQ++GEP8bjF9TRQIkaoG/pbDGL7DUqN2msewpKyuaFb3j/RehP6ELtbHtRmaL/1xGA==
   dependencies:
     "@types/dockerode" "^3.3.9"
     "@types/json-schema" "^7.0.11"
@@ -379,10 +379,10 @@
     web3-eth "^1.7.5"
     yaml "^2.1.1"
 
-"@etherdata-blockchain/docker-plan@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-5.0.2.tgz#a6c591e3d68f694dc8bad36783528697b2879dce"
-  integrity sha512-Z7ut1tmmCGog9t5ZkckRtlqy/xpK9k6tdFdQ+DBethKKDWTf+eDKu3HbnU3NzZqmJ0YqGkr5Ei/gzitCN9FZdA==
+"@etherdata-blockchain/docker-plan@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/docker-plan/-/docker-plan-5.0.3.tgz#bb8dce6880973df1e9023861ccfaf9e8396be44a"
+  integrity sha512-T7WIZOFw99q5EC6xh7nh9mIvldmDZe2t68Hs0xkmyIRjZR/ySM08YnamIZeFipNmV8JZNM5MxI3JrWk3ELk5/Q==
   dependencies:
     "@etherdata-blockchain/common" "*"
     "@etherdata-blockchain/logger" "*"
@@ -394,10 +394,10 @@
     typescript "^4.7.4"
     yaml "^2.1.1"
 
-"@etherdata-blockchain/ip@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-5.0.2.tgz#6428758fa8e68b7451f76ae38cabc86b7958bcef"
-  integrity sha512-5L6jeSxJQLfDbJTXwWRFUaL8+BapjEPlDD0kdKpgIF+yefgFr6IIUgI4uczpi8h4DZ8+X0y9tK4k06+aswMZhg==
+"@etherdata-blockchain/ip@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/ip/-/ip-5.0.3.tgz#e825d831ee636472829110c47adc605978a58af4"
+  integrity sha512-C6x1uK45FIHR2I3vh77p9fcp9F66JlOJsWBVj4hMLYi4Qd5xEPnQ4py72XbrHe9bopx2Gc3pVVZNacEEKBoqXg==
 
 "@etherdata-blockchain/logger@*":
   version "4.3.5"
@@ -408,10 +408,10 @@
     moment "^2.29.3"
     typescript "^4.6.4"
 
-"@etherdata-blockchain/logger@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-5.0.2.tgz#0df0042cd69d2657c519e67890752ab4f185e735"
-  integrity sha512-nU8nR+mzNjErp2oVkMuj97lQx+FY3cv16CC3lBWSVd7eRgpdy52vj3gM8uvl+cAzLBmibCl2CfGvtHqYSWEtoQ==
+"@etherdata-blockchain/logger@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-5.0.3.tgz#c2ab2148c360ae2352e671b55a8b579851b49314"
+  integrity sha512-g4xnp999Hq6ZGfGUoDuMzcBPCm2AyhDHzto+yeROodwONPYsv/eX/c6Vrj42fnF8SOVxc8gz9lRqJ3nSx1BeFQ==
   dependencies:
     chalk "^5.0.1"
     moment "^2.29.4"
