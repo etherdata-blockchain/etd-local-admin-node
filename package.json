@@ -33,7 +33,7 @@
     "@etherdata-blockchain/docker-plan": "^5.0.3",
     "@etherdata-blockchain/ip": "^5.0.3",
     "@etherdata-blockchain/logger": "^5.0.3",
-    "@types/dockerode": "^3.3.18",
+    "@types/dockerode": "^3.3.19",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.2.5",
     "@types/node-cron": "^3.0.7",
