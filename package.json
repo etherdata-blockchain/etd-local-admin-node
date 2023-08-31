@@ -46,13 +46,13 @@
     "http-method-enum": "^1.0.0",
     "http-status-codes": "^2.2.0",
     "internal-ip": "^8.0.0",
-    "jsonwebtoken": "^9.0.1",
+    "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "node-cron": "^3.0.2",
     "typescript": "^5.2.2",
     "web3": "^4.1.1",
     "web3-eth-admin": "^1.0.0-beta.55",
-    "wireit": "^0.10.0"
+    "wireit": "^0.11.0"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^7.0.0",
