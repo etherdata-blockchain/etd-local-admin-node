@@ -55,11 +55,11 @@
     "wireit": "^0.13.0"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "^7.0.0",
-    "@types/chai": "^4.3.5",
+    "@release-it/conventional-changelog": "^7.0.1",
+    "@types/chai": "^4.3.6",
     "@types/jest": "^29.5.4",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
     "chai": "^4.3.8",
     "eslint": "^8.48.0",
     "eslint-config-airbnb-base": "^15.0.0",
