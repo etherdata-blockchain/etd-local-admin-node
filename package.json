@@ -52,7 +52,7 @@
     "typescript": "^5.2.2",
     "web3": "^4.2.0",
     "web3-eth-admin": "^1.0.0-beta.55",
-    "wireit": "^0.14.0"
+    "wireit": "^0.14.1"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^7.0.2",
@@ -61,7 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "chai": "^4.3.10",
-    "eslint": "^8.51.0",
+    "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.28.1",
     "jest": "^29.7.0",
