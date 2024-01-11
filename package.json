@@ -52,7 +52,7 @@
     "typescript": "^5.3.3",
     "web3": "^4.3.0",
     "web3-eth-admin": "^1.0.0-beta.55",
-    "wireit": "^0.14.1"
+    "wireit": "^0.14.3"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^8.0.1",
