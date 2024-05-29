@@ -68,7 +68,7 @@
     "nock": "^13.5.4",
     "prettier": "^3.2.5",
     "release-it": "^17.3.0",
-    "ts-jest": "^29.1.3",
+    "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2"
   },
   "repository": "https://github.com/etherdata-blockchain/etd-local-admin-node.git",
