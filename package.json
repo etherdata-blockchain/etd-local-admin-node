@@ -56,10 +56,10 @@
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^8.0.1",
-    "@types/chai": "^4.3.17",
+    "@types/chai": "^4.3.18",
     "@types/jest": "^29.5.12",
-    "@typescript-eslint/eslint-plugin": "^8.2.0",
-    "@typescript-eslint/parser": "^8.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
     "chai": "^5.1.1",
     "eslint": "^9.9.1",
     "eslint-config-airbnb-base": "^15.0.0",
