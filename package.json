@@ -38,7 +38,7 @@
     "@types/node": "^22.13.5",
     "@types/node-cron": "^3.0.11",
     "@vercel/ncc": "^0.38.3",
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "axios-retry": "^4.5.0",
     "chalk": "^5.4.1",
     "dockerode": "^4.0.4",
