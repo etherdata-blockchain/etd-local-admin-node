@@ -1845,10 +1845,10 @@
     "@types/node" "*"
     "@types/ssh2" "*"
 
-"@types/dockerode@^3.3.38":
-  version "3.3.38"
-  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.38.tgz#2b949a7fe655d30e366238a43eee4753d8164429"
-  integrity sha512-nnrcfUe2iR+RyOuz0B4bZgQwD9djQa9ADEjp7OAgBs10pYT0KSCtplJjcmBDJz0qaReX5T7GbE5i4VplvzUHvA==
+"@types/dockerode@^3.3.39":
+  version "3.3.39"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.39.tgz#629adef5db9b3bb955423db1ccd586ee2b36e2e7"
+  integrity sha512-uMPmxehH6ofeYjaslASPtjvyH8FRJdM9fZ+hjhGzL4Jq3bGjr9D7TKmp9soSwgFncNk0HOwmyBxjqOb3ikjjsA==
   dependencies:
     "@types/docker-modem" "*"
     "@types/node" "*"
@@ -1988,10 +1988,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.52.tgz#2fd2dc6bfa185601b15457398d4ba1ef27f81251"
   integrity sha512-cfkwWw72849SNYp3Zx0IcIs25vABmFh73xicxhCkTcvtZQeIez15PpwQN8fY3RD7gv1Wrxlc9MEtfMORZDEsGw==
 
-"@types/node@^22.15.19":
-  version "22.15.19"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.19.tgz#ba9f321675243af0456d607fa82a4865931e0cef"
-  integrity sha512-3vMNr4TzNQyjHcRZadojpRaD9Ofr6LsonZAoQ+HMUa/9ORTPoxVIw0e0mpqWpdjj8xybyCM+oKOUH2vwFu/oEw==
+"@types/node@^22.15.21":
+  version "22.15.21"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.21.tgz#196ef14fe20d87f7caf1e7b39832767f9a995b77"
+  integrity sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==
   dependencies:
     undici-types "~6.21.0"
 
@@ -7336,10 +7336,10 @@ node-addon-api@^2.0.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-2.0.2.tgz#432cfa82962ce494b132e9d72a15b29f71ff5d32"
   integrity sha512-Ntyt4AIXyaLIuMHF6IOoTakB3K+RWxwtsHNRxllEoA6vPwP9o4866g6YWDLUdnucilZhmkxiHwHr11gAENw+QA==
 
-node-cron@^4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/node-cron/-/node-cron-4.0.5.tgz#f4e83f6c79e32aaffa1e0f8386a94c2b5fbfd633"
-  integrity sha512-XN5PwNBniFz6y9Ic/VChtrBtlXfAqdKUFou7nid/1pLGNFKO7cXN1nmLKUL7KLnM/Y4nUe5/EC+GsAghCj/N5g==
+node-cron@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/node-cron/-/node-cron-4.0.6.tgz#d363bab2f1dcca691732e36b43cb84e90990e3ed"
+  integrity sha512-T294pDgew/Nec/uXRoAcEbh+HIisrlZ7MeTx02KcLLI4eE89dwmUGSFT6L5kK7YrSSwa1Ovfm7ILpehiYVIrWQ==
 
 node-fetch-native@^1.6.6:
   version "1.6.6"
