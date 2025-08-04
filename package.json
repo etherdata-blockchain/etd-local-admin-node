@@ -40,7 +40,7 @@
     "@vercel/ncc": "^0.38.3",
     "axios": "^1.11.0",
     "axios-retry": "^4.5.0",
-    "chalk": "^5.4.1",
+    "chalk": "^5.5.0",
     "dockerode": "^4.0.7",
     "dotenv": "^17.2.1",
     "http-method-enum": "^1.0.0",
@@ -68,7 +68,7 @@
     "nock": "^14.0.8",
     "prettier": "^3.6.2",
     "release-it": "^19.0.4",
-    "ts-jest": "^29.4.0",
+    "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2"
   },
   "repository": "https://github.com/etherdata-blockchain/etd-local-admin-node.git",
